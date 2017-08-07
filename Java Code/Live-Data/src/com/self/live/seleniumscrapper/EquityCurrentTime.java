@@ -1,5 +1,6 @@
 package com.self.live.seleniumscrapper;
 
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
@@ -8,108 +9,155 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 
+import com.self.live.seleniumscrapper.dataobject.LiveStockData;
+
 public class EquityCurrentTime {
-  private WebDriver driver;
-  private String baseUrl;
-  private boolean acceptNextAlert = true;
-  private StringBuffer verificationErrors = new StringBuffer();
-  
-  String foldername = "";
+	private WebDriver driver;
+	private String baseUrl;
 
-  
-  public EquityCurrentTime(){
+	String symbol;
+	
+	int currSignal;
 
-	  try {
-		setUp();
-	} catch (Exception e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
+	String foldername = "";
+
+	public EquityCurrentTime(String symbolIn, String url) {
+
+		try {
+			this.symbol = symbolIn;
+			setUp(url);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
-  }
-  
-  
-  
+	@SuppressWarnings("deprecation")
+	public void setUp(String url) throws Exception {
+		// driver = new FirefoxDriver();
+		baseUrl = url;
+		// ProfilesIni myprofile = new ProfilesIni();
 
-  @SuppressWarnings("deprecation")
-public void setUp() throws Exception {
-   // driver = new FirefoxDriver();
-    baseUrl = "http://www.moneycontrol.com/india/stockpricequote/refineries/relianceindustries/RI";
-    // ProfilesIni myprofile = new ProfilesIni();
-    
-    FirefoxProfile profile = new FirefoxProfile();
-    
-/*    DesiredCapabilities capabilities = DesiredCapabilities.htmlUnit();
-    
-    capabilities.setCapability("browser.download.dir", "D:\\NSE_Downloads\\Equity_Historical"
-			);
-*/ 
-    if("Mac OS X".equals(System.getProperty("os.name")))
-    {
-    		foldername = "/Users/ashishnarang/nse-product-artifacts/NSE_Downloads/Equity_Daily";
-    }
-    else
-    {
-    		foldername = "D:\\NSE_Downloads\\Equity_Daily";
-    }
-	profile.setPreference("browser.download.dir", foldername
-			);
-	profile.setPreference("pref.downloads.disable_button.edit_actions",
-			false);
-	profile.setPreference("browser.download.folderList", 2);
-	profile.setPreference("browser.download.lastDir",
-			foldername);
-	profile.setPreference("browser.download.manager.closeWhenDone", true);
-	profile.setPreference(
-			"browser.helperApps.neverAsk.saveToDisk",
-			"application/csv, text/csv application/zip application/msexcell application/vnd.ms-excel text/plain");
-
-	// WebDriver driver;
-	// if(driver == null){
-	
-	/*System.setProperty("webdriver.gecko.driver", 
-			"D:\\Software\\geckodriver-v0.16.1-win64\\geckodriver.exe");
-	*/
-	 driver = new FirefoxDriver(profile);
-	
-	// driver = new HtmlUnitDriver(capabilities);
-	
-	// 
-   driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-
-  
-  
-
-  }
-
-  
-  public void downloadCurrentFileFullData() throws Exception {
-	  driver.get(baseUrl /*+ "/products/content/equities/equities/eq_security.htm"*/);
-	  
-	  	String xpathExpPrice = "//*[@id=\"Nse_Prc_tick\"]/strong";
-	  
-		WebElement queryPrice = driver.findElement(By.xpath(xpathExpPrice));
-		String lastPrice = queryPrice.getText();
+		//FirefoxProfile profile = new FirefoxProfile(new File("C:\\Users\\ASHISH\\AppData\\Local\\Mozilla\\Firefox\\Profiles\\32iyy0ec.default"));
 		
+		FirefoxProfile profile = new FirefoxProfile();
+
+		/*
+		 * DesiredCapabilities capabilities = DesiredCapabilities.htmlUnit();
+		 * 
+		 * capabilities.setCapability("browser.download.dir",
+		 * "D:\\NSE_Downloads\\Equity_Historical" );
+		 */
+		// WebDriver driver;
+		// if(driver == null){
+
+		/*
+		 * System.setProperty("webdriver.gecko.driver",
+		 * "D:\\Software\\geckodriver-v0.16.1-win64\\geckodriver.exe");
+		 */
+		driver = new FirefoxDriver(profile);
+
+		// driver = new HtmlUnitDriver(capabilities);
+
+		//
+		profile.setPreference("browser.cache.disk.enable", false);
+		profile.setPreference("browser.cache.memory.enable", false);
+		profile.setPreference("browser.cache.offline.enable", false);
+		profile.setPreference("network.http.use-cache", false);
+		profile.setPreference("plugin.disable_full_page_plugi‌​n_for_types",
+				"application/pdf,application/vnd.adobe.xfdf,application/vnd.‌​fdf,application/vnd.‌​adobe.xdp+xml");
+
+		driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+
+		driver.get(baseUrl);
+		
+		//driver.
+
+	}
+	
+	public void refresh(){
+		driver.get(baseUrl);
+
+	}
+
+	public LiveStockData downloadCurrentFileFullData() throws Exception {
+
+		LiveStockData liveStockData = new LiveStockData();
+
+		String xpathExpPrice = "//*[@id=\"Nse_Prc_tick\"]/strong";
+
+		WebElement queryPrice = null;
+		try {
+			queryPrice = driver.findElement(By.xpath(xpathExpPrice));
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+		String lastPrice = "0";
+		int attempts = 0;
+
+		if (queryPrice != null) {
+
+			while (attempts <= 2 && lastPrice.equals("0")) {
+				try {
+					lastPrice = queryPrice.getText();
+				} catch (Exception e) {
+				}
+				attempts++;
+			}
+
+			lastPrice = cleanData(lastPrice);
+		}
+		attempts = 0;
+
 		String xpathExpVolume = "//*[@id=\"nse_volume\"]/strong";
-		  
-		WebElement queryVolume = driver.findElement(By.xpath(xpathExpVolume));
-		String volume = queryVolume.getText();
-		
-	  Thread.sleep(1000);
-  }
-  public void tearDown() throws Exception {
-    driver.quit();
-   
-  }
-  
-  
-  public static void main(String[] args) throws Exception {
-	
-	  EquityCurrentTime currTime = new EquityCurrentTime();
-	  
-	  currTime.downloadCurrentFileFullData();
+
+		WebElement queryVolume = null;
+		try {
+			queryVolume = driver.findElement(By.xpath(xpathExpVolume));
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+		String volume = "0";
+
+		if (queryVolume != null) {
+			while (attempts <= 2 && volume.equals("0")) {
+				try {
+					volume = queryVolume.getText();
+				} catch (Exception e) {
+				}
+				attempts++;
+			}
+			volume = cleanData(volume);
+		}
+
+		// liveStockData.setCurrentTime(new
+		// Time(Calendar.getInstance().getTimeInMillis()));
+		liveStockData.setSymbol("" + this.symbol);
+		liveStockData.setPrice(new Float(lastPrice));
+		liveStockData.setVolume(new Integer(volume));
+
+		return liveStockData;
+
+	}
+
+	private String cleanData(String input) {
+		return input.replaceAll(",", "");
+	}
+
+	public void tearDown() throws Exception {
+		driver.quit();
+
+	}
+
+	public static void main(String[] args) throws Exception {
+
+		/*
+		 * EquityCurrentTime currTime = new EquityCurrentTime();
+		 * 
+		 * currTime.downloadCurrentFileFullData();
+		 */}
+
 }
-
-  }
-
