@@ -1,8 +1,9 @@
 package com.self.live.seleniumscrapper;
 
-import java.io.File;
 import java.util.concurrent.TimeUnit;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -11,21 +12,22 @@ import org.openqa.selenium.firefox.FirefoxProfile;
 
 import com.self.live.seleniumscrapper.dataobject.LiveStockData;
 
+import us.codecraft.xsoup.Xsoup;
+
 public class EquityCurrentTime {
-	private WebDriver driver;
-	private String baseUrl;
 
 	String symbol;
-	
+
 	int currSignal;
 
-	String foldername = "";
+	String url;
 
-	public EquityCurrentTime(String symbolIn, String url) {
+	public EquityCurrentTime(String symbolIn, String urlIn, int currSignalIn) {
 
 		try {
 			this.symbol = symbolIn;
-			setUp(url);
+			this.currSignal = currSignalIn;
+			this.url = urlIn;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -34,107 +36,27 @@ public class EquityCurrentTime {
 	}
 
 	@SuppressWarnings("deprecation")
-	public void setUp(String url) throws Exception {
-		// driver = new FirefoxDriver();
-		baseUrl = url;
-		// ProfilesIni myprofile = new ProfilesIni();
 
-		//FirefoxProfile profile = new FirefoxProfile(new File("C:\\Users\\ASHISH\\AppData\\Local\\Mozilla\\Firefox\\Profiles\\32iyy0ec.default"));
-		
-		FirefoxProfile profile = new FirefoxProfile();
-
-		/*
-		 * DesiredCapabilities capabilities = DesiredCapabilities.htmlUnit();
-		 * 
-		 * capabilities.setCapability("browser.download.dir",
-		 * "D:\\NSE_Downloads\\Equity_Historical" );
-		 */
-		// WebDriver driver;
-		// if(driver == null){
-
-		/*
-		 * System.setProperty("webdriver.gecko.driver",
-		 * "D:\\Software\\geckodriver-v0.16.1-win64\\geckodriver.exe");
-		 */
-		driver = new FirefoxDriver(profile);
-
-		// driver = new HtmlUnitDriver(capabilities);
-
-		//
-		profile.setPreference("browser.cache.disk.enable", false);
-		profile.setPreference("browser.cache.memory.enable", false);
-		profile.setPreference("browser.cache.offline.enable", false);
-		profile.setPreference("network.http.use-cache", false);
-		profile.setPreference("plugin.disable_full_page_plugi‌​n_for_types",
-				"application/pdf,application/vnd.adobe.xfdf,application/vnd.‌​fdf,application/vnd.‌​adobe.xdp+xml");
-
-		driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
-
-		driver.get(baseUrl);
-		
-		//driver.
-
-	}
-	
-	public void refresh(){
-		driver.get(baseUrl);
-
-	}
-
-	public LiveStockData downloadCurrentFileFullData() throws Exception {
+	public LiveStockData downloadData() throws Exception {
 
 		LiveStockData liveStockData = new LiveStockData();
 
+		Document document = Jsoup.connect(url).post();
+
 		String xpathExpPrice = "//*[@id=\"Nse_Prc_tick\"]/strong";
 
-		WebElement queryPrice = null;
-		try {
-			queryPrice = driver.findElement(By.xpath(xpathExpPrice));
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-
 		String lastPrice = "0";
-		int attempts = 0;
 
-		if (queryPrice != null) {
-
-			while (attempts <= 2 && lastPrice.equals("0")) {
-				try {
-					lastPrice = queryPrice.getText();
-				} catch (Exception e) {
-				}
-				attempts++;
-			}
-
-			lastPrice = cleanData(lastPrice);
-		}
-		attempts = 0;
+		lastPrice = Xsoup.compile(xpathExpPrice).evaluate(document).get();
+		lastPrice = cleanData(lastPrice);
 
 		String xpathExpVolume = "//*[@id=\"nse_volume\"]/strong";
 
-		WebElement queryVolume = null;
-		try {
-			queryVolume = driver.findElement(By.xpath(xpathExpVolume));
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
-
 		String volume = "0";
 
-		if (queryVolume != null) {
-			while (attempts <= 2 && volume.equals("0")) {
-				try {
-					volume = queryVolume.getText();
-				} catch (Exception e) {
-				}
-				attempts++;
-			}
-			volume = cleanData(volume);
-		}
+		volume = Xsoup.compile(xpathExpVolume).evaluate(document).get();
+		volume = cleanData(volume);
 
-		// liveStockData.setCurrentTime(new
-		// Time(Calendar.getInstance().getTimeInMillis()));
 		liveStockData.setSymbol("" + this.symbol);
 		liveStockData.setPrice(new Float(lastPrice));
 		liveStockData.setVolume(new Integer(volume));
@@ -144,20 +66,19 @@ public class EquityCurrentTime {
 	}
 
 	private String cleanData(String input) {
-		return input.replaceAll(",", "");
-	}
-
-	public void tearDown() throws Exception {
-		driver.quit();
+		input = input.replaceAll(",", "");
+				input = input.replaceAll("<strong>", "");
+				input = input.replaceAll("</strong>", "");
+				return input;
 
 	}
 
 	public static void main(String[] args) throws Exception {
 
-		/*
-		 * EquityCurrentTime currTime = new EquityCurrentTime();
-		 * 
-		 * currTime.downloadCurrentFileFullData();
-		 */}
+		EquityCurrentTime currTime = new EquityCurrentTime("BATAINDIA",
+				"http://www.moneycontrol.com/india/stockpricequote/leather-products/bataindia/BI01", 1);
+
+		currTime.downloadData();
+	}
 
 }

@@ -48,7 +48,7 @@ public class LiveDataGlobal {
 		PoolableObjectFactory mySqlPoolableObjectFactory = new MySqlPoolableObjectFactory(host, Integer.parseInt(port),
 				schema, user, password);
 		Config config = new GenericObjectPool.Config();
-		config.maxActive = 500;
+		config.maxActive = 50;
 		config.testOnBorrow = true;
 		config.testWhileIdle = true;
 		config.timeBetweenEvictionRunsMillis = 10000;

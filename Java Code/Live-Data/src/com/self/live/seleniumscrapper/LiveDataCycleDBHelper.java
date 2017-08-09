@@ -1,5 +1,6 @@
 package com.self.live.seleniumscrapper;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,6 +28,9 @@ public class LiveDataCycleDBHelper {
 	public ObjectPool getConnPool() {
 		return connPool;
 	}
+	
+	Connection connection = null;
+
 
 	public void insertLiveDatainBatch(List<LiveStockData> listLiveStockData, int retryCount)
 			throws NoSuchElementException, IllegalStateException, Exception {
@@ -37,7 +41,6 @@ public class LiveDataCycleDBHelper {
 			return;
 		}
 
-		Connection connection = null;
 
 		while (connection == null || connection.isClosed()) {
 			connection = (Connection) connPool.borrowObject();
@@ -45,7 +48,7 @@ public class LiveDataCycleDBHelper {
 
 		connection.setAutoCommit(true);
 
-		String sql = "replace into engine_live_temp.live_data(curr_time,symbol,volume,price) "
+		String sql = "replace into live_data(curr_time,symbol,volume,price) "
 				+ "VALUES (now(), ?, ?,?)";
 
 		PreparedStatement ps = connection.prepareStatement(sql);
@@ -71,7 +74,7 @@ public class LiveDataCycleDBHelper {
 			ps.executeBatch();
 			ps.close();
 			// connection.commit();
-			connection.close();
+			//connection.close();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -80,6 +83,7 @@ public class LiveDataCycleDBHelper {
 		} finally {
 			safeClose(res);
 			safeClose(ps);
+			//safeClose(connection);
 		}
 
 		// TODO Auto-generated method stub
@@ -95,7 +99,6 @@ public class LiveDataCycleDBHelper {
 			return;
 		}
 
-		Connection connection = null;
 
 		while (connection == null || connection.isClosed()) {
 			connection = (Connection) connPool.borrowObject();
@@ -103,7 +106,7 @@ public class LiveDataCycleDBHelper {
 
 		connection.setAutoCommit(true);
 
-		String sql = "replace into engine_live_temp.live_data(curr_time,symbol,volume,price) "
+		String sql = "replace into live_data(curr_time,symbol,volume,price) "
 				+ "VALUES (now(), ?, ?,?)";
 
 		PreparedStatement ps = connection.prepareStatement(sql);
@@ -120,7 +123,7 @@ public class LiveDataCycleDBHelper {
 			ps.executeUpdate();
 			ps.close();
 			// connection.commit();
-			connection.close();
+			//connection.close();
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -129,6 +132,8 @@ public class LiveDataCycleDBHelper {
 		} finally {
 			safeClose(res);
 			safeClose(ps);
+			//safeClose(connection);
+
 		}
 
 		// TODO Auto-generated method stub
@@ -188,5 +193,58 @@ public class LiveDataCycleDBHelper {
 
 		liveDataCycleDBHelper.insertLiveDatainBatch(listLiveStockData, 3);
 	}
+	
+	
+	
+	public void callEvaluation(int currentSignal,String symbol,int retryCount) throws Exception {
+
+
+		if (retryCount < 0) {
+			return;
+		}
+
+		ResultSet res = null;
+
+		while (connection == null || connection.isClosed()) {
+			connection = (Connection) connPool.borrowObject();
+		}
+
+		CallableStatement callSt1 = null;
+		if(currentSignal == 1)
+		{
+			callSt1 = connection.prepareCall("call convert_to_buy_calls(?)");
+			callSt1.setString(1, symbol);
+
+		}
+		
+		if(currentSignal == -1)
+		{
+			callSt1 = connection.prepareCall("call convert_to_sell_calls(?)");
+			callSt1.setString(1, symbol);
+
+		}
+
+		connection.setAutoCommit(true);
+
+		try {
+
+				
+				callSt1.execute();
+				callSt1.close();
+
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new MySqlPoolableException("Failed to borrow connection from the pool", e);
+		} finally {
+			safeClose(res);
+			safeClose(callSt1);
+			//safeClose(connection);
+		}
+
+	}
+
+
+
 
 }
