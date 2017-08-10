@@ -81,7 +81,9 @@ public class LiveDataManager {
 				
 				try{
 					
-					Thread.sleep(sleepDuration);
+					//Thread.sleep(sleepDuration);
+					
+				Thread.sleep(5000);
 				
 				EquityCurrentTime equityCurrentTime = arrEquityCurrentTime[i];
 				
@@ -222,7 +224,7 @@ public class LiveDataManager {
 */		
 		symbols[i] = "HINDPETRO";
 		symbolsURLs.put("HINDPETRO", "http://www.moneycontrol.com/india/stockpricequote/refineries/hindustanpetroleumcorporation/HPC");
-		symbolSignals.put("HINDPETRO", 1);
+		symbolSignals.put("HINDPETRO", -1);
 		
 	}
 

@@ -1,0 +1,30 @@
+reset live_data table's id every day / week.
+
+
+select 
+avg(previousRow.volume - currentRow.volume)
+-- previousRow.volume,currentRow.volume 
+from engine_live_temp.live_data currentRow, engine_live_temp.live_data previousRow
+where currentRow.id = previousRow.id + 1
+and previousRow.volume - currentRow.volume != 0
+
+
+
+
+------------------------------------------------------------------------------------------
+
+select 
+-- currentRow.curr_time ,currentRow.price - previousRow.price, currentRow.volume - previousRow.volume
+-- sum((currentRow.price - previousRow.price) * (currentRow.volume - previousRow.volume) )
+sum(
+
+(abs(currentRow.price - previousRow.price) /  (currentRow.price - previousRow.price))
+
+* (currentRow.volume - previousRow.volume) 
+)
+
+-- sum((currentRow.volume - previousRow.volume) )
+from engine_live_temp.live_data currentRow, engine_live_temp.live_data previousRow
+where currentRow.id = previousRow.id + 1
+-- and currentRow.price < previousRow.price
+and (currentRow.volume - previousRow.volume) > ( 10 * 343.1385)
