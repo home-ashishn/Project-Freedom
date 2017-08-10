@@ -12,6 +12,7 @@ import java.util.NoSuchElementException;
 
 import org.apache.commons.pool.ObjectPool;
 
+import com.self.live.seleniumscrapper.dataobject.BasisForCalls;
 import com.self.live.seleniumscrapper.dataobject.LiveStockData;
 import com.self.live.seleniumscrapper.dbconnection.MySqlPoolableException;
 
@@ -243,6 +244,68 @@ public class LiveDataCycleDBHelper {
 		}
 
 	}
+	
+
+	public List<BasisForCalls> getBasisForCalls(int retryCount)
+			throws NoSuchElementException, IllegalStateException, Exception {
+
+		List<BasisForCalls> listData = new ArrayList<BasisForCalls>();
+
+		if (retryCount < 0) {
+			return listData;
+		}
+
+		ResultSet res = null;
+
+		/*
+		 * String sql = "SELECT SYMBOL FROM engine_ea.equity_data_main a " +
+		 * "WHERE a.CURR_DATE = (SELECT max(b.curr_date) FROM engine_ea.equity_data_main b) "
+		 * + "order by a.TURNOVER desc " + "limit 50";
+		 */
+
+		String sql = "SELECT symbol,curr_signal,url FROM engine_live_temp.basis_for_calls;";
+
+		while (connection == null || connection.isClosed()) {
+			connection = (Connection) connPool.borrowObject();
+		}
+		connection.setAutoCommit(true);
+
+		PreparedStatement ps = connection.prepareStatement(sql);
+
+		try {
+
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+				
+				BasisForCalls data = new BasisForCalls();
+				
+				data.setSymbol(rs.getString("symbol").trim());
+				
+				data.setSignal(rs.getInt("curr_signal"));
+
+				
+				data.setUrl(rs.getString("url").trim());
+
+				listData.add(data);
+
+			}
+			ps.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			getBasisForCalls(retryCount--);
+			throw new MySqlPoolableException("Failed to borrow connection from the pool", e);
+		} finally {
+			safeClose(res);
+			safeClose(ps);
+		}
+
+		return listData;
+
+	}
+
+
 
 
 

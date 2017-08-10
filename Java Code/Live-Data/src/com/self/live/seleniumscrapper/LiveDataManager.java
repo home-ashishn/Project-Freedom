@@ -2,18 +2,20 @@ package com.self.live.seleniumscrapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.self.live.seleniumscrapper.dataobject.BasisForCalls;
 import com.self.live.seleniumscrapper.dataobject.LiveStockData;
 
 public class LiveDataManager {
 	
-	static String[] symbols = new String[1];
+	static String[] symbols;
 	
-	static EquityCurrentTime[] arrEquityCurrentTime = new EquityCurrentTime[symbols.length];
+	static EquityCurrentTime[] arrEquityCurrentTime;
 
 	
 	static Map<String, String> symbolsURLs = new HashMap<String, String>();
@@ -30,7 +32,9 @@ public class LiveDataManager {
 		
 		LiveDataCycleDBHelper liveDataCycleDBHelper = new LiveDataCycleDBHelper(liveDataGlobal.getPool());
 		
-		fillSymbolData();
+		List<BasisForCalls> listBasisForCalls = liveDataCycleDBHelper.getBasisForCalls(3);
+		
+		fillSymbolData(listBasisForCalls);
 		
 
 		
@@ -179,12 +183,31 @@ public class LiveDataManager {
 
 	
 */	
-	private static void fillSymbolData() {
+	private static void fillSymbolData(List<BasisForCalls> listBasisForCalls) {
 		
-		String symbol = "BATAINDIA";
+		
+		int i = 0;
+		
+		symbols = new String[listBasisForCalls.size()];
+		
+		arrEquityCurrentTime = new EquityCurrentTime[symbols.length];
+
+
+		for (Iterator<BasisForCalls> iterator = listBasisForCalls.iterator(); iterator.hasNext();) {
+			BasisForCalls basisForCalls = (BasisForCalls) iterator.next();
+			
+			symbols[i] = basisForCalls.getSymbol();
+			symbolsURLs.put(basisForCalls.getSymbol(),
+					basisForCalls.getUrl());
+			symbolSignals.put(basisForCalls.getSymbol(), basisForCalls.getSignal());
+			
+			i++;
+			
+		}
 		
 
-		int i = 0;
+
+
 		
 /*		symbols[i] = "BATAINDIA";
 		symbolsURLs.put("BATAINDIA", "http://www.moneycontrol.com/india/stockpricequote/leather-products/bataindia/BI01");
@@ -222,9 +245,7 @@ public class LiveDataManager {
 
 		i++;
 */		
-		symbols[i] = "HINDPETRO";
-		symbolsURLs.put("HINDPETRO", "http://www.moneycontrol.com/india/stockpricequote/refineries/hindustanpetroleumcorporation/HPC");
-		symbolSignals.put("HINDPETRO", -1);
+
 		
 	}
 
