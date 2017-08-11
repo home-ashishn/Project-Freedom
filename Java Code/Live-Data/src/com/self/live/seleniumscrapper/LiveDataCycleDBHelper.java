@@ -305,6 +305,48 @@ public class LiveDataCycleDBHelper {
 
 	}
 
+	public void calculateNewLevels(String symbol, int retryCount) throws NoSuchElementException, IllegalStateException, SQLException, Exception {
+
+
+
+		if (retryCount < 0) {
+			return;
+		}
+
+		ResultSet res = null;
+
+		while (connection == null || connection.isClosed()) {
+			connection = (Connection) connPool.borrowObject();
+		}
+
+		CallableStatement callSt1 = null;
+		
+		callSt1 = connection.prepareCall("call calculate_new_levels(?)");
+		callSt1.setString(1, symbol);
+
+		
+
+		connection.setAutoCommit(true);
+
+		try {
+
+				
+				callSt1.execute();
+				callSt1.close();
+
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new MySqlPoolableException("Failed to borrow connection from the pool", e);
+		} finally {
+			safeClose(res);
+			safeClose(callSt1);
+			//safeClose(connection);
+		}
+
+			
+	}
+
 
 
 
