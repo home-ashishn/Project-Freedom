@@ -28,3 +28,28 @@ from engine_live_temp.live_data currentRow, engine_live_temp.live_data previousR
 where currentRow.id = previousRow.id + 1
 -- and currentRow.price < previousRow.price
 and (currentRow.volume - previousRow.volume) > ( 10 * 343.1385)
+
+--------------------------------------------------------------------------------
+
+
+
+select 'RSI_CALL',a.curr_date,a.symbol,a.curr_signal,a.one_day_avg_confidence,a.three_day_avg_confidence,
+a.one_day_success_confidence,a.three_day_success_confidence from 
+engine_indicators.rsi_evaluation_run_current_data a
+union
+
+select 'STOCHASTIC_CALL',a.curr_date,a.symbol,a.curr_signal,a.one_day_avg_confidence,a.three_day_avg_confidence,
+a.one_day_success_confidence,a.three_day_success_confidence from
+engine_indicators.stochastic_evaluation_run_current_data a
+union
+
+/*
+select 'OBV_CALL',a.symbol,a.curr_signal,a.one_day_avg_confidence,a.three_day_avg_confidence,
+a.one_day_success_confidence,a.three_day_success_confidence from
+engine_indicators.obv_evaluation_run_current_data a
+union
+*/
+
+select 'PERCENTB_CALL',a.curr_date,a.symbol,a.curr_signal,a.one_day_avg_confidence,a.three_day_avg_confidence,
+a.one_day_success_confidence,a.three_day_success_confidence from
+engine_indicators.percentb_evaluation_run_current_data a

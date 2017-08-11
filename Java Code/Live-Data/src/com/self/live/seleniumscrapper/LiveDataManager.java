@@ -1,6 +1,7 @@
 package com.self.live.seleniumscrapper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -71,23 +72,32 @@ public class LiveDataManager {
 
 		ExecutorService executorService = Executors.newFixedThreadPool(10);
 
-
+		
+		long currentTime = 0;
+		
+		long previousTime = 0;
 	
 
 		while(true)
 		{
 			
-			long sleepDuration = (long) ((8 - symbols.length) * 2.5 * 1000);
+			currentTime = Calendar.getInstance().getTimeInMillis();
+			
+			long sleepDuration = (15000 - (currentTime - previousTime));
 			
 			if (sleepDuration < 0) sleepDuration = 0;
+			
+			Thread.sleep(sleepDuration);
+			
+			previousTime = Calendar.getInstance().getTimeInMillis();
+
 			
 			for (int i = 0; i < arrEquityCurrentTime.length; i++) {
 				
 				try{
 					
-					//Thread.sleep(sleepDuration);
 					
-				Thread.sleep(5000);
+				// Thread.sleep(5000);
 				
 				EquityCurrentTime equityCurrentTime = arrEquityCurrentTime[i];
 				
@@ -101,12 +111,12 @@ public class LiveDataManager {
 				liveDataCycleDBHelper.callEvaluation(equityCurrentTime.currSignal, equityCurrentTime.symbol, 3);
 				
 
-				executorService.execute(new Runnable() {
+/*				executorService.execute(new Runnable() {
 				    public void run() {
 				    	//equityCurrentTime.refresh();
 				    }
 				});
-				
+				*/
 
 				
 				// Thread.yield();
@@ -118,7 +128,7 @@ public class LiveDataManager {
 				
 			}
 
-			
+
 			
 		}
 
