@@ -125,6 +125,8 @@ public class LiveDataManager {
 					}
 
 				}
+				
+				isLevelUpdateStartTime = Calendar.getInstance().getTimeInMillis();
 				fillSymbolData();
 			}
 
