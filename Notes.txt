@@ -53,3 +53,13 @@ union
 select 'PERCENTB_CALL',a.curr_date,a.symbol,a.curr_signal,a.one_day_avg_confidence,a.three_day_avg_confidence,
 a.one_day_success_confidence,a.three_day_success_confidence from
 engine_indicators.percentb_evaluation_run_current_data a
+
+-----------------------------------------------------------------------------------
+
+replace into live_data_archive
+(select * from live_data where 
+date(curr_time) < curdate());
+
+
+delete from live_data where 
+date(curr_time) < curdate();
