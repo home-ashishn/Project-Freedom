@@ -74,7 +74,7 @@ public class LiveDataManager {
 
 			currentTime = Calendar.getInstance().getTimeInMillis();
 
-			long sleepDuration = (15000 - (currentTime - previousTime));
+			long sleepDuration = (0 - (currentTime - previousTime));
 
 			if (sleepDuration < 0)
 				sleepDuration = 0;
@@ -112,7 +112,7 @@ public class LiveDataManager {
 
 			isLevelUpdateEndTime = Calendar.getInstance().getTimeInMillis();
 
-			if (isLevelUpdateEndTime - isLevelUpdateStartTime > (1000 * 60 * 15)) {
+			if (isLevelUpdateEndTime - isLevelUpdateStartTime > (1000 * 60 * 15)) {/*
 
 				for (int i = 0; i < symbols.length; i++) {
 
@@ -128,7 +128,7 @@ public class LiveDataManager {
 				
 				isLevelUpdateStartTime = Calendar.getInstance().getTimeInMillis();
 				fillSymbolData();
-			}
+			*/}
 
 		}
 	}

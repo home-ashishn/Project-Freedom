@@ -1,4 +1,12 @@
-reset live_data table's id every day / week.
+
+
+1. reset live_data table's id every day / week.
+
+2. LIVE DATA STOPPING IN BETWEEN - CHECK.
+
+3. ADD CANDLESTICKS !
+
+4. SEPERATE LIVE DATA, 'CALL GENERATION' AND 'COMPUTE LEVELS'
 
 
 select 
@@ -63,3 +71,37 @@ date(curr_time) < curdate());
 
 delete from live_data where 
 date(curr_time) < curdate();
+
+------------------------------------------------------------------------------------
+
+replace into 
+basis_for_calls
+(symbol,
+volume_prev_day,
+prev_close,
+l3,
+l2,
+l1,
+pivot,
+h1,
+h2,
+h3,
+curr_signal,
+url,
+is_h1_strong,
+is_h2_strong,
+is_h3_strong,
+is_l1_strong,
+is_l2_strong,
+is_l3_strong)
+VALUES
+(
+'AXISBANK',
+8143791,
+489.7,468.67,474.33,482.02,487.68,495.37,501.03,508.72,
+-1,
+'http://www.moneycontrol.com/india/stockpricequote/refineries/hindustanpetroleumcorporation/HPC',
+0,0,0,0,0,0
+);
+
+

@@ -263,7 +263,7 @@ public class LiveDataCycleDBHelper {
 		 * + "order by a.TURNOVER desc " + "limit 50";
 		 */
 
-		String sql = "SELECT symbol,curr_signal,url FROM engine_live_temp.basis_for_calls;";
+		String sql = "SELECT symbol,curr_signal,url FROM basis_for_calls;";
 
 		while (connection == null || connection.isClosed()) {
 			connection = (Connection) connPool.borrowObject();
