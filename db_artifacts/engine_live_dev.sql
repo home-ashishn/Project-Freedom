@@ -35,12 +35,12 @@ CREATE TABLE `basis_for_calls` (
   `l3` float NOT NULL,
   `curr_signal` tinyint(4) NOT NULL,
   `url` varchar(200) DEFAULT NULL,
-  `is_h1_strong` tinyint(4) DEFAULT '0',
-  `is_h2_strong` tinyint(4) DEFAULT '0',
-  `is_h3_strong` tinyint(4) DEFAULT '0',
-  `is_l1_strong` tinyint(4) DEFAULT '0',
-  `is_l2_strong` tinyint(4) DEFAULT '0',
-  `is_l3_strong` tinyint(4) DEFAULT '0',
+  `h1_strength` int(11) DEFAULT '0',
+  `h2_strength` int(11) DEFAULT '0',
+  `h3_strength` int(11) DEFAULT '0',
+  `l1_strength` int(11) DEFAULT '0',
+  `l2_strength` int(11) DEFAULT '0',
+  `l3_strength` int(11) DEFAULT '0',
   PRIMARY KEY (`symbol`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -474,6 +474,461 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `alter_levels`(
+input_symbol VARCHAR(45),
+var_price_mode float(10,2),
+var_max_count_mode int
+)
+proc_label: BEGIN
+
+
+declare var_h1 float ;
+declare var_l1 float ;
+declare  var_h2 float ;
+declare  var_l2 float ;
+declare  var_h3 float ;
+declare  var_l3 float ;
+
+declare  var_level_strength int ;
+
+declare  var_nearest_level int ;
+
+declare var_upper_level float;
+declare var_lower_level float;
+
+
+
+
+
+select
+    h1,
+    l1,
+    h2,
+    l2,
+    h3,
+    l3
+
+from basis_for_calls
+where symbol = input_symbol
+into
+  var_h1  ,
+  var_l1  ,
+  var_h2  ,
+  var_l2  ,
+  var_h3  ,
+  var_l3  ;
+
+
+
+
+if(var_price_mode < var_l3) then
+
+select l3_strength from basis_for_calls
+where symbol = input_symbol
+into  var_level_strength;
+
+if( var_level_strength < var_max_count_mode)    then
+
+update basis_for_calls
+set l3 = var_price_mode,l3_strength = var_max_count_mode
+where symbol = input_symbol;
+
+end if;
+
+
+else
+
+if(var_price_mode < var_l2) then
+
+
+  set var_nearest_level = compute_nearest_level(var_l3,var_l2,var_price_mode);
+
+  if  (var_nearest_level =  1) then
+
+  select l3_strength from basis_for_calls
+  where symbol = input_symbol
+  into  var_level_strength;
+
+    if( var_level_strength < var_max_count_mode)    then
+
+    update basis_for_calls
+    set l3 = var_price_mode,l3_strength = var_max_count_mode
+    where symbol = input_symbol;
+
+      else
+
+          select l2_strength from basis_for_calls
+          where symbol = input_symbol
+          into  var_level_strength;
+
+          if( var_level_strength < var_max_count_mode)    then
+
+          update basis_for_calls
+          set l2 = var_price_mode,l2_strength = var_max_count_mode
+          where symbol = input_symbol;
+
+      end if;
+
+    end if;
+
+  else   if  (var_nearest_level =  2) then
+
+  select l2_strength from basis_for_calls
+  where symbol = input_symbol
+  into  var_level_strength;
+
+    if( var_level_strength < var_max_count_mode)    then
+
+    update basis_for_calls
+    set l2 = var_price_mode,l2_strength = var_max_count_mode
+    where symbol = input_symbol;
+
+      else
+
+          select l3_strength from basis_for_calls
+          where symbol = input_symbol
+          into  var_level_strength;
+
+          if( var_level_strength < var_max_count_mode)    then
+
+          update basis_for_calls
+          set l3 = var_price_mode,l3_strength = var_max_count_mode
+          where symbol = input_symbol;
+
+      end if;
+
+    end if;
+
+    end if;
+
+    end if;
+
+
+
+else
+if(var_price_mode < var_l1) then
+
+
+
+  set var_nearest_level = compute_nearest_level(var_l2,var_l1,var_price_mode);
+
+  if  (var_nearest_level =  1) then
+
+  select l2_strength from basis_for_calls
+  where symbol = input_symbol
+  into  var_level_strength;
+
+    if( var_level_strength < var_max_count_mode)    then
+
+    update basis_for_calls
+    set l2 = var_price_mode,l2_strength = var_max_count_mode
+    where symbol = input_symbol;
+
+      else
+
+          select l1_strength from basis_for_calls
+          where symbol = input_symbol
+          into  var_level_strength;
+
+          if( var_level_strength < var_max_count_mode)    then
+
+          update basis_for_calls
+          set l1 = var_price_mode,l1_strength = var_max_count_mode
+          where symbol = input_symbol;
+
+      end if;
+
+    end if;
+
+  else   if  (var_nearest_level =  2) then
+
+  select l1_strength from basis_for_calls
+  where symbol = input_symbol
+  into  var_level_strength;
+
+    if( var_level_strength < var_max_count_mode)    then
+
+    update basis_for_calls
+    set l1 = var_price_mode,l1_strength = var_max_count_mode
+    where symbol = input_symbol;
+
+      else
+
+          select l2_strength from basis_for_calls
+          where symbol = input_symbol
+          into  var_level_strength;
+
+          if( var_level_strength < var_max_count_mode)    then
+
+          update basis_for_calls
+          set l2 = var_price_mode,l2_strength = var_max_count_mode
+          where symbol = input_symbol;
+
+      end if;
+
+    end if;
+
+    end if;
+
+    end if;
+
+
+
+
+else
+
+if(var_price_mode < var_h1) then
+
+
+
+
+  set var_nearest_level = compute_nearest_level(var_l1,var_h1,var_price_mode);
+
+  if  (var_nearest_level =  1) then
+
+  select l1_strength from basis_for_calls
+  where symbol = input_symbol
+  into  var_level_strength;
+
+    if( var_level_strength < var_max_count_mode)    then
+
+    update basis_for_calls
+    set l1 = var_price_mode,l1_strength = var_max_count_mode
+    where symbol = input_symbol;
+
+      else
+
+          select h1_strength from basis_for_calls
+          where symbol = input_symbol
+          into  var_level_strength;
+
+          if( var_level_strength < var_max_count_mode)    then
+
+          update basis_for_calls
+          set h1 = var_price_mode,h1_strength = var_max_count_mode
+          where symbol = input_symbol;
+
+      end if;
+
+    end if;
+
+  else   if  (var_nearest_level =  2) then
+
+  select h1_strength from basis_for_calls
+  where symbol = input_symbol
+  into  var_level_strength;
+
+    if( var_level_strength < var_max_count_mode)    then
+
+    update basis_for_calls
+    set h1 = var_price_mode,h1_strength = var_max_count_mode
+    where symbol = input_symbol;
+
+      else
+
+          select l1_strength from basis_for_calls
+          where symbol = input_symbol
+          into  var_level_strength;
+
+          if( var_level_strength < var_max_count_mode)    then
+
+          update basis_for_calls
+          set l1 = var_price_mode,l1_strength = var_max_count_mode
+          where symbol = input_symbol;
+
+      end if;
+
+    end if;
+
+    end if;
+
+    end if;
+
+
+
+else
+if(var_price_mode < var_h2) then
+
+
+
+  set var_nearest_level = compute_nearest_level(var_h1,var_h2,var_price_mode);
+
+  if  (var_nearest_level =  1) then
+
+  select h1_strength from basis_for_calls
+  where symbol = input_symbol
+  into  var_level_strength;
+
+    if( var_level_strength < var_max_count_mode)    then
+
+    update basis_for_calls
+    set h1 = var_price_mode,h1_strength = var_max_count_mode
+    where symbol = input_symbol;
+
+      else
+
+          select h2_strength from basis_for_calls
+          where symbol = input_symbol
+          into  var_level_strength;
+
+          if( var_level_strength < var_max_count_mode)    then
+
+          update basis_for_calls
+          set h2 = var_price_mode,h2_strength = var_max_count_mode
+          where symbol = input_symbol;
+
+      end if;
+
+    end if;
+
+  else   if  (var_nearest_level =  2) then
+
+  select h2_strength from basis_for_calls
+  where symbol = input_symbol
+  into  var_level_strength;
+
+    if( var_level_strength < var_max_count_mode)    then
+
+    update basis_for_calls
+    set h2 = var_price_mode,h2_strength = var_max_count_mode
+    where symbol = input_symbol;
+
+      else
+
+          select h1_strength from basis_for_calls
+          where symbol = input_symbol
+          into  var_level_strength;
+
+          if( var_level_strength < var_max_count_mode)    then
+
+          update basis_for_calls
+          set h1 = var_price_mode,h1_strength = var_max_count_mode
+          where symbol = input_symbol;
+
+      end if;
+
+    end if;
+
+    end if;
+
+    end if;
+
+
+
+
+else
+if(var_price_mode < var_h3) then
+
+
+
+  set var_nearest_level = compute_nearest_level(var_h2,var_h3,var_price_mode);
+
+  if  (var_nearest_level =  1) then
+
+  select h2_strength from basis_for_calls
+  where symbol = input_symbol
+  into  var_level_strength;
+
+    if( var_level_strength < var_max_count_mode)    then
+
+    update basis_for_calls
+    set h2 = var_price_mode,h2_strength = var_max_count_mode
+    where symbol = input_symbol;
+
+      else
+
+          select h3_strength from basis_for_calls
+          where symbol = input_symbol
+          into  var_level_strength;
+
+          if( var_level_strength < var_max_count_mode)    then
+
+          update basis_for_calls
+          set h3 = var_price_mode,h3_strength = var_max_count_mode
+          where symbol = input_symbol;
+
+      end if;
+
+    end if;
+
+  else   if  (var_nearest_level =  2) then
+
+  select h3_strength from basis_for_calls
+  where symbol = input_symbol
+  into  var_level_strength;
+
+    if( var_level_strength < var_max_count_mode)    then
+
+    update basis_for_calls
+    set h3 = var_price_mode,h3_strength = var_max_count_mode
+    where symbol = input_symbol;
+
+      else
+
+          select h2_strength from basis_for_calls
+          where symbol = input_symbol
+          into  var_level_strength;
+
+          if( var_level_strength < var_max_count_mode)    then
+
+          update basis_for_calls
+          set h2 = var_price_mode,h2_strength = var_max_count_mode
+          where symbol = input_symbol;
+
+      end if;
+
+    end if;
+
+
+    end if;
+
+    end if;
+
+
+
+else
+if(var_price_mode > var_h3) then
+
+select h3_strength from basis_for_calls
+where symbol = input_symbol
+into  var_level_strength;
+
+if( var_level_strength < var_max_count_mode)    then
+
+update basis_for_calls
+set h3 = var_price_mode,h3_strength = var_max_count_mode
+where symbol = input_symbol;
+
+end if;
+
+end if;
+
+
+
+end if;
+end if;
+end if;
+end if;
+end if;
+end if;
+
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `alter_levels_old` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = latin1 */ ;
+/*!50003 SET character_set_results = latin1 */ ;
+/*!50003 SET collation_connection  = latin1_swedish_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `alter_levels_old`(
 input_symbol VARCHAR(45),
 var_price_mode float(10,2)
 )
@@ -947,10 +1402,9 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `calculate_mode_levels`(
-out var_price_mode float(10,2))
+out var_price_mode float(10,2),
+out var_max_count_mode int)
 label_proc : BEGIN
-
-declare var_max_count_mode int;
 
 declare var_count_max_count_mode int;
 
@@ -1031,6 +1485,8 @@ declare var_price_mode float(10,2);
 declare  input_time datetime;
 
 declare  calculated_signal int;
+
+declare var_max_count_mode int;
 
 
 
@@ -1145,10 +1601,10 @@ order by curr_time asc
 );
 
 
-call calculate_mode_levels(var_price_mode);
+call calculate_mode_levels(var_price_mode,var_max_count_mode);
 
 if(var_price_mode is not null or var_price_mode > 0  ) then
-call alter_levels(input_symbol,var_price_mode);
+call alter_levels(input_symbol,var_price_mode,var_max_count_mode);
 end if;
 
 
@@ -2330,4 +2786,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-08-14 20:48:04
+-- Dump completed on 2017-08-15 22:40:10
