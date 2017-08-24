@@ -8,6 +8,8 @@
 
 4. SEPERATE LIVE DATA, 'CALL GENERATION' AND 'COMPUTE LEVELS'
 
+5. TAKE BACKUP OF DB AND REMOVE BACKTESTING.
+
 
 select 
 avg(previousRow.volume - currentRow.volume)
