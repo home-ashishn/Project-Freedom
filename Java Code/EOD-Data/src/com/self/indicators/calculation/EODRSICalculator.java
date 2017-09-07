@@ -8,6 +8,7 @@ import java.util.NoSuchElementException;
 
 import com.self.indicators.db.helper.IndicatorsDBHelper;
 import com.self.indicators.def.dataobjects.IndicatorsBackTestData;
+import com.self.indicators.def.dataobjects.RSIAuditData;
 import com.self.main.IndicatorsGlobal;
 
 import eu.verdelhan.ta4j.Decimal;
@@ -19,6 +20,9 @@ import eu.verdelhan.ta4j.indicators.trackers.RSIIndicator;
 public class EODRSICalculator {
 
 	private float min_per_day_for_rally_or_drop = 0.5f;
+	
+	private Map auditValues = new HashMap();
+
 
 	public static void main(String[] args) throws NoSuchElementException, IllegalStateException, Exception {
 
@@ -33,13 +37,14 @@ public class EODRSICalculator {
 		indicatorsDBHelper.getIndicatorsBaseData(symbol, 5);
 
  
-		calculator.calculateCurrentRSIWithBackTest(symbol,true,indicatorsDBHelper);
+		calculator.calculateCurrentRSI(symbol,true,indicatorsDBHelper);
 
 
 	}
 
+
 	
-	public void calculateCurrentRSIWithBackTest(String symbol, boolean plainBacktesting,
+	public void calculateCurrentRSI(String symbol, boolean plainBacktesting,
 			IndicatorsDBHelper indicatorsDBHelper) throws Exception{
 		
 
@@ -56,10 +61,10 @@ public class EODRSICalculator {
 		int startDay = data.getBegin() + 14;
 
 		int endDay = data.getEnd();
-
+		
 		int currentMarketTrend = checkMarketTrend(data, endDay);
 
-		Map<String, Decimal> mapSignalValues = generateSignalForIndex(rsi, currentMarketTrend, endDay);
+		Map<String, Decimal> mapSignalValues = generateSignalForIndex(data,rsi, currentMarketTrend, endDay);
 
 		int currentSignal = (int) mapSignalValues.get("buySellHoldSignal").toDouble();
 
@@ -105,17 +110,20 @@ public class EODRSICalculator {
 		// (int)mapSignalValues.get("buySellHoldSignal").toDouble();
 
 		// insert into DB
-		int signalReferenceId = indicatorsDBHelper.insertCurrentRSISignal(symbol, data.getTick(endDay).getEndTime(),
+		indicatorsDBHelper.insertCurrentRSISignal(symbol, data.getTick(endDay).getEndTime(),
 				currentMarketTrend, currentSignal,stop_loss_level,stop_loss_level_price, 2);
+		
+		RSIAuditData rsiAuditData = convertToRSIAuditData(auditValues);
 
-		if (currentSignal != 0 || plainBacktesting) {
+/*		if (currentSignal != 0 || plainBacktesting) {
 			
-			/*backtesting(startDay,endDay,data,currentMarketTrend,plainBacktesting,signalReferenceId,
-					symbol,indicatorsDBHelper,currentSignal,rsi);*/
-		}
+			backtesting(startDay,endDay,data,currentMarketTrend,plainBacktesting,signalReferenceId,
+					symbol,indicatorsDBHelper,currentSignal,rsi);
+		}*/
 
 	
 	}
+/*
 	private void backtesting(int startDay, int endDay, TimeSeries data, int currentMarketTrend,
 			boolean plainBactesting, int signalReferenceId, String symbol, IndicatorsDBHelper indicatorsDBHelper, int currentSignal, RSIIndicator rsi) 
 					throws Exception {
@@ -198,10 +206,10 @@ public class EODRSICalculator {
 
 			}
 
-			/*
+			
 			 * value = sof.getValue(i); System.out.println(" value for i = "
 			 * +i+" is- "+value);
-			 */
+			 
 		}
 
 		indicatorsDBHelper.insertBackTestRSISignal(listIndicatorsBackTestData, 2);
@@ -209,7 +217,17 @@ public class EODRSICalculator {
 			
 	}
 
-	private Map<String, Decimal> generateSignalForIndex(RSIIndicator rsi, int marketTrend, int index) {
+*/	
+	
+	private RSIAuditData convertToRSIAuditData(Map auditValues2) {
+		RSIAuditData rsiAuditDataReturn = new RSIAuditData();
+		
+		return rsiAuditDataReturn;
+	}
+
+
+
+	private Map<String, Decimal> generateSignalForIndex(TimeSeries data, RSIIndicator rsi, int marketTrend, int index) {
 
 		Map<String, Decimal> mapReturn = new HashMap<String, Decimal>();
 
@@ -223,34 +241,36 @@ public class EODRSICalculator {
 		} else
 
 		{
-			mapReturn = checkSignalforTrendingMarket(marketTrend, rsi, index);
+			mapReturn = checkSignalforTrendingMarket(data,marketTrend, rsi, index);
 		}
 
 		return mapReturn;
 
 	}
 
-	private Map<String, Decimal> checkSignalforTrendingMarket(int marketTrend, RSIIndicator rsi, int index) {
+	private Map<String, Decimal> checkSignalforTrendingMarket(TimeSeries data, int marketTrend, RSIIndicator rsi, int index) {
 		// TODO Auto-generated method stub
 
 		Map<String, Decimal> mapReturn = new HashMap<String, Decimal>();
 		
 		mapReturn.put("buySellHoldSignal", Decimal.ZERO);
 
+		Decimal rsiValue = rsi.getValue(index);
+		
+		auditValues.put("valueRSI",rsiValue);
 
-		int buySellHoldSignal = 0;
+		auditValues.put("signalforTrendingMarket",0);
+
 
 		if (marketTrend == 1)
 
 		{
-			Decimal rsiValue = rsi.getValue(index);
 
 			if (rsiValue.toDouble() < 35)
 			{
-				buySellHoldSignal = 0; // Indicator did not cross 35 from below,
-										// return no signal
-				
-				mapReturn.put("buySellHoldSignal", Decimal.ZERO);
+
+				mapReturn.put("buySellHoldSignal", Decimal.ZERO);// Indicator did not cross 35 from below,
+				// return no signal
 			}
 
 			Decimal prevValueRSI = null;
@@ -267,6 +287,21 @@ public class EODRSICalculator {
 
 				prevValueRSI = rsi.getValue(i);
 				
+				if(prevValueRSI.isGreaterThan(rsiValue)){
+					
+					/* rsi was greater than current rsi value hence not good candidate of rsi crossing 35 
+					 from below */				
+					
+					auditValues.put("rsiGreaterThanCurrentValue",prevValueRSI);
+					
+					auditValues.put("rsiGreaterThanCurrentDate",data.getTick(i).getEndTime());
+
+					
+					return mapReturn;
+
+				
+				}
+				
 				prevValuePrice = rsi.getTimeSeries().getTick(i).getClosePrice();
 
 				if (minPrevValueRSI.toDouble() == 0) {
@@ -280,6 +315,7 @@ public class EODRSICalculator {
 				if (minPrevValuePrice.toDouble() == 0) {
 					minPrevValuePrice = prevValuePrice;
 				}
+				
 				minPrevValuePrice = minPrevValuePrice.isLessThan(prevValuePrice) ? minPrevValuePrice : prevValuePrice;
 
 				// Indicator was below 35, and it did cross 35 from below,
@@ -289,15 +325,28 @@ public class EODRSICalculator {
 
 					// Write Logic for Rally here
 					// 1 point per day is rally
-					if ((rsiValue.minus(prevValueRSI)).toDouble() / (index - i) > min_per_day_for_rally_or_drop) {
+					
+					double rateOfChange = (rsiValue.minus(prevValueRSI)).toDouble() / (index - i);
+					
+					auditValues.put("rateOfChange",rateOfChange);
 
-						buySellHoldSignal = 1;
+					
+					if (rateOfChange > min_per_day_for_rally_or_drop) {
+
+
 
 						mapReturn.put("buySellHoldSignal", Decimal.ONE);
 
+						auditValues.put("signalforTrendingMarket",1);
+
+						auditValues.put("minPrevValueRSI",minPrevValueRSI);
+						
+						auditValues.put("minPrevValueRSIDate",data.getTick(i).getEndTime());
+
+
 						mapReturn.put("minPrevValueRSI", minPrevValueRSI);
 						
-						mapReturn.put("minPrevValuePrice", minPrevValuePrice);
+						mapReturn.put("minPrevValueRSI", minPrevValuePrice);
 
 						
 						return mapReturn;
@@ -312,15 +361,13 @@ public class EODRSICalculator {
 		if (marketTrend == -1)
 
 		{
-			Decimal rsiValue = rsi.getValue(index);
 
 			if (rsiValue.toDouble() > 65)
 				
 			{
-				buySellHoldSignal = 0; // Indicator did not cross 65 from ABOVE,
-										// return no signal
 				
-				mapReturn.put("buySellHoldSignal", Decimal.ZERO);
+				mapReturn.put("buySellHoldSignal", Decimal.ZERO); // Indicator did not cross 65 from ABOVE,
+				// return no signal
 			}
 
 			Decimal prevValueRSI = null;
@@ -336,6 +383,22 @@ public class EODRSICalculator {
 			for (int i = index - 1; i >= index - 14; i--) {
 
 				prevValueRSI = rsi.getValue(i);
+				
+				if(prevValueRSI.isLessThan(rsiValue)){
+					
+					/* rsi was less than current rsi value hence not good candidate of rsi crossing 65 
+					 from above */	
+					
+					auditValues.put("rsiLessThanCurrentValue",prevValueRSI);
+					
+					auditValues.put("rsiLessThanCurrentDate",data.getTick(i).getEndTime());
+
+
+					return mapReturn;
+
+				
+				}
+
 				
 				prevValuePrice = rsi.getTimeSeries().getTick(i).getClosePrice();
 
@@ -360,7 +423,6 @@ public class EODRSICalculator {
 					// 1 point per day is drop
 					if ((prevValueRSI.minus(rsiValue)).toDouble() / (index - i) > min_per_day_for_rally_or_drop) {
 
-						buySellHoldSignal = -1;
 
 						mapReturn.put("buySellHoldSignal", Decimal.valueOf(-1));
 
@@ -368,7 +430,14 @@ public class EODRSICalculator {
 						
 						mapReturn.put("maxPrevValuePrice", maxPrevValuePrice);
 
+
+						auditValues.put("signalforTrendingMarket",-1);
+
+						auditValues.put("maxPrevValueRSI",maxPrevValueRSI);
 						
+						auditValues.put("maxPrevValueRSIDate",data.getTick(i).getEndTime());
+
+
 						return mapReturn;
 
 					}
@@ -378,19 +447,36 @@ public class EODRSICalculator {
 
 		}
 
-		buySellHoldSignal = 0;
 
 		return mapReturn;
 
 	}
 
-	private int checkSignalforSidewaysMarket(Decimal valueK) {
+	private int checkSignalforSidewaysMarket(Decimal valueRSI) {
 
-		if (valueK.toDouble() > 70.0)
+		if (valueRSI.toDouble() > 70.0)
+		{
+			
+			auditValues.put("valueRSI",valueRSI);
+			
+			auditValues.put("signalforSidewaysMarket",-1);
+
+
 			return -1;
+			
+		}
 
-		if (valueK.toDouble() < 30.0)
+		if (valueRSI.toDouble() < 30.0)
+			
+		{
+			auditValues.put("valueRSI",valueRSI);
+			
+			auditValues.put("signalforSidewaysMarket",1);
+
 			return 1;
+		}
+		
+		auditValues.put("signalforSidewaysMarket",0);
 
 		return 0;
 	}
@@ -405,8 +491,16 @@ public class EODRSICalculator {
 		Decimal shortEmaValue = shortEma.getValue(index);
 
 		Decimal longEmaValue = longEma.getValue(index);
+		
+		auditValues.put("shortEmaValue",shortEmaValue);
+		
+		auditValues.put("longEmaValue",longEmaValue);
+
 
 		if (shortEmaValue.isGreaterThan(longEmaValue.multipliedBy(Decimal.valueOf(1.01)))) {
+			
+			auditValues.put("marketTrend",1);
+
 			return 1;
 
 		}
@@ -414,6 +508,8 @@ public class EODRSICalculator {
 		else if (longEmaValue.isGreaterThan(shortEmaValue.multipliedBy(Decimal.valueOf(1.01))))
 
 		{
+			auditValues.put("marketTrend",-1);
+
 			return -1;
 
 		}
@@ -428,6 +524,8 @@ public class EODRSICalculator {
 		 * 
 		 * if (uiRule.isSatisfied(index)) return -1;
 		 */
+		auditValues.put("marketTrend",0);
+
 		return 0;
 
 	}
