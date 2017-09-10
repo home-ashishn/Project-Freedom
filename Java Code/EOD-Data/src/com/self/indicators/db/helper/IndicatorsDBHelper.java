@@ -477,9 +477,32 @@ public class IndicatorsDBHelper {
 	}
 
 
-	public void insertStochasticAuditData(StochasticAuditData stochasticAuditData, int retryCpunt) {
-		// TODO Auto-generated method stub
-		
+	public void insertStochasticAuditData(StochasticAuditData stochasticAuditData, int retryCount) throws Exception {
+
+		if (retryCount < 0) {
+			return;
+		}
+
+		Connection connection = null;
+
+		while (connection == null || connection.isClosed()) {
+			connection = (Connection) connPool.borrowObject();
+		}
+
+		connection.setAutoCommit(true);
+
+		try {
+			StochasticDBHelper.insertStochasticAuditData(connection, 
+					stochasticAuditData, retryCount);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+
+			safeClose(connection);
+		}
+
+
 	}
 
 

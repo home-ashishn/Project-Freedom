@@ -37,13 +37,13 @@ public class MainIndicatorsCalculator {
 			
 			indicatorsDBHelper.getIndicatorsBaseData(symbol, 5);
 			
-			 rsiCalc.calculateCurrentRSI(symbol, false,indicatorsDBHelper);
+			//rsiCalc.calculateCurrentRSI(symbol, false,indicatorsDBHelper);
 			
 			// stoCalc.calculateCurrentStochastic(symbol, false,indicatorsDBHelper);
 			
 			// obvCalc.calculateCurrentOBV(symbol, false,indicatorsDBHelper);
 			
-			// pbCalc.calculateCurrentPercentB(symbol, false, indicatorsDBHelper);
+			pbCalc.calculateCurrentPercentB(symbol, false, indicatorsDBHelper);
 			
 		}
 		indicatorsDBHelper.accumulateDataForSymbol("",5);
