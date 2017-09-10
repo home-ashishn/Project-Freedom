@@ -4,9 +4,13 @@ import org.joda.time.DateTime;
 
 public class RSIAuditData {
 	
+	private int rsi_evaluation_run_id;
+	
 	private String symbol;
 
 	private DateTime endTime; 
+	
+	private int curr_signal;
 
 	private double valueRSI;
 	
@@ -14,11 +18,11 @@ public class RSIAuditData {
 	
 	private double longEmaValue;
 
-	private boolean marketTrend;
+	private int marketTrend;
 
-	private boolean signalforSidewaysMarket;
+	private int signalforSidewaysMarket;
 
-	private boolean signalforTrendingMarket;
+	private int signalforTrendingMarket;
 
 	private double rsiGreaterThanCurrentValue;
 
@@ -62,27 +66,27 @@ public class RSIAuditData {
 		this.longEmaValue = longEmaValue;
 	}
 
-	public boolean isMarketTrend() {
+	public int getMarketTrend() {
 		return marketTrend;
 	}
 
-	public void setMarketTrend(boolean marketTrend) {
+	public void setMarketTrend(int marketTrend) {
 		this.marketTrend = marketTrend;
 	}
 
-	public boolean isSignalforSidewaysMarket() {
+	public int getSignalforSidewaysMarket() {
 		return signalforSidewaysMarket;
 	}
 
-	public void setSignalforSidewaysMarket(boolean signalforSidewaysMarket) {
+	public void setSignalforSidewaysMarket(int signalforSidewaysMarket) {
 		this.signalforSidewaysMarket = signalforSidewaysMarket;
 	}
 
-	public boolean isSignalforTrendingMarket() {
+	public int getSignalforTrendingMarket() {
 		return signalforTrendingMarket;
 	}
 
-	public void setSignalforTrendingMarket(boolean signalforTrendingMarket) {
+	public void setSignalforTrendingMarket(int signalforTrendingMarket) {
 		this.signalforTrendingMarket = signalforTrendingMarket;
 	}
 
@@ -172,6 +176,22 @@ public class RSIAuditData {
 
 	public void setEndTime(DateTime endTime) {
 		this.endTime = endTime;
+	}
+
+	public int getRsi_evaluation_run_id() {
+		return rsi_evaluation_run_id;
+	}
+
+	public void setRsi_evaluation_run_id(int rsi_evaluation_run_id) {
+		this.rsi_evaluation_run_id = rsi_evaluation_run_id;
+	}
+
+	public int getCurr_signal() {
+		return curr_signal;
+	}
+
+	public void setCurr_signal(int curr_signal) {
+		this.curr_signal = curr_signal;
 	}
 	
 

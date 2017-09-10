@@ -2,7 +2,6 @@ package com.self.indicators.calculation;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import com.self.indicators.db.helper.IndicatorsDBHelper;
 import com.self.indicators.db.helper.IndicatorsLearningDBHelper;
@@ -19,20 +18,7 @@ public class LearningCalculator {
 		IndicatorsLearningDBHelper indicatorsLearningDBHelper
 										= new IndicatorsLearningDBHelper(indicatorsLearningGlobal.getPool());
 		
-		List<String> backDates = indicatorsLearningDBHelper.getBackRange(5, 3);
-		
-		
-		for (Iterator<String> iterator = backDates.iterator(); iterator.hasNext();) {
-			
-			String backDate = (String) iterator.next();
-			
-			indicatorsLearningDBHelper.initDBForDate(backDate, 3);
-
-			MainIndicatorsCalculator mainIndicatorsCalculator = new MainIndicatorsCalculator();
-			
-			mainIndicatorsCalculator.calculateIndicators();
-
-		}
+		List<String> backDates = indicatorsLearningDBHelper.getBackRange(10, 3);
 		
 		IndicatorsGlobal indicatorsGlobal = IndicatorsGlobal.getInstance();
 
@@ -40,6 +26,20 @@ public class LearningCalculator {
 		
 		indicatorsDBHelper.initDB(5);
 
+		
+		
+		for (Iterator<String> iterator = backDates.iterator(); iterator.hasNext();) {
+			
+			String backDate = (String) iterator.next();
+
+			MainIndicatorsCalculator mainIndicatorsCalculator = new MainIndicatorsCalculator();
+			
+			mainIndicatorsCalculator.calculateIndicators();
+
+			indicatorsLearningDBHelper.initDBForDate(backDate, 3);
+
+		}
+		
 
 		
 		for (Iterator<String> iterator = backDates.iterator(); iterator.hasNext();) {

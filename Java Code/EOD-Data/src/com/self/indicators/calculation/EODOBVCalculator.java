@@ -1,11 +1,8 @@
 package com.self.indicators.calculation;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import com.self.indicators.db.helper.IndicatorsDBHelper;
-import com.self.indicators.def.dataobjects.IndicatorsBackTestData;
 import com.self.main.IndicatorsGlobal;
 
 import eu.verdelhan.ta4j.Decimal;
@@ -30,11 +27,11 @@ public class EODOBVCalculator {
 		
 		indicatorsDBHelper.getIndicatorsBaseData(symbol, 5);
 
-		calculator.calculateCurrentandBackTest(symbol,true,indicatorsDBHelper);
+		calculator.calculateCurrentOBV(symbol,true,indicatorsDBHelper);
 
 	}
 
-	public void calculateCurrentandBackTest(String symbol, boolean plainBacktesting, 
+	public void calculateCurrentOBV(String symbol, boolean plainBacktesting, 
 			IndicatorsDBHelper indicatorsDBHelper) throws Exception {
 
 
@@ -67,53 +64,6 @@ public class EODOBVCalculator {
 		int signalReferenceId = indicatorsDBHelper.insertCurrentOBVSignal(symbol,
 				data.getTick(endDay).getEndTime(), currentMarketTrend, currentSignal, 2);
 
-		if (currentSignal != 0 || plainBacktesting) {
-
-			/*backTest(startDay, endDay, data, symbol, currentMarketTrend, currentSignal, obvIndicator, signalReferenceId,
-					indicatorsDBHelper,plainBacktesting);*/
-		}
-
-	}
-
-
-	private void backTest(int startDay, int endDay, TimeSeries data, String symbol, int currentMarketTrend,
-			int currentSignal, OnBalanceVolumeIndicator obvIndicator, 
-			int signalReferenceId, IndicatorsDBHelper indicatorsDBHelper, boolean plainBacktesting) throws Exception {
-
-		List<IndicatorsBackTestData> listIndicatorsBackTestData = new ArrayList<IndicatorsBackTestData>();
-
-		for (int i = endDay - 1; i > startDay; i--) {
-
-			int marketTrend = checkMarketTrend(data, i);
-
-			if (marketTrend == currentMarketTrend || plainBacktesting) {
-				
-				int signal = generateSignalForIndex(obvIndicator, marketTrend,i);
-
-				if (signal == currentSignal || plainBacktesting) {
-					// insert into DB
-
-					IndicatorsBackTestData indicatorsBackTestData = new IndicatorsBackTestData();
-
-					indicatorsBackTestData.setSignalReferenceId(signalReferenceId);
-					indicatorsBackTestData.setSymbol(symbol);
-					indicatorsBackTestData.setEndTime(data.getTick(i).getEndTime());
-					indicatorsBackTestData.setCurrentMarketTrend(marketTrend);
-					indicatorsBackTestData.setCurrentSignal(signal);
-
-					listIndicatorsBackTestData.add(indicatorsBackTestData);
-
-				}
-
-			}
-
-			/*
-			 * value = sof.getValue(i); System.out.println(" value for i = "+i+
-			 * " is- "+value);
-			 */
-		}
-
-		indicatorsDBHelper.insertBackTestOBVSignal(listIndicatorsBackTestData, 2);
 
 	}
 

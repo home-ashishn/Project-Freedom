@@ -1,13 +1,12 @@
 package com.self.indicators.calculation;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.joda.time.DateTime;
+
 import com.self.indicators.db.helper.IndicatorsDBHelper;
-import com.self.indicators.def.dataobjects.IndicatorsBackTestData;
 import com.self.indicators.def.dataobjects.RSIAuditData;
 import com.self.main.IndicatorsGlobal;
 
@@ -21,7 +20,7 @@ public class EODRSICalculator {
 
 	private float min_per_day_for_rally_or_drop = 0.5f;
 	
-	private Map auditValues = new HashMap();
+	private Map auditValues;
 
 
 	public static void main(String[] args) throws NoSuchElementException, IllegalStateException, Exception {
@@ -34,6 +33,20 @@ public class EODRSICalculator {
 
 		IndicatorsDBHelper indicatorsDBHelper = new IndicatorsDBHelper(indicatorsGlobal.getPool());
 		
+/*
+		IndicatorsLearningGlobal indicatorsLearningGlobal = IndicatorsLearningGlobal.getInstance();
+		
+		IndicatorsLearningDBHelper indicatorsLearningDBHelper
+										= new IndicatorsLearningDBHelper(indicatorsLearningGlobal.getPool());
+		
+		List<String> backDates = indicatorsLearningDBHelper.getBackRange(5, 3);
+			
+			String backDate = (String) backDates.get(0);
+			
+			indicatorsLearningDBHelper.initDBForDate(backDate, 3);*/
+
+    	indicatorsDBHelper.accumulateDataForSymbol(symbol,5);
+
 		indicatorsDBHelper.getIndicatorsBaseData(symbol, 5);
 
  
@@ -48,6 +61,7 @@ public class EODRSICalculator {
 			IndicatorsDBHelper indicatorsDBHelper) throws Exception{
 		
 
+		auditValues = new HashMap();
 
 		// to be moved outside so that it is called once for all indicators
 		//indicatorsDBHelper.getIndicatorsBaseData(symbol, 5);
@@ -67,6 +81,9 @@ public class EODRSICalculator {
 		Map<String, Decimal> mapSignalValues = generateSignalForIndex(data,rsi, currentMarketTrend, endDay);
 
 		int currentSignal = (int) mapSignalValues.get("buySellHoldSignal").toDouble();
+		
+		auditValues.put("curr_signal",currentSignal);
+
 
 		double stop_loss_level = 0;
 		
@@ -110,10 +127,12 @@ public class EODRSICalculator {
 		// (int)mapSignalValues.get("buySellHoldSignal").toDouble();
 
 		// insert into DB
-		indicatorsDBHelper.insertCurrentRSISignal(symbol, data.getTick(endDay).getEndTime(),
+		int signalReferenceId = indicatorsDBHelper.insertCurrentRSISignal(symbol, data.getTick(endDay).getEndTime(),
 				currentMarketTrend, currentSignal,stop_loss_level,stop_loss_level_price, 2);
 		
-		RSIAuditData rsiAuditData = convertToRSIAuditData(auditValues);
+		RSIAuditData rsiAuditData = convertToRSIAuditData(auditValues,signalReferenceId,symbol,data.getTick(endDay).getEndTime());
+		
+		indicatorsDBHelper.insertRSIAuditData(rsiAuditData,3);
 
 /*		if (currentSignal != 0 || plainBacktesting) {
 			
@@ -123,106 +142,118 @@ public class EODRSICalculator {
 
 	
 	}
-/*
-	private void backtesting(int startDay, int endDay, TimeSeries data, int currentMarketTrend,
-			boolean plainBactesting, int signalReferenceId, String symbol, IndicatorsDBHelper indicatorsDBHelper, int currentSignal, RSIIndicator rsi) 
-					throws Exception {
-
-
-		List<IndicatorsBackTestData> listIndicatorsBackTestData = new ArrayList<IndicatorsBackTestData>();
-
-		for (int i = endDay - 1; i > startDay; i--) {
-
-			int marketTrend = checkMarketTrend(data, i);
-
-			if (marketTrend == currentMarketTrend || plainBactesting) {
-				
-				Map<String, Decimal> mapBTSignalValues = generateSignalForIndex(rsi, marketTrend, i);
-
-				int signal = (int) mapBTSignalValues.get("buySellHoldSignal").toDouble();
-
-				double stop_loss_level_bt = 0;
-				
-				double stop_loss_level_price_bt = 0;
-
-
-				if (signal == 1) {
-
-					Decimal minPrevValueRSI = mapBTSignalValues.get("minPrevValueRSI");
-					if(minPrevValueRSI != null)
-					{
-						stop_loss_level_bt =  minPrevValueRSI.toDouble();
-
-					}
-					
-					Decimal minPrevValuePrice = mapBTSignalValues.get("minPrevValuePrice");
-					if(minPrevValuePrice != null)
-					{
-						stop_loss_level_price_bt =  minPrevValuePrice.toDouble();
-
-					}
-
-
-
-
-				} else if (signal == -1) {
-					
-					Decimal maxPrevValueRSI = mapBTSignalValues.get("maxPrevValueRSI");
-					if(maxPrevValueRSI != null)
-					{
-						stop_loss_level_bt = maxPrevValueRSI.toDouble();
-
-					}
-					
-					Decimal maxPrevValuePrice = mapBTSignalValues.get("maxPrevValuePrice");
-					if(maxPrevValuePrice != null)
-					{
-						stop_loss_level_price_bt =  maxPrevValuePrice.toDouble();
-
-					}
-
-				
-
-				}
-				 // calculator.generateSignalForIndex(rsi,marketTrend,calculator,sod,i);
-
-				if (signal == currentSignal || plainBactesting) {
-					// insert into DB
-
-					IndicatorsBackTestData indicatorsBackTestData = new IndicatorsBackTestData();
-
-					indicatorsBackTestData.setSignalReferenceId(signalReferenceId);
-					indicatorsBackTestData.setSymbol(symbol);
-					indicatorsBackTestData.setEndTime(data.getTick(i).getEndTime());
-					indicatorsBackTestData.setCurrentMarketTrend(marketTrend);
-					indicatorsBackTestData.setCurrentSignal(signal);
-					indicatorsBackTestData.setStop_loss_level(stop_loss_level_bt);
-					indicatorsBackTestData.setStop_loss_level_price(stop_loss_level_price_bt);
-
-
-					listIndicatorsBackTestData.add(indicatorsBackTestData);
-
-				}
-
-			}
-
-			
-			 * value = sof.getValue(i); System.out.println(" value for i = "
-			 * +i+" is- "+value);
-			 
-		}
-
-		indicatorsDBHelper.insertBackTestRSISignal(listIndicatorsBackTestData, 2);
-
-			
-	}
-
-*/	
 	
-	private RSIAuditData convertToRSIAuditData(Map auditValues2) {
+	
+	private RSIAuditData convertToRSIAuditData(Map mapAuditValues, int signalReferenceId, String symbol, DateTime dateTime) {
 		RSIAuditData rsiAuditDataReturn = new RSIAuditData();
 		
+		rsiAuditDataReturn.setRsi_evaluation_run_id(signalReferenceId);
+		
+		rsiAuditDataReturn.setSymbol(symbol);
+		
+		rsiAuditDataReturn.setEndTime(dateTime);
+		
+		rsiAuditDataReturn.setCurr_signal((Integer)mapAuditValues.get("curr_signal"));		
+		
+		
+		if(checkNull(mapAuditValues.get("valueRSI"))){
+			
+			rsiAuditDataReturn.setValueRSI(((Decimal)mapAuditValues.get("valueRSI")).toDouble());
+
+		}
+
+		if(checkNull(mapAuditValues.get("shortEmaValue"))){
+			
+			rsiAuditDataReturn.setShortEmaValue(((Decimal)mapAuditValues.get("shortEmaValue")).toDouble());
+
+		}
+
+		if(checkNull(mapAuditValues.get("longEmaValue"))){
+			
+			rsiAuditDataReturn.setLongEmaValue(((Decimal)mapAuditValues.get("longEmaValue")).toDouble());
+
+		}
+
+		if(checkNull(mapAuditValues.get("marketTrend"))){
+			
+			rsiAuditDataReturn.setMarketTrend((Integer)mapAuditValues.get("marketTrend"));
+
+		}
+
+		if(checkNull(mapAuditValues.get("signalforSidewaysMarket"))){
+			
+			rsiAuditDataReturn.setSignalforSidewaysMarket((Integer)mapAuditValues.get("signalforSidewaysMarket"));
+
+		}
+
+		if(checkNull(mapAuditValues.get("signalforTrendingMarket"))){
+			
+			rsiAuditDataReturn.setSignalforTrendingMarket((Integer)mapAuditValues.get("signalforTrendingMarket"));
+
+		}
+
+		if(checkNull(mapAuditValues.get("rsiGreaterThanCurrentValue"))){
+			
+			rsiAuditDataReturn.setRsiGreaterThanCurrentValue(((Decimal)mapAuditValues.get("rsiGreaterThanCurrentValue")).toDouble());
+
+		}
+
+		if(checkNull(mapAuditValues.get("rsiGreaterThanCurrentDate"))){
+			
+			rsiAuditDataReturn.setRsiGreaterThanCurrentDate((DateTime)mapAuditValues.get("rsiGreaterThanCurrentDate"));
+
+		}
+
+		if(checkNull(mapAuditValues.get("rsiLessThanCurrentValue"))){
+			
+			rsiAuditDataReturn.setRsiLessThanCurrentValue(((Decimal)mapAuditValues.get("rsiLessThanCurrentValue")).toDouble());
+
+		}
+
+		if(checkNull(mapAuditValues.get("rsiLessThanCurrentDate"))){
+			
+			rsiAuditDataReturn.setRsiLessThanCurrentDate((DateTime)mapAuditValues.get("rsiLessThanCurrentDate"));
+
+		}
+
+		if(checkNull(mapAuditValues.get("rateOfChange"))){
+			
+			rsiAuditDataReturn.setRateOfChange((Double)mapAuditValues.get("rateOfChange"));
+
+		}
+
+		if(checkNull(mapAuditValues.get("minPrevValueRSI"))){
+			
+			rsiAuditDataReturn.setMinPrevValueRSI(((Decimal)mapAuditValues.get("minPrevValueRSI")).toDouble());
+
+		}
+
+		if(checkNull(mapAuditValues.get("minPrevValueRSIDate"))){
+			
+			rsiAuditDataReturn.setMinPrevValueRSIDate((DateTime)mapAuditValues.get("minPrevValueRSIDate"));
+
+		}
+		
+		if(checkNull(mapAuditValues.get("maxPrevValueRSI"))){
+			
+			rsiAuditDataReturn.setMaxPrevValueRSI(((Decimal)mapAuditValues.get("maxPrevValueRSI")).toDouble());
+
+		}
+		
+		if(checkNull(mapAuditValues.get("maxPrevValueRSIDate"))){
+			
+			rsiAuditDataReturn.setMaxPrevValueRSIDate((DateTime)mapAuditValues.get("maxPrevValueRSIDate"));
+
+		}
+		
+		
 		return rsiAuditDataReturn;
+	}
+
+
+
+	private boolean checkNull(Object input) {
+		return input != null;
 	}
 
 
@@ -421,7 +452,12 @@ public class EODRSICalculator {
 
 					// Write Logic for Drop here
 					// 1 point per day is drop
-					if ((prevValueRSI.minus(rsiValue)).toDouble() / (index - i) > min_per_day_for_rally_or_drop) {
+					
+					double rateOfChange = (prevValueRSI.minus(rsiValue)).toDouble() / (index - i);
+					
+					auditValues.put("rateOfChange",rateOfChange);
+
+					if (rateOfChange > min_per_day_for_rally_or_drop) {
 
 
 						mapReturn.put("buySellHoldSignal", Decimal.valueOf(-1));
@@ -454,10 +490,11 @@ public class EODRSICalculator {
 
 	private int checkSignalforSidewaysMarket(Decimal valueRSI) {
 
+		auditValues.put("valueRSI",valueRSI);
+
 		if (valueRSI.toDouble() > 70.0)
 		{
 			
-			auditValues.put("valueRSI",valueRSI);
 			
 			auditValues.put("signalforSidewaysMarket",-1);
 
@@ -469,7 +506,6 @@ public class EODRSICalculator {
 		if (valueRSI.toDouble() < 30.0)
 			
 		{
-			auditValues.put("valueRSI",valueRSI);
 			
 			auditValues.put("signalforSidewaysMarket",1);
 
@@ -514,16 +550,6 @@ public class EODRSICalculator {
 
 		}
 
-		/*
-		 * Rule ovRule = new OverIndicatorRule(shortEma, longEma);
-		 * 
-		 * if (ovRule.isSatisfied(index)) return 1;
-		 * 
-		 * Rule uiRule = new UnderIndicatorRule(shortEma, longEma);
-		 * 
-		 * 
-		 * if (uiRule.isSatisfied(index)) return -1;
-		 */
 		auditValues.put("marketTrend",0);
 
 		return 0;

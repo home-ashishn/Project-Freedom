@@ -2,12 +2,9 @@ package com.self.indicators.calculation;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import com.self.indicators.db.helper.IndicatorsDBHelper;
 import com.self.main.IndicatorsGlobal;
-
-import eu.verdelhan.ta4j.indicators.trackers.bollinger.PercentBIndicator;
 
 public class MainIndicatorsCalculator {
 	
@@ -21,7 +18,7 @@ public class MainIndicatorsCalculator {
 		IndicatorsDBHelper indicatorsDBHelper = new IndicatorsDBHelper(indicatorsGlobal.getPool());
 
 		
-		List<String> symbols = indicatorsDBHelper.getTop25Equities(5);
+		List<String> symbols = indicatorsDBHelper.getTop25Equities(15, 5);
 		
 		EODRSICalculator rsiCalc = new EODRSICalculator();
 		
@@ -32,7 +29,6 @@ public class MainIndicatorsCalculator {
 		EODPercentBCalculator pbCalc = new EODPercentBCalculator();
 
 		
-		indicatorsDBHelper.initDB(5);
 		
 		for (Iterator<String> iterator = symbols.iterator(); iterator.hasNext();) {
 			String symbol = (String) iterator.next();
@@ -41,19 +37,17 @@ public class MainIndicatorsCalculator {
 			
 			indicatorsDBHelper.getIndicatorsBaseData(symbol, 5);
 			
-			rsiCalc.calculateCurrentRSI(symbol, false,indicatorsDBHelper);
+			 rsiCalc.calculateCurrentRSI(symbol, false,indicatorsDBHelper);
 			
-			stoCalc.calculateCurrentandBackTest(symbol, false,indicatorsDBHelper);
+			// stoCalc.calculateCurrentStochastic(symbol, false,indicatorsDBHelper);
 			
-			obvCalc.calculateCurrentandBackTest(symbol, false,indicatorsDBHelper);
+			// obvCalc.calculateCurrentOBV(symbol, false,indicatorsDBHelper);
 			
-			pbCalc.calculateCurrentandBackTest(symbol, false, indicatorsDBHelper);
-			
+			// pbCalc.calculateCurrentPercentB(symbol, false, indicatorsDBHelper);
 			
 		}
 		indicatorsDBHelper.accumulateDataForSymbol("",5);
 		
-		indicatorsDBHelper.calculateIndicatorsConfidence(5);
 
 	}
 	
@@ -65,8 +59,11 @@ public class MainIndicatorsCalculator {
 
 		IndicatorsDBHelper indicatorsDBHelper = new IndicatorsDBHelper(indicatorsGlobal.getPool());
 		
+		
 		// indicatorsDBHelper.calculateIndicatorsConfidence(5);
 
+
+		indicatorsDBHelper.initDB(5);
 
 		
 		mainIndicatorsCalculator.calculateIndicators();

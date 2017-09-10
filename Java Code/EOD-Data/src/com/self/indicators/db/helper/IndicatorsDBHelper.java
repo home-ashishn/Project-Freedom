@@ -17,7 +17,8 @@ import org.apache.commons.pool.ObjectPool;
 import org.joda.time.DateTime;
 
 import com.self.dbconnection.MySqlPoolableException;
-import com.self.indicators.def.dataobjects.IndicatorsBackTestData;
+import com.self.indicators.def.dataobjects.RSIAuditData;
+import com.self.indicators.def.dataobjects.StochasticAuditData;
 
 import eu.verdelhan.ta4j.Tick;
 
@@ -31,80 +32,11 @@ public class IndicatorsDBHelper {
 	
 	List<Tick> ticksOBV = new ArrayList<Tick>();
 
-
-	// private static Map<String, List<Tick>> cache = new HashMap<String,
-	// List<Tick>>();
-
 	public IndicatorsDBHelper(ObjectPool connPool) {
 		this.connPool = connPool;
 	}
 	
-	
 
-/*
-	public void getIndicatorsBaseDataForOBV(String symbol, int retryCount)
-			throws NoSuchElementException, IllegalStateException, Exception {
-
-		
-		 * SET @symbol_in = NULL; SET @endDate = now(); SET @startDate =
-		 * date_sub(@endDate,interval 1 year); CALL
-		 * `engine_indicators`.`data_accumulation`(
-		 * 
-		 * @symbol_in, @endDate, @startDate);
-		 
-
-		if (retryCount < 0) {
-			return;
-		}
-
-		Connection connection = null;
-		ResultSet res = null;
-
-		String sql = "SELECT CURR_DATE,HIGH_PRICE,LOW_PRICE,OPEN_PRICE,CLOSE_PRICE" + ",TURNOVER"
-				+ ",TOTAL_TRADED_QUANTITY" + " FROM engine_indicators.equity_data_indiactors" + " WHERE SYMBOL = '"
-				+ symbol + "' " + " ORDER BY CURR_DATE DESC";
-
-		while (connection == null || connection.isClosed()) {
-			connection = (Connection) connPool.borrowObject();
-		}
-		connection.setAutoCommit(true);
-
-		PreparedStatement ps = connection.prepareStatement(sql);
-
-		try {
-
-			ResultSet rs = ps.executeQuery();
-
-			while (rs.next()) {
-
-				DateTime curr_date = new DateTime(rs.getDate("CURR_DATE"));
-
-				double high_price = rs.getFloat("HIGH_PRICE");
-				double low_price = rs.getFloat("LOW_PRICE");
-				double open_price = rs.getFloat("OPEN_PRICE");
-				double close_price = rs.getFloat("CLOSE_PRICE");
-				double turnover_volume = rs.getFloat("TOTAL_TRADED_QUANTITY");
-
-				ticksOBV.add(new Tick(curr_date, open_price, high_price, low_price, close_price, turnover_volume));
-
-			}
-			ps.close();
-			connection.close();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			getIndicatorsBaseData(symbol, retryCount--);
-			throw new MySqlPoolableException("Failed to borrow connection from the pool", e);
-		} finally {
-			safeClose(res);
-			safeClose(ps);
-			safeClose(connection);
-		}
-
-	}
-
-
-*/
 	public void getIndicatorsBaseData(String symbol, int retryCount)
 			throws NoSuchElementException, IllegalStateException, Exception {
 
@@ -255,33 +187,6 @@ public class IndicatorsDBHelper {
 
 	}
 
-	public void insertBackTestStochasticSignal(List<IndicatorsBackTestData> listIndicatorsBackTestData, int retryCount)
-			throws NoSuchElementException, IllegalStateException, Exception {
-
-		if (retryCount < 0) {
-			return;
-		}
-
-		Connection connection = null;
-
-		while (connection == null || connection.isClosed()) {
-			connection = (Connection) connPool.borrowObject();
-		}
-
-		connection.setAutoCommit(true);
-
-		try {
-			StochasticDBHelper.insertBackTestStochasticSignal(connection, listIndicatorsBackTestData, retryCount);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-
-			safeClose(connection);
-		}
-
-	}
-
 	public int insertCurrentRSISignal(String symbol, DateTime endTime, int currentMarketTrend, int currentSignal,
 			double stop_loss_level, double stop_loss_level_price, int retryCount)
 			throws NoSuchElementException, IllegalStateException, Exception {
@@ -313,34 +218,7 @@ public class IndicatorsDBHelper {
 
 	}
 
-	public void insertBackTestRSISignal(List<IndicatorsBackTestData> listIndicatorsBackTestData, int retryCount)
-			throws NoSuchElementException, IllegalStateException, Exception {
-
-		if (retryCount < 0) {
-			return;
-		}
-
-		Connection connection = null;
-
-		while (connection == null || connection.isClosed()) {
-			connection = (Connection) connPool.borrowObject();
-		}
-
-		connection.setAutoCommit(true);
-
-		try {
-			RSIDBHelper.insertBackTestRSISignal(connection, listIndicatorsBackTestData, retryCount);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-
-			safeClose(connection);
-		}
-
-	}
-
-	public List<String> getTop25Equities(int retryCount)
+	public List<String> getTop25Equities(int count,int retryCount)
 			throws NoSuchElementException, IllegalStateException, Exception {
 
 		List<String> listSymbol = new ArrayList<String>();
@@ -358,7 +236,8 @@ public class IndicatorsDBHelper {
 		 * + "order by a.TURNOVER desc " + "limit 50";
 		 */
 
-		String sql = "SELECT SYMBOL FROM engine_ea.top_25_equity";
+		String sql = "SELECT SYMBOL FROM engine_ea.top_25_equity order by count_symbol desc "
+				+ " limit "+count;
 
 		while (connection == null || connection.isClosed()) {
 			connection = (Connection) connPool.borrowObject();
@@ -383,7 +262,7 @@ public class IndicatorsDBHelper {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			getTop25Equities(retryCount--);
+			getTop25Equities(count, retryCount--);
 			throw new MySqlPoolableException("Failed to borrow connection from the pool", e);
 		} finally {
 			safeClose(res);
@@ -482,38 +361,7 @@ public class IndicatorsDBHelper {
 
 	}
 
-	public void calculateIndicatorsConfidence(int retryCount) throws Exception {
 
-		if (retryCount < 0) {
-			return;
-		}
-
-		Connection connection = null;
-
-		while (connection == null || connection.isClosed()) {
-			connection = (Connection) connPool.borrowObject();
-		}
-
-		connection.setAutoCommit(true);
-
-		CallableStatement callSt = connection.prepareCall("call engine_indicators.calculate_indicators_confidence_and_calls()");
-
-		
-		try {
-			callSt.execute();
-			callSt.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			calculateIndicatorsConfidence(retryCount--);
-		} finally {
-
-			safeClose(connection);
-		}
-
-	}
-
-	
-	
 
 	public int insertCurrentOBVSignal(String symbol, DateTime endTime, int currentMarketTrend, int currentSignal,
 			int retryCount) throws NoSuchElementException, IllegalStateException, Exception {
@@ -545,38 +393,10 @@ public class IndicatorsDBHelper {
 
 	}
 
-	public void insertBackTestOBVSignal(List<IndicatorsBackTestData> listIndicatorsBackTestData, int retryCount)
-			throws NoSuchElementException, IllegalStateException, Exception {
-
-		if (retryCount < 0) {
-			return;
-		}
-
-		Connection connection = null;
-
-		while (connection == null || connection.isClosed()) {
-			connection = (Connection) connPool.borrowObject();
-		}
-
-		connection.setAutoCommit(true);
-
-		try {
-			OBVDBHelper.insertBackTestOBVSignal(connection, listIndicatorsBackTestData, retryCount);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-
-			safeClose(connection);
-		}
-
-	}
-
-
-
 
 	public int insertCurrentPercentBSignal(String symbol, DateTime endTime 
-			, int currentSignal,int retryCount) throws NoSuchElementException, IllegalStateException, Exception {
+			, int currentSignal,int retryCount) throws NoSuchElementException, 
+	IllegalStateException, Exception {
 
 		if (retryCount < 0) {
 			return 0;
@@ -606,34 +426,6 @@ public class IndicatorsDBHelper {
 
 	}
 
-	public void insertBackTestPercentBSignal(List<IndicatorsBackTestData> listIndicatorsBackTestData, int retryCount)
-			throws NoSuchElementException, IllegalStateException, Exception {
-
-		if (retryCount < 0) {
-			return;
-		}
-
-		Connection connection = null;
-
-		while (connection == null || connection.isClosed()) {
-			connection = (Connection) connPool.borrowObject();
-		}
-
-		connection.setAutoCommit(true);
-
-		try {
-			PercentBDBHelper.insertBackTestPercentBSignal(connection, listIndicatorsBackTestData, retryCount);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-
-			safeClose(connection);
-		}
-
-	}
-
-
 
 
 
@@ -652,6 +444,42 @@ public class IndicatorsDBHelper {
 
 	public ObjectPool getConnPool() {
 		return connPool;
+	}
+
+
+	public void insertRSIAuditData(RSIAuditData rsiAuditData,int retryCount) throws NoSuchElementException, 
+	IllegalStateException, Exception {
+
+		if (retryCount < 0) {
+			return;
+		}
+
+		Connection connection = null;
+
+		while (connection == null || connection.isClosed()) {
+			connection = (Connection) connPool.borrowObject();
+		}
+
+		connection.setAutoCommit(true);
+
+		try {
+			RSIDBHelper.insertRSIAuditData(connection, 
+					rsiAuditData, retryCount);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+
+			safeClose(connection);
+		}
+
+
+	}
+
+
+	public void insertStochasticAuditData(StochasticAuditData stochasticAuditData, int retryCpunt) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

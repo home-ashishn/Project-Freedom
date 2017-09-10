@@ -1,24 +1,25 @@
 package com.self.indicators.calculation;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.joda.time.DateTime;
+
 import com.self.indicators.db.helper.IndicatorsDBHelper;
-import com.self.indicators.def.dataobjects.IndicatorsBackTestData;
+import com.self.indicators.def.dataobjects.StochasticAuditData;
 import com.self.main.IndicatorsGlobal;
 
 import eu.verdelhan.ta4j.Decimal;
-import eu.verdelhan.ta4j.Rule;
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.oscillators.StochasticOscillatorDIndicator;
 import eu.verdelhan.ta4j.indicators.oscillators.StochasticOscillatorKIndicator;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.EMAIndicator;
-import eu.verdelhan.ta4j.trading.rules.OverIndicatorRule;
-import eu.verdelhan.ta4j.trading.rules.UnderIndicatorRule;
 
 public class EODStochasticCalculator {
+	
+	private Map auditValues;
 
 	public static void main(String[] args) throws NoSuchElementException, IllegalStateException, Exception {
 
@@ -32,16 +33,18 @@ public class EODStochasticCalculator {
 
 		indicatorsDBHelper.getIndicatorsBaseData(symbol, 5);
 
-		calculator.calculateCurrentandBackTest(symbol,true,indicatorsDBHelper);
+		calculator.calculateCurrentStochastic(symbol,true,indicatorsDBHelper);
 
 	}
 
-	public void calculateCurrentandBackTest(String symbol, boolean plainBacktesting, 
+	public void calculateCurrentStochastic(String symbol, boolean plainBacktesting, 
 			IndicatorsDBHelper indicatorsDBHelper) throws Exception {
 
 
 
 		//indicatorsDBHelper.getIndicatorsBaseData(symbol, 5);
+		
+		auditValues = new HashMap();
 
 		TimeSeries data = new TimeSeries(indicatorsDBHelper.getTicks());
 
@@ -54,62 +57,24 @@ public class EODStochasticCalculator {
 
 		int currentMarketTrend = checkMarketTrend(data, endDay);
 
-		int currentSignal = generateSignalForIndex(sof, currentMarketTrend, sod, endDay);
+		int currentSignal = generateSignalForIndex(sof, currentMarketTrend, sod, endDay,data);
+		
+		auditValues.put("curr_signal",currentSignal);
 
 		// insert into DB
 		int signalReferenceId = indicatorsDBHelper.insertCurrentStochasticSignal(symbol,
 				data.getTick(endDay).getEndTime(), currentMarketTrend, currentSignal, 2);
+		
+		StochasticAuditData stochasticAuditData = convertToStochasticAuditData(auditValues,signalReferenceId,symbol,data.getTick(endDay).getEndTime());
+		
+		indicatorsDBHelper.insertStochasticAuditData(stochasticAuditData,3);
 
-		if (currentSignal != 0 || plainBacktesting) {
 
-			/*backTest(startDay, endDay, data, symbol, currentMarketTrend, currentSignal, sof, sod, signalReferenceId,
-					indicatorsDBHelper,plainBacktesting);*/
-		}
-
-	}
-
-	private void backTest(int startDay, int endDay, TimeSeries data, String symbol, int currentMarketTrend,
-			int currentSignal, StochasticOscillatorKIndicator sof, StochasticOscillatorDIndicator sod,
-			int signalReferenceId, IndicatorsDBHelper indicatorsDBHelper, boolean plainBacktesting) throws Exception {
-
-		List<IndicatorsBackTestData> listIndicatorsBackTestData = new ArrayList<IndicatorsBackTestData>();
-
-		for (int i = endDay - 1; i > startDay; i--) {
-
-			int marketTrend = checkMarketTrend(data, i);
-
-			if (marketTrend == currentMarketTrend || plainBacktesting) {
-				int signal = generateSignalForIndex(sof, marketTrend, sod, i);
-
-				if (signal == currentSignal || plainBacktesting) {
-					// insert into DB
-
-					IndicatorsBackTestData indicatorsBackTestData = new IndicatorsBackTestData();
-
-					indicatorsBackTestData.setSignalReferenceId(signalReferenceId);
-					indicatorsBackTestData.setSymbol(symbol);
-					indicatorsBackTestData.setEndTime(data.getTick(i).getEndTime());
-					indicatorsBackTestData.setCurrentMarketTrend(marketTrend);
-					indicatorsBackTestData.setCurrentSignal(signal);
-
-					listIndicatorsBackTestData.add(indicatorsBackTestData);
-
-				}
-
-			}
-
-			/*
-			 * value = sof.getValue(i); System.out.println(" value for i = "+i+
-			 * " is- "+value);
-			 */
-		}
-
-		indicatorsDBHelper.insertBackTestStochasticSignal(listIndicatorsBackTestData, 2);
 
 	}
-
+	
 	private int generateSignalForIndex(StochasticOscillatorKIndicator sof, int marketTrend,
-			StochasticOscillatorDIndicator sod, int index) {
+			StochasticOscillatorDIndicator sod, int index, TimeSeries data) {
 
 		Decimal valueK = sof.getValue(index);
 
@@ -120,21 +85,27 @@ public class EODStochasticCalculator {
 		} else
 
 		{
-			buySellHoldSignal = checkSignalforTrendingMarket(marketTrend, sod, index);
+			buySellHoldSignal = checkSignalforTrendingMarket(marketTrend, sod, index,data);
 		}
 
 		return buySellHoldSignal;
 
 	}
 
-	private int checkSignalforTrendingMarket(int marketTrend, StochasticOscillatorDIndicator sod, int index) {
+	private int checkSignalforTrendingMarket(int marketTrend, StochasticOscillatorDIndicator sod, int index, TimeSeries data) {
 		
+
+		Decimal currentValueD = sod.getValue(index);
+		
+		auditValues.put("valueD",currentValueD);
+		
+		auditValues.put("signalforTrendingMarket",0);
+
 
 		if (marketTrend == 1)
 
 		{
-			Decimal currentValueD = sod.getValue(index);
-
+			
 			if (currentValueD.toDouble() > 50)
 				return 0; // Indicator did not cross 50 from above, return no
 							// signal
@@ -143,12 +114,38 @@ public class EODStochasticCalculator {
 
 			for (int i = index - 1; i >= index - 14; i--) {
 				prevValueD = sod.getValue(i);
+				
+				if(prevValueD.isLessThan(currentValueD)){
+					
+					/* valueD was less than current valueD hence not good candidate of valueD crossing 50 
+					 from above */				
+					
+					auditValues.put("valueDLessThanCurrentValue",prevValueD);
+					
+					auditValues.put("valueDLessThanCurrentDate",data.getTick(i).getEndTime());
+
+					
+					return 0;
+
+				
+				}
 
 				// Indicator was above 80, and it did cross 50 from above,
 				// return -1 signal
 
 				if (prevValueD.toDouble() >= 80)
+				{
+					auditValues.put("signalforTrendingMarket",-1);
+					
+					auditValues.put("prevValueDGreaterThan80",prevValueD);
+					
+					auditValues.put("prevValueDGreaterThan80Date",data.getTick(i).getEndTime());
+
+
 					return -1;
+
+
+				}
 
 			}
 
@@ -157,8 +154,6 @@ public class EODStochasticCalculator {
 		if (marketTrend == -1)
 
 		{
-			Decimal currentValueD = sod.getValue(index);
-
 			if (currentValueD.toDouble() < 50)
 				return 0; // Indicator did not cross 50 from below, return no
 							// signal
@@ -167,10 +162,33 @@ public class EODStochasticCalculator {
 
 			for (int i = index - 1; i >= index - 14; i--) {
 				prevValueD = sod.getValue(i);
-				// Indicator was below 200, and it did cross 50 from below,
+				
+				if(prevValueD.isGreaterThan(currentValueD)){
+					
+					/* valueD was greater than current valueD hence not good candidate of valueD crossing 50 
+					 from below */				
+					
+					auditValues.put("valueDGreaterThanCurrentValue",prevValueD);
+					
+					auditValues.put("valueDGreaterThanCurrentDate",data.getTick(i).getEndTime());
+
+					
+					return 0;
+
+				
+				}
+
+				// Indicator was below 20, and it did cross 50 from below,
 				// return 1 signal
 
 				if (prevValueD.toDouble() <= 20)
+
+					auditValues.put("signalforTrendingMarket",1);
+				
+					auditValues.put("prevValueDLessThan20",prevValueD);
+					
+					auditValues.put("prevValueDLessThan20Date",data.getTick(i).getEndTime());
+
 					return 1;
 
 			}
@@ -183,14 +201,26 @@ public class EODStochasticCalculator {
 
 	private int checkSignalforSidewaysMarket(Decimal valueK) {
 
-		if (valueK.toDouble() >= 80.0)
-			return -1;
+		auditValues.put("valueK",valueK);
 
+		if (valueK.toDouble() >= 80.0)
+		{
+			auditValues.put("signalforSidewaysMarket",-1);
+			return -1;
+		}
+		
 		if (valueK.toDouble() <= 20.0)
+		{
+			auditValues.put("signalforSidewaysMarket",1);
 			return 1;
 
+		}
+
 		return 0;
+
 	}
+	
+	
 
 	private int checkMarketTrend(TimeSeries series, int index) {
 
@@ -202,8 +232,16 @@ public class EODStochasticCalculator {
 		Decimal shortEmaValue = shortEma.getValue(index);
 
 		Decimal longEmaValue = longEma.getValue(index);
+		
+		auditValues.put("shortEmaValue",shortEmaValue);
+		
+		auditValues.put("longEmaValue",longEmaValue);
+
 
 		if (shortEmaValue.isGreaterThan(longEmaValue.multipliedBy(Decimal.valueOf(1.01)))) {
+			
+			auditValues.put("marketTrend",1);
+
 			return 1;
 
 		}
@@ -211,22 +249,132 @@ public class EODStochasticCalculator {
 		else if (longEmaValue.isGreaterThan(shortEmaValue.multipliedBy(Decimal.valueOf(1.01))))
 
 		{
+			auditValues.put("marketTrend",-1);
+
 			return -1;
 
 		}
 
-		/*
-		 * Rule ovRule = new OverIndicatorRule(shortEma, longEma);
-		 * 
-		 * if (ovRule.isSatisfied(index)) return 1;
-		 * 
-		 * Rule uiRule = new UnderIndicatorRule(shortEma, longEma);
-		 * 
-		 * 
-		 * if (uiRule.isSatisfied(index)) return -1;
-		 */
+		auditValues.put("marketTrend",0);
+
 		return 0;
 
+	}
+	
+	
+	
+	private StochasticAuditData convertToStochasticAuditData(Map mapAuditValues, int signalReferenceId, String symbol, DateTime dateTime) {
+		
+		StochasticAuditData stochasticAuditDataReturn = new StochasticAuditData();
+		
+		stochasticAuditDataReturn.setStochastic_evaluation_run_id(signalReferenceId);
+		
+		stochasticAuditDataReturn.setSymbol(symbol);
+		
+		stochasticAuditDataReturn.setEndTime(dateTime);
+		
+		stochasticAuditDataReturn.setCurr_signal((Integer)mapAuditValues.get("curr_signal"));		
+		
+		
+		if(checkNull(mapAuditValues.get("valueD"))){
+			
+			stochasticAuditDataReturn.setValueD(((Decimal)mapAuditValues.get("valueD")).toDouble());
+
+		}
+
+		if(checkNull(mapAuditValues.get("valueK"))){
+			
+			stochasticAuditDataReturn.setValueK(((Decimal)mapAuditValues.get("valueK")).toDouble());
+
+		}
+
+		if(checkNull(mapAuditValues.get("shortEmaValue"))){
+			
+			stochasticAuditDataReturn.setShortEmaValue(((Decimal)mapAuditValues.get("shortEmaValue")).toDouble());
+
+		}
+
+		if(checkNull(mapAuditValues.get("longEmaValue"))){
+			
+			stochasticAuditDataReturn.setLongEmaValue(((Decimal)mapAuditValues.get("longEmaValue")).toDouble());
+
+		}
+
+		if(checkNull(mapAuditValues.get("marketTrend"))){
+			
+			stochasticAuditDataReturn.setMarketTrend((Integer)mapAuditValues.get("marketTrend"));
+
+		}
+
+		if(checkNull(mapAuditValues.get("signalforSidewaysMarket"))){
+			
+			stochasticAuditDataReturn.setSignalforSidewaysMarket((Integer)mapAuditValues.get("signalforSidewaysMarket"));
+
+		}
+
+		if(checkNull(mapAuditValues.get("signalforTrendingMarket"))){
+			
+			stochasticAuditDataReturn.setSignalforTrendingMarket((Integer)mapAuditValues.get("signalforTrendingMarket"));
+
+		}
+
+		if(checkNull(mapAuditValues.get("valueDLessThanCurrentValue"))){
+			
+			stochasticAuditDataReturn.setValueDLessThanCurrentValue(((Decimal)mapAuditValues.get("valueDLessThanCurrentValue")).toDouble());
+
+		}
+
+		if(checkNull(mapAuditValues.get("valueDGreaterThanCurrentDate"))){
+			
+			stochasticAuditDataReturn.setValueDGreaterThanCurrentDate((DateTime)mapAuditValues.get("valueDGreaterThanCurrentDate"));
+
+		}
+
+		if(checkNull(mapAuditValues.get("valueDLessThanCurrentValue"))){
+			
+			stochasticAuditDataReturn.setValueDLessThanCurrentValue(((Decimal)mapAuditValues.get("valueDLessThanCurrentValue")).toDouble());
+
+		}
+
+		if(checkNull(mapAuditValues.get("valueDLessThanCurrentDate"))){
+			
+			stochasticAuditDataReturn.setValueDLessThanCurrentDate((DateTime)mapAuditValues.get("valueDLessThanCurrentDate"));
+
+		}
+
+
+		if(checkNull(mapAuditValues.get("prevValueDGreaterThan80"))){
+			
+			stochasticAuditDataReturn.setPrevValueDGreaterThan80(((Decimal)mapAuditValues.get("prevValueDGreaterThan80")).toDouble());
+
+		}
+
+		if(checkNull(mapAuditValues.get("prevValueDGreaterThan80Date"))){
+			
+			stochasticAuditDataReturn.setPrevValueDGreaterThan80Date((DateTime)mapAuditValues.get("prevValueDGreaterThan80Date"));
+
+		}
+		
+		if(checkNull(mapAuditValues.get("prevValueDLessThan20"))){
+			
+			stochasticAuditDataReturn.setPrevValueDLessThan20(((Decimal)mapAuditValues.get("prevValueDLessThan20")).toDouble());
+
+		}
+
+		if(checkNull(mapAuditValues.get("prevValueDLessThan20Date"))){
+			
+			stochasticAuditDataReturn.setPrevValueDLessThan20Date((DateTime)mapAuditValues.get("prevValueDLessThan20Date"));
+
+		}
+		
+		
+		return stochasticAuditDataReturn;
+	}
+
+
+
+	private boolean checkNull(Object input) {
+		return input != null;
 	}
 
 }

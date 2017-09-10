@@ -8,16 +8,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.apache.commons.pool.ObjectPool;
-import org.joda.time.DateTime;
 
 import com.self.dbconnection.MySqlPoolableException;
-import com.self.indicators.def.dataobjects.IndicatorsBackTestData;
 
 import eu.verdelhan.ta4j.Tick;
 

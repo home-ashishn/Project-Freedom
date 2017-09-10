@@ -5,12 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 
 import org.joda.time.DateTime;
 
 import com.self.dbconnection.MySqlPoolableException;
-import com.self.indicators.def.dataobjects.IndicatorsBackTestData;
 
 public class StochasticDBHelper {
 
@@ -79,62 +77,6 @@ public class StochasticDBHelper {
 
 	}
 	
-	
-
-	public static void insertBackTestStochasticSignal(Connection connection, List<IndicatorsBackTestData> listIndicatorsBackTestData,
-			int retryCount) throws MySqlPoolableException, SQLException{
-		
-
-
-		ResultSet res = null;
-
-		
-		if (retryCount < 0) {
-			return ;
-		}
-		
-		String sql = "replace into stochastic_evaluation_run_backtest_data "
-				+ "(stochastic_evaluation_run_id,symbol,curr_date,current_market_trend,curr_signal)"
-				+ " values (?, ?, ?,?,?)";
-
-		PreparedStatement ps = connection.prepareStatement(sql);
-
-		
-		try {
-
-			for (IndicatorsBackTestData indicatorsBackTestData : listIndicatorsBackTestData) {
-				try {
-
-					ps.setInt(1, indicatorsBackTestData.getSignalReferenceId());
-					ps.setString(2, indicatorsBackTestData.getSymbol());
-					ps.setString(3, indicatorsBackTestData.getEndTime().toString("yyyy-MM-dd"));
-					ps.setInt(4, indicatorsBackTestData.getCurrentMarketTrend());
-					ps.setInt(5, indicatorsBackTestData.getCurrentSignal());
-
-					ps.addBatch();
-
-				} catch (Exception e) {
-					continue;
-				}
-
-			}
-			ps.executeBatch();
-			ps.close();
-			connection.close();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			insertBackTestStochasticSignal(connection, listIndicatorsBackTestData, retryCount--);
-			throw new MySqlPoolableException("Failed to borrow connection from the pool", e);
-		} finally {
-			safeClose(res);
-			safeClose(ps);
-		}
-
-		// TODO Auto-generated method stub
-
-
-	}
 	
 
 	private static void safeClose(ResultSet res) {

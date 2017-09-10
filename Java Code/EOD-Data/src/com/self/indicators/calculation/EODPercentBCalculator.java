@@ -1,23 +1,15 @@
 package com.self.indicators.calculation;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.apache.xerces.impl.dv.xs.DecimalDV;
-
 import com.self.indicators.db.helper.IndicatorsDBHelper;
-import com.self.indicators.def.dataobjects.IndicatorsBackTestData;
 import com.self.main.IndicatorsGlobal;
 
 import eu.verdelhan.ta4j.Decimal;
 import eu.verdelhan.ta4j.Tick;
 import eu.verdelhan.ta4j.TimeSeries;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.EMAIndicator;
-import eu.verdelhan.ta4j.indicators.trackers.SMAIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.bollinger.PercentBIndicator;
-import eu.verdelhan.ta4j.indicators.volume.OnBalanceVolumeIndicator;
 
 public class EODPercentBCalculator {
 
@@ -36,11 +28,11 @@ public class EODPercentBCalculator {
 
 		indicatorsDBHelper.getIndicatorsBaseData(symbol, 5);
 
-		calculator.calculateCurrentandBackTest(symbol, true, indicatorsDBHelper);
+		calculator.calculateCurrentPercentB(symbol, true, indicatorsDBHelper);
 
 	}
 
-	public void calculateCurrentandBackTest(String symbol, boolean plainBacktesting,
+	public void calculateCurrentPercentB(String symbol, boolean plainBacktesting,
 			IndicatorsDBHelper indicatorsDBHelper) throws Exception {
 
 		// IndicatorsDBHelper indicatorsDBHelper = new
@@ -73,11 +65,6 @@ public class EODPercentBCalculator {
 				(symbol, data.getTick(endDay).getEndTime(),
 				currentSignal, 2);
 
-		if (currentSignal != 0 || plainBacktesting) {
-
-			/*backTest(startDay, endDay, data, symbol, currentSignal, percentBIndicator, arrMFI, signalReferenceId,
-					indicatorsDBHelper, plainBacktesting);*/
-		}
 
 	}
 
@@ -206,37 +193,4 @@ public class EODPercentBCalculator {
 		}
 		return sumPositiveMoneyFlow;
 	}
-
-	private void backTest(int startDay, int endDay, TimeSeries data, String symbol, int currentSignal,
-			PercentBIndicator percentBIndicator, Decimal[] arrMFI, int signalReferenceId,
-			IndicatorsDBHelper indicatorsDBHelper, boolean plainBacktesting) throws Exception {
-
-		List<IndicatorsBackTestData> listIndicatorsBackTestData = new ArrayList<IndicatorsBackTestData>();
-
-		for (int i = endDay - 1; i > startDay; i--) {
-
-			int signal = generateSignalForIndex(percentBIndicator, arrMFI, i);
-
-			if (signal == currentSignal || plainBacktesting) {
-				// insert into DB
-
-				IndicatorsBackTestData indicatorsBackTestData = new IndicatorsBackTestData();
-
-				indicatorsBackTestData.setSignalReferenceId(signalReferenceId);
-				indicatorsBackTestData.setSymbol(symbol);
-				indicatorsBackTestData.setEndTime(data.getTick(i).getEndTime());
-				// indicatorsBackTestData.setCurrentMarketTrend(marketTrend);
-				indicatorsBackTestData.setCurrentSignal(signal);
-
-				listIndicatorsBackTestData.add(indicatorsBackTestData);
-
-			}
-
-		}
-
-		indicatorsDBHelper.insertBackTestPercentBSignal(listIndicatorsBackTestData,
-		 2);
-
-	}
-
 }
