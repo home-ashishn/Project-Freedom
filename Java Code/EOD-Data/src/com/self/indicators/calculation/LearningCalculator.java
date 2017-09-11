@@ -24,7 +24,7 @@ public class LearningCalculator {
 
 		IndicatorsDBHelper indicatorsDBHelper = new IndicatorsDBHelper(indicatorsGlobal.getPool());
 		
-		// indicatorsDBHelper.initDB(5);
+		indicatorsDBHelper.initDB(5);
 
 		
 		

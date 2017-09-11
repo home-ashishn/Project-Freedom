@@ -226,8 +226,8 @@ public class EODStochasticCalculator {
 
 		ClosePriceIndicator closePrice = new ClosePriceIndicator(series);
 
-		EMAIndicator shortEma = new EMAIndicator(closePrice, 9);
-		EMAIndicator longEma = new EMAIndicator(closePrice, 26);
+		EMAIndicator shortEma = new EMAIndicator(closePrice, 14);
+		EMAIndicator longEma = new EMAIndicator(closePrice, 39);
 
 		Decimal shortEmaValue = shortEma.getValue(index);
 
@@ -238,7 +238,7 @@ public class EODStochasticCalculator {
 		auditValues.put("longEmaValue",longEmaValue);
 
 
-		if (shortEmaValue.isGreaterThan(longEmaValue.multipliedBy(Decimal.valueOf(1.01)))) {
+		if (shortEmaValue.isGreaterThan(longEmaValue.multipliedBy(Decimal.valueOf(1.015)))) {
 			
 			auditValues.put("marketTrend",1);
 
@@ -246,7 +246,7 @@ public class EODStochasticCalculator {
 
 		}
 
-		else if (longEmaValue.isGreaterThan(shortEmaValue.multipliedBy(Decimal.valueOf(1.01))))
+		else if (longEmaValue.isGreaterThan(shortEmaValue.multipliedBy(Decimal.valueOf(1.015))))
 
 		{
 			auditValues.put("marketTrend",-1);

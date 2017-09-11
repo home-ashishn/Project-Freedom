@@ -64,6 +64,37 @@ select 'PERCENTB_CALL',a.curr_date,a.symbol,a.curr_signal,a.one_day_avg_confiden
 a.one_day_success_confidence,a.three_day_success_confidence from
 engine_indicators.percentb_evaluation_run_current_data a
 
+-------------------------------------------------------------------------------------
+
+select 
+-- 'RSI_CALL',
+a.curr_date,a.symbol,a.curr_signal from 
+engine_indicators.rsi_evaluation_run_current_data a
+where a.curr_signal != 0 
+union
+
+select 
+-- 'STOCHASTIC_CALL',
+a.curr_date,a.symbol,a.curr_signal from
+engine_indicators.stochastic_evaluation_run_current_data a
+where a.curr_signal != 0 
+union
+
+/*
+select 'OBV_CALL',a.symbol,a.curr_signal,a.one_day_avg_confidence,a.three_day_avg_confidence,
+a.one_day_success_confidence,a.three_day_success_confidence from
+engine_indicators.obv_evaluation_run_current_data a
+union
+*/
+
+select 
+-- 'PERCENTB_CALL',
+a.curr_date,a.symbol,a.curr_signal from
+engine_indicators.percentb_evaluation_run_current_data a
+where a.curr_signal != 0 
+
+
+
 -----------------------------------------------------------------------------------
 
 replace into live_data_archive
@@ -107,3 +138,38 @@ VALUES
 );
 
 
+-----------------------------------------------------------------------------------------------------
+
+replace into indicators_union
+(select * from 
+(
+select 
+'RSI_CALL',
+a.curr_date,a.symbol,a.curr_signal,a.current_market_trend from 
+engine_indicators.rsi_evaluation_run_current_data a
+where a.curr_signal != 0 
+union
+
+select 
+'STOCHASTIC_CALL',
+a.curr_date,a.symbol,a.curr_signal,a.current_market_trend from
+engine_indicators.stochastic_evaluation_run_current_data a
+where a.curr_signal != 0 
+union
+
+select 
+'PERCENTB_CALL',
+a.curr_date,a.symbol,a.curr_signal,a.current_market_trend from
+engine_indicators.percentb_evaluation_run_current_data a
+where a.curr_signal != 0 
+) b
+order by b.symbol,b.curr_date
+)
+--------------------------------------------------------------------------------------------
+
+replace into final_data
+(select a.* from indicators_union a, indicators_union b
+where a.symbol = b.symbol
+and a.curr_date = b. curr_date
+and a.curr_signal = b. curr_signal
+and a.indicator_name != b.indicator_name)
