@@ -218,7 +218,7 @@ public class IndicatorsDBHelper {
 
 	}
 
-	public List<String> getTop25Equities(int count,int retryCount)
+	public List<String> getTopEquities(int count,int retryCount)
 			throws NoSuchElementException, IllegalStateException, Exception {
 
 		List<String> listSymbol = new ArrayList<String>();
@@ -262,7 +262,7 @@ public class IndicatorsDBHelper {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			getTop25Equities(count, retryCount--);
+			getTopEquities(count, retryCount--);
 			throw new MySqlPoolableException("Failed to borrow connection from the pool", e);
 		} finally {
 			safeClose(res);

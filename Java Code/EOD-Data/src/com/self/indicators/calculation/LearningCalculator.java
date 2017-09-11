@@ -18,7 +18,7 @@ public class LearningCalculator {
 		IndicatorsLearningDBHelper indicatorsLearningDBHelper
 										= new IndicatorsLearningDBHelper(indicatorsLearningGlobal.getPool());
 		
-		List<String> backDates = indicatorsLearningDBHelper.getBackRange(15, 3);
+		List<String> backDates = indicatorsLearningDBHelper.getBackRange(20, 3);
 		
 		IndicatorsGlobal indicatorsGlobal = IndicatorsGlobal.getInstance();
 
