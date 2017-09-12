@@ -43,7 +43,7 @@ public class IndicatorsGlobal {
 		PoolableObjectFactory mySqlPoolableObjectFactory = new MySqlPoolableObjectFactory(host, Integer.parseInt(port),
 				schema, user, password);
 		Config config = new GenericObjectPool.Config();
-		config.maxActive = 1500;
+		config.maxActive = 3000;
 		config.testOnBorrow = true;
 		config.testWhileIdle = true;
 		config.timeBetweenEvictionRunsMillis = 10000;

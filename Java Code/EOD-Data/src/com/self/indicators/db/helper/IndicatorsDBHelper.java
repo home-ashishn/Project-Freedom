@@ -111,6 +111,7 @@ public class IndicatorsDBHelper {
 	private void safeClose(Connection conn) {
 		if (conn != null) {
 			try {
+				// conn.close();
 				connPool.returnObject(conn);
 			} catch (Exception e) {
 				// LOG.warn("Failed to return the connection to the pool", e);
