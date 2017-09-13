@@ -1,19 +1,6 @@
 package com.self.main.extractor;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-
-import org.apache.commons.io.FileUtils;
-
-import com.self.indicators.db.helper.EODCycleDBHelper;
-import com.self.main.EODGlobal;
-import com.self.seleniumscrapper.EquityCurrentTime;
-import com.self.seleniumscrapper.EquityHistorical;
 
 public class EODCycleDataExtractor {
 

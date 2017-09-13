@@ -1,8 +1,5 @@
 package com.self.dataobjects;
 
-import java.sql.Time;
-import java.util.Date;
-
 public class LiveOptionDataSymbolNifty {
 	
 	private int cycleNumber;

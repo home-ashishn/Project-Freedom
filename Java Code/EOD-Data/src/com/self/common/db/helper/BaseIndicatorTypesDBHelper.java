@@ -20,13 +20,15 @@ import eu.verdelhan.ta4j.Tick;
 public class BaseIndicatorTypesDBHelper extends BaseDBHelper{
 
 
-	protected ObjectPool connPool;
+	// protected ObjectPool connPool;
 	
 	protected List<Tick> ticks = new ArrayList<Tick>();
 
 	
 	public BaseIndicatorTypesDBHelper(ObjectPool connPool) {
 		super(connPool);
+		this.connPool = connPool;
+
 	}
 
 	public List<Tick> getTicks() {

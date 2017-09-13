@@ -21,7 +21,6 @@ public class BaseDBHelper {
 	protected ObjectPool connPool;
 
 	public BaseDBHelper(ObjectPool connPool) {
-		this.connPool = connPool;
 	}
 	
 	

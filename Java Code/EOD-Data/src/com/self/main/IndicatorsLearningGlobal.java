@@ -1,6 +1,5 @@
 package com.self.main;
 
-import java.sql.Time;
 import java.util.Properties;
 
 import org.apache.commons.pool.ObjectPool;
