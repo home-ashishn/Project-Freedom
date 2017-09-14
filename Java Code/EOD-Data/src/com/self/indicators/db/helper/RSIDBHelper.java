@@ -17,7 +17,7 @@ public class RSIDBHelper {
 	
 	public static int insertCurrentRSISignal(Connection connection, String symbol, 
 			DateTime endTime, int currentMarketTrend, int currentSignal,double stop_loss_level
-			, double stop_loss_level_price, int retryCount) throws MySqlPoolableException, SQLException{
+			, double stop_loss_level_price, int retryCount) throws Exception{
 		
 
 		int maxId = 0;

@@ -10,17 +10,17 @@ import com.self.main.IndicatorsGlobal;
 import eu.verdelhan.ta4j.Decimal;
 import eu.verdelhan.ta4j.Tick;
 import eu.verdelhan.ta4j.TimeSeries;
-import eu.verdelhan.ta4j.indicators.candles.BullishEngulfingIndicator;
+import eu.verdelhan.ta4j.indicators.candles.BearishEngulfingIndicator;
 import eu.verdelhan.ta4j.indicators.simple.ClosePriceIndicator;
 import eu.verdelhan.ta4j.indicators.trackers.bollinger.PercentBIndicator;
 
-public class EODBullishEngulfingCalculator {
+public class EODBearishEngulfingCalculator {
 
 	public static void main(String[] args) throws NoSuchElementException, IllegalStateException, Exception {
 
 		String symbol = "SBIN";
 
-		EODBullishEngulfingCalculator calculator = new EODBullishEngulfingCalculator();
+		EODBearishEngulfingCalculator calculator = new EODBearishEngulfingCalculator();
 
 		CandleStickIndicatorsGlobal candleStickIndicatorsGlobal = CandleStickIndicatorsGlobal.getInstance();
 
@@ -32,11 +32,11 @@ public class EODBullishEngulfingCalculator {
 
 		candleStickIndicatorsDBHelper.getIndicatorsBaseData(symbol, 5);
 
-		calculator.calculateCurrentBullishEngulfing(symbol, candleStickIndicatorsDBHelper);
+		calculator.calculateCurrentBearishEngulfing(symbol, candleStickIndicatorsDBHelper);
 
 	}
 
-	public void calculateCurrentBullishEngulfing(String symbol, 
+	public void calculateCurrentBearishEngulfing(String symbol, 
 			CandleStickIndicatorsDBHelper candleStickIndicatorsDBHelper) throws Exception {
 
 		// IndicatorsDBHelper indicatorsDBHelper = new
@@ -48,19 +48,19 @@ public class EODBullishEngulfingCalculator {
 
 		ClosePriceIndicator closePrice = new ClosePriceIndicator(data);
 
-		BullishEngulfingIndicator bullishEngulfingIndicator = new BullishEngulfingIndicator
+		BearishEngulfingIndicator bearishEngulfingIndicator = new BearishEngulfingIndicator
 																(data);
 
 		int endDay = data.getEnd();
 
 		// int currentMarketTrend = checkMarketTrend(data, endDay);
 
-		boolean currentSignal = bullishEngulfingIndicator.getValue(endDay); //
+		boolean currentSignal = bearishEngulfingIndicator.getValue(endDay); //
 
 
 		// insert into DB
 
-				candleStickIndicatorsDBHelper.insertCurrentBullishEISignal
+				candleStickIndicatorsDBHelper.insertCurrentBearishEISignal
 				(symbol, data.getTick(endDay).getEndTime(),
 				currentSignal, 2);
 

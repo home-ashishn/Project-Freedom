@@ -60,7 +60,7 @@ public class BaseIndicatorTypesDBHelper extends BaseDBHelper{
 	
 	callSt.setString(1, symbol);
 	callSt.setString(2, format.format(new Date()));
-	callSt.setString(3, getDateRange(new Date(),183,false));
+	callSt.setString(3, getDateRange(new Date(),180,false));
 
 	
 	try {
