@@ -12,7 +12,7 @@ public class EODMain {
 		
 		MainIndicatorsCalculator mainIndicatorsCalculator = new MainIndicatorsCalculator();
 		
-		eodCycleDataExtractor.executeDailySetup();
+		//eodCycleDataExtractor.executeDailySetup();
 		mainIndicatorsCalculator.calculateIndicators();
 	}
 	

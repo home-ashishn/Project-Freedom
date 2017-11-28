@@ -3,7 +3,9 @@ package com.self.indicators.calculation;
 import java.util.NoSuchElementException;
 
 import com.self.indicators.db.helper.IndicatorsDBHelper;
+import com.self.indicators.db.helper.IndicatorsLearningDBHelper;
 import com.self.main.IndicatorsGlobal;
+import com.self.main.IndicatorsLearningGlobal;
 
 import eu.verdelhan.ta4j.Decimal;
 import eu.verdelhan.ta4j.Tick;
@@ -15,7 +17,9 @@ public class EODPercentBCalculator {
 
 	public static void main(String[] args) throws NoSuchElementException, IllegalStateException, Exception {
 
-		String symbol = "TATAMOTORS";
+		String symbol = "BHARTIARTL";
+		
+		IndicatorsLearningGlobal indicatorsLearningGlobal = IndicatorsLearningGlobal.getInstance();
 
 		EODPercentBCalculator calculator = new EODPercentBCalculator();
 
@@ -23,8 +27,12 @@ public class EODPercentBCalculator {
 
 		IndicatorsDBHelper indicatorsDBHelper = new IndicatorsDBHelper(indicatorsGlobal.getPool());
 		
+		IndicatorsLearningDBHelper indicatorsLearningDBHelper
+		= new IndicatorsLearningDBHelper(indicatorsLearningGlobal.getPool());
+		
+		indicatorsLearningDBHelper.initDBForDate("2017-10-10", 3);
+		
 		indicatorsDBHelper.accumulateDataForSymbol(symbol,5);
-
 
 		indicatorsDBHelper.getIndicatorsBaseData(symbol, 5);
 
@@ -46,22 +54,22 @@ public class EODPercentBCalculator {
 
 		PercentBIndicator percentBIndicator = new PercentBIndicator(closePrice, 20, Decimal.TWO);
 
-		int startDay = data.getBegin() + 14;
+		// int startDay = data.getBegin() + 14;
 
 		int endDay = data.getEnd();
 
-		Decimal[] arrMFI = getMFIForTimeSeries(data);
+		Decimal[] arrMFI = getMFIForTimeSeries(data,endDay);
 
 		// int currentMarketTrend = checkMarketTrend(data, endDay);
 
 		int currentSignal = 0; //
 		currentSignal = generateSignalForIndex(percentBIndicator, arrMFI, endDay);
 
-		int signalReferenceId = 0;
+		
 
 		// insert into DB
 
-		signalReferenceId = indicatorsDBHelper.insertCurrentPercentBSignal
+		indicatorsDBHelper.insertCurrentPercentBSignal
 				(symbol, data.getTick(endDay).getEndTime(),
 				currentSignal, 2);
 
@@ -73,13 +81,13 @@ public class EODPercentBCalculator {
 		int buySellHoldSignal = 0;
 
 		if ((percentBIndicator.getValue(i).isGreaterThanOrEqual(Decimal.valueOf(0.75)))
-				 && (arrMFI[i].isGreaterThanOrEqual(Decimal.valueOf(75)))
+				 && (arrMFI[0].isGreaterThanOrEqual(Decimal.valueOf(75)))
 				) {
 			buySellHoldSignal = 1; // checkSignalforSidewaysMarket(valueK);
 		} else
 
 		if ((percentBIndicator.getValue(i).isLessThanOrEqual(Decimal.valueOf(0.25)))
-				 && (arrMFI[i].isLessThanOrEqual(Decimal.valueOf(25)))
+				 && (arrMFI[0].isLessThanOrEqual(Decimal.valueOf(25)))
 				) {
 			buySellHoldSignal = -1; // checkSignalforSidewaysMarket(valueK);
 		}
@@ -87,7 +95,8 @@ public class EODPercentBCalculator {
 
 	}
 
-	private Decimal[] getMFIForTimeSeries(TimeSeries data) {
+/*	
+	private Decimal[] getMFIForTimeSeries(TimeSeries data, int index) {
 		// TODO Auto-generated method stub
 
 		int startDay = data.getBegin();
@@ -167,6 +176,90 @@ public class EODPercentBCalculator {
 
 		return arr14DayMoneyFlow;
 	}
+
+*/	
+
+	private Decimal[] getMFIForTimeSeries(TimeSeries data, int index) {
+		// TODO Auto-generated method stub
+
+		int startDay = data.getBegin();
+
+		int endDay = data.getEnd();
+
+		Decimal[] arrTypicalPrice = new Decimal[endDay - startDay+1];
+
+		Decimal[] arrPriceIndicator = new Decimal[endDay - startDay+1];
+
+		Decimal[] arrOneDayPositiveMoneyFlow = new Decimal[endDay - startDay+1];
+
+		Decimal[] arrOneDayNegativeMoneyFlow = new Decimal[endDay - startDay+1];
+
+		Decimal[] arr14DayPositiveMoneyFlow = new Decimal[1];
+
+		Decimal[] arr14DayNegativeMoneyFlow = new Decimal[1];
+
+		Decimal[] arr14DayMoneyFlow = new Decimal[1];
+
+		arrOneDayPositiveMoneyFlow[0] = Decimal.ZERO;
+		arrOneDayNegativeMoneyFlow[0] = Decimal.ZERO;
+
+		for (int i = startDay; i <= endDay; i++) {
+
+			Tick tick = data.getTick(i);
+
+			Decimal highPrice = tick.getMaxPrice();
+			Decimal lowPrice = tick.getMinPrice();
+			Decimal closePrice = tick.getClosePrice();
+
+			Decimal typicalPrice1 = highPrice.plus(lowPrice).plus(closePrice);
+
+			Decimal typicalPrice = typicalPrice1.dividedBy(Decimal.THREE);
+
+			arrTypicalPrice[i] = typicalPrice;
+			if (i > 0) {
+
+				if (typicalPrice.isGreaterThanOrEqual(arrTypicalPrice[i - 1])) {
+					arrPriceIndicator[i] = Decimal.ONE;
+					arrOneDayPositiveMoneyFlow[i] = typicalPrice.multipliedBy(tick.getVolume());
+					arrOneDayNegativeMoneyFlow[i] = Decimal.ZERO;
+
+				} else {
+					arrPriceIndicator[i] = Decimal.ONE.multipliedBy(Decimal.valueOf(-1));
+					arrOneDayNegativeMoneyFlow[i] = typicalPrice.multipliedBy(tick.getVolume());
+					// .multipliedBy(Decimal.valueOf(-1));
+					arrOneDayPositiveMoneyFlow[i] = Decimal.ZERO;
+
+				}
+
+			}
+
+		}
+		
+		if (index >= 14) {
+
+			Decimal value14DayPositiveMoneyFlow = get14DayPositiveMoneyFlow(arrOneDayPositiveMoneyFlow, index);
+
+			arr14DayPositiveMoneyFlow[0] = value14DayPositiveMoneyFlow;
+
+			Decimal value14DayNegativeMoneyFlow = get14DayNegativeMoneyFlow(arrOneDayNegativeMoneyFlow, index);
+
+			arr14DayNegativeMoneyFlow[0] = value14DayNegativeMoneyFlow;
+
+			Decimal moneyFlowRatio = value14DayPositiveMoneyFlow.dividedBy(value14DayNegativeMoneyFlow);
+
+			Decimal moneyFlowIndex1 = Decimal.ONE.plus(moneyFlowRatio);
+
+			Decimal moneyFlowIndex2 = Decimal.HUNDRED.dividedBy(moneyFlowIndex1);
+
+			Decimal moneyFlowIndex = Decimal.HUNDRED.minus(moneyFlowIndex2);
+
+			arr14DayMoneyFlow[0] = moneyFlowIndex;
+
+		}
+
+		return arr14DayMoneyFlow;
+	}
+
 
 	private Decimal get14DayNegativeMoneyFlow(Decimal[] arrOneDayNegativeMoneyFlow, int i) {
 		// TODO Auto-generated method stub

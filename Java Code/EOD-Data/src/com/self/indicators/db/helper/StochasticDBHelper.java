@@ -113,7 +113,7 @@ public class StochasticDBHelper {
 		
 
 		
-		String sql = "INSERT INTO engine_indicators.stochastic_evaluation_audit_data(stochastic_evaluation_run_id,symbol,curr_date,curr_signal,"
+		String sql = "replace INTO engine_indicators.stochastic_evaluation_audit_data(stochastic_evaluation_run_id,symbol,curr_date,curr_signal,"
 				+ "valueD,valueK,shortEmaValue,longEmaValue,marketTrend,signalforSidewaysMarket,signalforTrendingMarket,valueDLessThanCurrentValue,"
 				+ "valueDLessThanCurrentDate,prevValueDGreaterThan80,prevValueDGreaterThan80Date,valueDGreaterThanCurrentValue,valueDGreaterThanCurrentDate,"
 				+ "prevValueDLessThan20,prevValueDLessThan20Date)" + 

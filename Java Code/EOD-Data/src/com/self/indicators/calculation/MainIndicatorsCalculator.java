@@ -18,7 +18,7 @@ public class MainIndicatorsCalculator {
 		IndicatorsDBHelper indicatorsDBHelper = new IndicatorsDBHelper(indicatorsGlobal.getPool());
 
 		
-		List<String> symbols = indicatorsDBHelper.getTopEquities(20, 5);
+		List<String> symbols = indicatorsDBHelper.getTopEquities(50, 5);
 		
 		EODRSICalculator rsiCalc = new EODRSICalculator();
 		

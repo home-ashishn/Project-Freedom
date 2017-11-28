@@ -173,3 +173,17 @@ where a.symbol = b.symbol
 and a.curr_date = b. curr_date
 and a.curr_signal = b. curr_signal
 and a.indicator_name != b.indicator_name)
+
+---------------------------------------------------------------------------------------------
+
+
+
+http://www.tradeciety.com/how-to-trade-the-engulfing-bar-price-action-signal/
+
+[9/15, 9:28 PM] Ash: 
+
+https://2ndskiesforex.com/trading-strategies/forex-strategies/engulfing-bars-the-truth-no-one-is-telling-you
+
+[9/15, 11:08 PM] Ash: 
+
+http://www.investopedia.com/articles/active-trading/092315/5-most-powerful-candlestick-patterns.asp
