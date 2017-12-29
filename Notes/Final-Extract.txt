@@ -1,0 +1,133 @@
+IMPORTANT - 
+
+http://www.nseindia.com/products/content/equities/equities/eq_security.htm - 
+
+https://www.nseindia.com/products/content/equities/equities/archieve_eq.htm - 
+
+https://www.nseindia.com/products/content/all_daily_reports.htm - 
+
+Full Download -> http://www.nseindia.com/products/content/sec_bhavdata_full.csv - MAPPED INTO TABLE - TABLE CREATED
+
+2. Market Activity Report - fo16032016 - 
+	
+	i. ttfut16032016.csv - Top 10 contracts in stock futures - CAN BE USED TO SEE MOST ACTIVE COUNTERS - SKIP FOR NOW - DIFFICULTY IN EXTRACTION - TABLE CREATED
+	j. ttopt16032016.csv - Top 20 contracts in stock options - CAN BE USED TO SEE MOST ACTIVE COUNTERS - SKIP FOR NOW - DIFFICULTY IN EXTRACTION - TABLE CREATED
+	
+4. FII Derivative Stats - fii_stats_18-Mar-2016.xls - FUTURES DATA IS VERY USEFUL. OPTIONS DATA NEEDS ANALYSIS - TAKE A MEAN AND ANALYSE THE VARIATION !!. 
+- SKIP FOR NOW - DIFFICULTY IN EXTRACTION - TABLE CREATED - DATA EXTRAXTION NOT DONE !!
+	
+6. Participant wise Open Interest - fao_participant_oi_18032016.csv - FUTURES DATA VERY USEFUL, 
+																		OPTIONS DATA USEFUL ONLY IF HUGE DIFFERENCE BETWEEN SHORT AND LONG,
+																		VARIATION FROM MEAN WOULD MEAN SOME INTEREST. - SKIP FOR NOW 
+																		- DIFFICULTY IN EXTRACTION - TABLE CREATED
+
+7. Participant wise Trading Volumes - fao_participant_vol_17032016.csv -FUTURES DATA VERY USEFUL, 
+			OPTIONS DATA USEFUL ONLY IF a. HUGE DIFFERENCE BETWEEN SHORT AND LONG.
+										b. STRIKINGLY HUGE VOLUMES IN PARTICULAR CATEGORY.
+										c. VARIATION FROM MEAN WOULD MEAN SOME INTEREST - - SKIP FOR NOW - DIFFICULTY IN EXTRACTION -- TABLE CREATED
+																		
+8. Top 10 Clearing Member Volumes - fao_top10cm_to_18032016 - VOLUME AND TURNOVER GIVE AN IDEA ABOUT THE MOST PLAYED CONTRACTS FOR EACH MONTH SERIES !!,
+															  VARIATION FROM MEAN WOULD MEAN SOME INTEREST.	- SKIP FOR NOW - DIFFICULTY IN EXTRACTION	
+															  - TABLE CREATED															
+																		
+
+																		
+MAYBE IMPORTANT - 
+
+
+1. Bhav Copy - fo160316 - 
+
+	a. fo160316.csv - basic info of all futures contracts. does not contain "volume wise avg price". contains - OI_NO_CON (OI NO OF CONTRACTS), 
+	TRD_NO_CON (TRADED NO OF CONTRACTS) - TABLE CREATED	
+
+	b. op160316.csv - basic info of all options contracts. does not contain "volume wise avg price" 
+	- TABLE CREATED	
+	
+2. Market Activity Report - fo16032016 - 
+
+	a. fo_16032016.csv	- Total volume summary of Futures and Options by product type - CAN BE USED TO CROSS-CHECK/TALLY - TABLE NOT CREATED
+	b. fo16032016.csv - Contract wise futures volume summary - DOES NOT HAVE AVG PRICE(volume wise avg price) - CAN BE USED TO CROSS-CHECK/TALLY OPEN INTEREST - TABLE NOT CREATED
+	c. futidx16032016.csv - Symbol wise index futures volume summary - CAN BE USED TO CROSS-CHECK/TALLY ? - TABLE NOT CREATED
+	e. futstk16032016.csv - Symbol wise  stock futures volume summary - CAN BE USED TO CROSS-CHECK/TALLY ? - TABLE NOT CREATED
+	f. op16032016.csv - Contract wise options volume summary - DOES NOT HAVE AVG PRICE(volume wise avg price) - CAN BE USED TO CROSS-CHECK/TALLY OPEN INTEREST - TABLE NOT CREATED
+
+	
+5. mwpl_cli_17032016..xls - Position as percentage (%) of MWPL - MAYBE useful ?? 
+- TABLE CREATED
+
+1. Bhavcopy - cm31MAR2016bhav.csv.zip - 
+	a. cm31MAR2016bhav.csv - OPEN	HIGH	LOW	CLOSE	LAST	PREVCLOSE	TOTTRDQTY	TOTTRDVAL	TIMESTAMP	TOTALTRADES - TABLE NOT CREATED
+
+3. PR Bhavcopy File - PR310316 - LOTS OF FILES - ANALYSIS LATER !! - FULL SCAN, PARTIAL ANALYSIS DONE - FULL ANALYSIS ON NEED BASIS !! - MAYBE GOLD AND CURRENCY CAN PROVIDE VALUABLE INPUTS !!
+										
+5. Equities - Market Activity Report - MA310316.csv - NO SPECIFIC USE - CAN BE USED FOR TOP GAINERS, LOSERS; AND TO TALLY !! - TABLE NOT CREATED
+
+http://www.nseindia.com/products/content/equities/equities/fii_dii_market_today.htm - - TABLE NOT CREATED - PENDING !!
+
+
+
+
+OTHERS - 
+
+2. Market Activity Report - fo16032016 - 
+
+	d. futivx16032016.csv - VOL Futures volume summary - INVALID
+	g. optidx16032016.csv - Symbol wise index options volume summary - INVALID
+	h. optstk16032016.csv - Symbol wise  stock options volume summary - INVALID
+	
+3. NSE Open Interest - nseoi_16032016 - NO USE
+	
+2. Combine Report - combined_report31032016.zip - NO GREAT USE !!
+
+4. Equities - Category-wise Turnover - cat_turnover_310316.xls - NO CLEAR USE !!
+	
+6. Equities - Security-wise Delivery Position - MTO_31032016.DAT - 
+				Important Data - Deliverable Quantity(gross across client level),% of Deliverable Quantity to Traded Quantity. - TABLE NOT CREATED
+
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+-------------------XXXXXXXXXXXXXXXXXXXXX------------------------XXXXXXXXXXXXXXXXXXXXXXXXXX----------------------XXXXXXXXXXXXXXXXXXXXX------------------------	
+
+
+
+
+
+NSE FINAL FILES TO BE DOWNLOADED AND EXTRACTED - 
+
+sec_bhavdata_full.csv - sec_bhavdata_full.csv
+
+
+
+PR150716.zip - fo15072016.zip - ttfut15072016.csv
+PR150716.zip - fo15072016.zip - ttopt16032016.csv
+
+https://www.nseindia.com/products/content/all_daily_reports.htm - FII derivatives statistics (xls)
+
+https://www.nseindia.com/products/content/derivatives/equities/homepage_fo.htm 
+				- Participant wise Open Interest (csv), Participant wise Trading Volumes (csv),Top 10 Clearing Member Volumes (csv)
+
+https://www.nseindia.com/products/content/derivatives/equities/archieve_fo.htm
+
+PR150716.zip - fo15072016.zip - fo15072016.csv
+PR150716.zip - fo15072016.zip - op15072016csv
+
+
+
+----------------xxxxxxxxxxxxxxx----------------xxxxxxxxxxxxxxxxxx----------------xxxxxxxxxxxxxxxxxxxxx---------------------
+
+
+TOP 25 Securities Today :
+
+
+
+

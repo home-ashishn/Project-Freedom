@@ -1,0 +1,19 @@
+DAILY EOD ROUTINE - !! REJECTED !!
+
+1. DOWNLOAD sec_bhavdata_full.csv FROM http://www.nseindia.com/products/content/sec_bhavdata_full.csv
+2. load sec_bhavdata_full.csv into table - engine_ea.equity_data_main,
+3. delete from engine_ea.equity_data_main where series != 'EQ'. 
+4. delete from engine_ea.equity_data_main keep only top 200 turnover for date - After this engine_ea.equity_data_main will be up to date.
+5. Find top 25 equities by turnover in the last 5 sessions - call calculate_top_25_turnover(startDate date,
+endDate date), with startDate as today's date and endDate as (startDate - 5) from market_sessions table
+
+
+INITIAL SETUP ROUTINE - for 3 years -
+
+1. DOWNLOAD sec_bhavdata_full.csv FROM http://www.nseindia.com/products/content/sec_bhavdata_full.csv.Find top 50 equities by turnover for today.
+2. download data for top 50 found in step 1 for last 3 years from https://www.nseindia.com/products/content/equities/equities/eq_security.htm.
+3. load .csv file downloaded in step 2 into table - engine_ea.equity_data_main; 
+4. delete from engine_ea.equity_data_main where series != 'EQ'.
+5. Find top 25 equities by turnover in the last 5 sessions - call calculate_top_25_turnover(startDate date,
+endDate date), with startDate as today's date and endDate as (startDate - 5) from market_sessions table
+

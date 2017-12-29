@@ -1,0 +1,268 @@
+BEGIN
+
+  SET @symbol_in = 'SBIN';
+  SET @duration_days = 30;
+  SET @endDate = '2017-05-31';
+  delete from prediction_has_pattern.identified_has_data;
+  delete from prediction_has_pattern.backtest_has_confidence;
+  delete from prediction_has_pattern.identified_has_data_for_backtest;
+  delete FROM prediction_has_pattern.identified_has_pattern_type;
+  CALL `prediction_has_pattern`.`find_has_main`(@symbol_in, @duration_days, @endDate);
+END
+
+BEGIN
+  SET @symbol_in = 'SBIN';
+  SET @duration_days = 30;
+  SET @endDate = '2015-07-16';
+  SET @startDate = DATE_SUB(@endDate, INTERVAL 3 MONTH);
+  SET @prediction_type = 1;
+  SET @input_pattern_type_id = 1;
+  CALL `engine_has_pattern`.`find_has`(@symbol_in, @duration_days, @startDate, @endDate, @prediction_type, @input_pattern_type_id);
+END
+
+
+BEGIN
+  SET @duration_days = 30;
+  SET @endDate = '2015-07-16';
+  SET @prediction_type = 1;
+  SET @input_pattern_type_id = 1;
+  CALL `engine_has_pattern`.`identify_all_has_pattern_type`(@duration_days, @endDate, @prediction_type, @input_pattern_type_id);
+END
+
+
+
+update engine_has_pattern.equity_data_has_pattern a, engine_has_pattern.equity_data_has_pattern b
+set b.CLOSE_PRICE = a.CLOSE_PRICE
+
+where a.row_id >= 182
+and a.ROW_ID <= 210
+and b.ROW_ID = a.ROW_ID + (494 - 210)
+;
+
+UPDATE engine_ea.equity_data_main a, engine_has_pattern.equity_data_has_pattern b 
+set a.close_price = b.close_price where a.curr_date = b.curr_date;
+
+
+
+LOAD DATA LOCAL INFILE 'D:\\Equity Data Files\\SBI\\SBINEQN.csv' 
+INTO TABLE engine_ea.equity_data_main
+FIELDS TERMINATED BY ',' 
+OPTIONALLY ENCLOSED BY '"' 
+LINES TERMINATED BY '\r\n'
+(SYMBOL,
+@my_date,
+PREV_CLOSE,
+OPEN_PRICE,
+HIGH_PRICE,
+LOW_PRICE,
+LAST_PRICE,
+CLOSE_PRICE,
+AVERAGE_PRICE,
+TOTAL_TRADED_QUANTITY,
+TURNOVER,
+NO_OF_TRADES,
+DELIVERABLE_QTY,
+PERCENT_DELIVERABLE_QTY)
+
+set curr_date = str_to_date(@my_date,'%d-%b-%Y')
+
+
+
+----------------------------------------------------------------------------------------
+
+
+LOAD DATA LOCAL INFILE 'D:\\NSE_Downloads\\Equity_Daily\\cm09JUN2017bhav.csv' 
+INTO TABLE engine_ea.equity_data_daily_temporary
+FIELDS TERMINATED BY ',' 
+OPTIONALLY ENCLOSED BY '"' 
+LINES TERMINATED BY '\r\n'
+-- IGNORE 1 LINES
+(
+SYMBOL,
+SERIES,
+OPEN_PRICE,
+HIGH_PRICE,
+LOW_PRICE,
+CLOSE_PRICE,
+LAST_PRICE,
+PREV_CLOSE,
+TOTAL_TRADED_QUANTITY,
+TURNOVER,
+@my_date,
+NO_OF_TRADES,
+ISIN
+)
+
+set curr_date = str_to_date(@my_date,'%d-%b-%Y');
+
+delete FROM engine_ea.equity_data_daily_temporary where UPPER(series) != 'EQ';
+
+select distinct symbol from equity_data_daily_temporary b
+order by b.TURNOVER DESC
+limit 25;
+
+SELECT * FROM engine_ea.top_20_equity
+order by count_symbol desc,total_turnover desc
+limit 25;
+
+----------------------------------------------------------------------------------------
+
+SELECT a.curr_date,a.AVERAGE_PRICE,b.CURR_DATE,b.AVERAGE_PRICE,
+ round((b.AVERAGE_PRICE - a.AVERAGE_PRICE)/abs(b.AVERAGE_PRICE - a.AVERAGE_PRICE))
+ -- , c.curr_signal
+ FROM 
+engine_indicators.equity_data_indiactors a,engine_indicators.equity_data_indiactors b
+where 1=1
+
+and b.ROW_ID = a.ROW_ID + 1
+and (abs(b.AVERAGE_PRICE - a.AVERAGE_PRICE)/a.AVERAGE_PRICE) >= 0.01
+and a.CURR_DATE =
+(
+SELECT c.curr_date FROM engine_indicators.stochastic_evaluation_run_backtest_data c
+where a.CURR_DATE = c.CURR_DATE
+
+) 
+and  round((b.AVERAGE_PRICE - a.AVERAGE_PRICE)/abs(b.AVERAGE_PRICE - a.AVERAGE_PRICE)) = 1
+
+;
+
+
+update equity_data_main_top50  set done = 1 where symbol in ( SELECT distinct symbol FROM engine_ea.equity_data_main where curr_date = '2012-05-22')
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+LOAD DATA LOCAL INFILE 'D:\\NSE_Downloads\\Equity_Daily\\sec_bhavdata_full.csv'  
+INTO TABLE engine_ea.equity_data_main_temporary FIELDS TERMINATED BY ','  OPTIONALLY ENCLOSED BY '"'  LINES TERMINATED BY '\r\n' 
+(SYMBOL, @my_date, PREV_CLOSE, OPEN_PRICE, HIGH_PRICE, LOW_PRICE, LAST_PRICE, CLOSE_PRICE, AVERAGE_PRICE, 
+TOTAL_TRADED_QUANTITY, TURNOVER, NO_OF_TRADES, DELIVERABLE_QTY, PERCENT_DELIVERABLE_QTY)  
+set curr_date = str_to_date(@my_date,'%d-%b-%Y');
+
+call engine_ea.transfer_equity_data();
+call engine_ea.keep_top50();
+
+
+
+
+
+
+------------------------------------------------------------------------------------
+
+
+select '1',a.symbol,a.curr_signal,a.is_one_day_signal,a.is_three_day_signal,
+b.is_one_day_signal,b.is_three_day_signal from 
+engine_indicators.rsi_eod_call a,
+engine_indicators.stochastic_eod_call b
+where 
+a.symbol = b.symbol
+and a.curr_signal = b.curr_signal
+
+union
+
+select '2',a.symbol,a.curr_signal,a.is_one_day_signal,a.is_three_day_signal,
+b.is_one_day_signal,b.is_three_day_signal from 
+engine_indicators.stochastic_eod_call a,
+engine_indicators.obv_eod_call b
+where 
+a.symbol = b.symbol
+and a.curr_signal = b.curr_signal
+
+union
+
+select '3',a.symbol,a.curr_signal,a.is_one_day_signal,a.is_three_day_signal,
+b.is_one_day_signal,b.is_three_day_signal from 
+engine_indicators.rsi_eod_call a,
+engine_indicators.obv_eod_call b
+where 
+a.symbol = b.symbol
+and a.curr_signal = b.curr_signal
+
+
+------------------------------------------------------------------------------------
+
+select '1',a.symbol,a.curr_signal
+-- ,a.is_one_day_signal,a.is_three_day_signal,
+-- b.is_one_day_signal,b.is_three_day_signal 
+from 
+engine_indicators.rsi_evaluation_run_current_data a,
+engine_indicators.stochastic_evaluation_run_current_data b
+where 
+a.symbol = b.symbol
+and a.curr_signal = b.curr_signal
+
+union
+
+select '2',a.symbol,a.curr_signal
+-- ,a.is_one_day_signal,a.is_three_day_signal,
+-- b.is_one_day_signal,b.is_three_day_signal 
+from 
+engine_indicators.stochastic_evaluation_run_current_data a,
+engine_indicators.obv_evaluation_run_current_data b
+where 
+a.symbol = b.symbol
+and a.curr_signal = b.curr_signal
+
+union
+
+select '3',a.symbol,a.curr_signal
+-- ,a.is_one_day_signal,a.is_three_day_signal,
+-- b.is_one_day_signal,b.is_three_day_signal 
+from 
+engine_indicators.rsi_evaluation_run_current_data a,
+engine_indicators.obv_evaluation_run_current_data b
+where 
+a.symbol = b.symbol
+and a.curr_signal = b.curr_signal
+
+
+
+------------------------------------------------------------------------------------
+
+
+select 'RSI_CALL',a.symbol,a.curr_signal,a.is_one_day_signal,a.is_three_day_signal from 
+engine_indicators.rsi_eod_call a
+union
+
+select 'STOCHASTIC_CALL',a.symbol,a.curr_signal,a.is_one_day_signal,a.is_three_day_signal from 
+engine_indicators.stochastic_eod_call a
+union
+
+
+select 'OBV_CALL',a.symbol,a.curr_signal,a.is_one_day_signal,a.is_three_day_signal from 
+engine_indicators.obv_eod_call a
+union
+
+
+select 'PERCENTB_CALL',a.symbol,a.curr_signal,a.is_one_day_signal,a.is_three_day_signal from 
+engine_indicators.percentb_eod_call a
+
+------------------------------------------------------------------------------------
+
+
+select 'RSI_CALL',a.symbol,a.curr_signal,a.one_day_avg_confidence,a.three_day_avg_confidence,
+a.one_day_success_confidence,a.three_day_success_confidence from 
+engine_indicators.rsi_evaluation_run_current_data a
+union
+
+select 'STOCHASTIC_CALL',a.symbol,a.curr_signal,a.one_day_avg_confidence,a.three_day_avg_confidence,
+a.one_day_success_confidence,a.three_day_success_confidence from
+engine_indicators.stochastic_evaluation_run_current_data a
+union
+
+
+select 'OBV_CALL',a.symbol,a.curr_signal,a.one_day_avg_confidence,a.three_day_avg_confidence,
+a.one_day_success_confidence,a.three_day_success_confidence from
+engine_indicators.obv_evaluation_run_current_data a
+union
+
+
+select 'PERCENTB_CALL',a.symbol,a.curr_signal,a.one_day_avg_confidence,a.three_day_avg_confidence,
+a.one_day_success_confidence,a.three_day_success_confidence from
+engine_indicators.percentb_evaluation_run_current_data a
+
+
+---------------------------------------------------------------------------------

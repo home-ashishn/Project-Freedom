@@ -1,0 +1,314 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf830
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Georgia;\f2\fmodern\fcharset0 Courier;
+\f3\fnil\fcharset0 LucidaGrande;}
+{\colortbl;\red255\green255\blue255;\red38\green38\blue38;\red26\green37\blue48;\red135\green135\blue135;
+}
+{\*\expandedcolortbl;;\csgenericrgb\c14902\c14902\c14902;\csgenericrgb\c10196\c14510\c18824;\csgenericrgb\c52941\c52941\c52941;
+}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid1\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid2\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li1440\lin1440 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid3\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li2160\lin2160 }{\listname ;}\listid1}
+{\list\listtemplateid2\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid101\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat0\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid102\'02\'01.;}{\levelnumbers\'01;}\fi-360\li1440\lin1440 }{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat0\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid103\'02\'02.;}{\levelnumbers\'01;}\fi-360\li2160\lin2160 }{\listname ;}\listid2}
+{\list\listtemplateid3\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid201\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat0\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid202\'02\'01.;}{\levelnumbers\'01;}\fi-360\li1440\lin1440 }{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat0\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid203\'02\'02.;}{\levelnumbers\'01;}\fi-360\li2160\lin2160 }{\listname ;}\listid3}
+{\list\listtemplateid4\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{disc\}}{\leveltext\leveltemplateid301\'01\uc0\u8226 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat0\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid302\'02\'01.;}{\levelnumbers\'01;}\fi-360\li1440\lin1440 }{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat0\levelspace360\levelindent0{\*\levelmarker \{decimal\}.}{\leveltext\leveltemplateid303\'02\'02.;}{\levelnumbers\'01;}\fi-360\li2160\lin2160 }{\listname ;}\listid4}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}{\listoverride\listid2\listoverridecount0\ls2}{\listoverride\listid3\listoverridecount0\ls3}{\listoverride\listid4\listoverridecount0\ls4}}
+{\info
+{\author ASHISH}
+{\keywords cursorLocation=13134, fitsPagesWidth=1}}\paperw11900\paperh16840\margl1008\margr1008\margt1008\vieww25600\viewh16000\viewkind1\viewscale204
+\deftab720
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\ri0\sl360\slmult1\partightenfactor0
+
+\f0\fs24 \cf0 Stochastic \
+\
+Fast Stochastic\
+Calculation\
+\
+1. %K = (Current closing price - Lowest Low)/(Highest High - Lowest Low)* 100\
+%D = 3 day simple moving average of %K\
+ PERIOD MOSTLY USED IS 14 PERIODS\
+\
+So, a 14 period % K would use the most recent closing price, the highest high over the 14 periods and the lowest low over the 14 periods\
+\
+2. Reading above 80 indicate overbought and reading below 20 indicate oversold.\
+The stochastic oscillator ranges from 0 to 100\
+\
+Note: Stochastic gives best results in a sideways market. In a strong uptrend stocks can remain overbought for long periods and similarly in a strong downtrend stocks can become and remain oversold.  \
+\
+Slow Stochastic\
+\
+Calculation\
+Slow %K = 3 day SMA of fast %K\
+Slow % D = 3 day SMA of fast %D\
+2\
+During a downtrend, if the indicator was oversold(below 20) and moves above 50 it means price is moving higher. This is a good time to buy.\
+\
+During an uptrend, if the indicator was overbought (above 80) and moves below 50 it means the price is moving lower. This is a good time to short. \
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\ri0\sl360\slmult1\partightenfactor0
+\cf0 \ul \ulc0 RSI\
+\
+Formula\
+\
+The RSI moves higher when the average gains over a period (typically 14 days)are larger than the average losses. The indicator moves down when the average losses are greater than average gains. So, if the indicator is at 100, over the last 14 day period, its was all gains. If the indicator is at zero, all 14 periods were losses.\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\ri0\sl360\slmult1\partightenfactor0
+\cf0 \ulnone RSI = 100 - [100 / (1 + (Average of Upward price change/Average of Downward price change))]\
+\
+RSI is considered overbought when above 70 and considered oversold when under 30. During strong trends RSI can be continuously overbought or oversold. \
+\
+In an uptrend RSI tends to remain in the 40 to 90 range with the 40-50 zone acting as support. \
+\
+During a downtrend RSI tends to remain in 10 to 60 range with the 50 -60 zone acting as a resistance. These ranges may vary depending on the RSI settings and the strength of the security\'92s or market\'92s underlying trend. \ul \
+\
+\ulnone During an uptrend, RSI typically bottoms above 30 and frequently reaches 80+. During an uptrend buy if the price drops below 35 or 40 and then rallies above it. Place a stop loss below the recent low. Sell when the price moves above 70 or 80 and then drops back below.\
+\
+ \ul \
+\ulnone During a downtrend, RSI will typically top out before 70 and frequently reach 20 or below.  During a downtrend, short sell if the price rallies above 65 and then drops back below. Place a stop above the recent high. Cover the short if the stock drops below 30 or 20 and rallies back above it. \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\ri0\sl360\slmult1\partightenfactor0
+\cf0 \ul \ulc0 On balance Volume\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\ri0\sl360\slmult1\partightenfactor0
+\cf0 \ulnone A rising OBV line indicates buying pressure with positive volume exceeding negative volume. When negative volume exceeds positive volume, it indicates selling pressure with the OBV falling. \
+Volume is positive when the close is above the previous close and negative when the close is below the previous close. \
+\
+A rising OBV reflects positive volume pressure that can lead to higher prices. And a falling OBV reflects negative volume pressure that can lead to lower prices. Expect prices to move up if OBV is rising while the prices are either flat or moving down. Expect prices to move down when OBV is falling while prices are either flat or moving up.\
+\
+The absolute value of OBV is not important. \
+\
+First  - Define the trend for OBV\
+Second - Determine if the current trend matches the trend for the underlying security\
+Third - look for potential support or resistance levels. Once broken, the trend for OBV will change and these breaks can be used to generate signals.\
+ Since OBV is based on closing prices, support/resistence levels or divergences should also be based on closing prices.\
+\
+Divergences - with OBV\
+\
+A bullish divergence forms when OBV moves higher or forms a higher low even as prices move lower or form a lower low.\
+\
+A bearish divergence occurs when OBV moves lower or forms a lower low even as the price moves higher or forms a higher high. \
+\
+Trend Confirmation with OBV\
+\
+OBV can also be used for trend confirmation when it moves along with the price.\
+\
+OBV Limitations\
+\
+1. While the OBV may forecast many reversals, it often does so because it forecasts far too many, providing a large number of false signals.\
+2. A massive volume spike day can throw off the indicator for months. \cf2 An earnings announcement, index rebalancing or institutional block trade can cause the indicator to spike or plummet, but the volume spike may or may not be relevant information.\
+\
+\pard\pardeftab720\ri0\sl340\partightenfactor0
+\cf2 OBV Formula\
+\
+1. On a up day, volume is added to the previous day\'92s OBV\
+2. On a down day, volume is subtracted from the previous day\'92s OBV\
+3. If the price has not changes, the day\'92s volume is ignored.\
+\
+\
+Alternatively\
+\
+If C1>C0\
+\
+OBV0+V1 = OBV1\
+\
+If C1<C0 \
+\
+OBV0-V1= OBV1\
+\
+If C1=C2\
+\
+OBV0=OBV1\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\ri0\sl360\slmult1\partightenfactor0
+\cf2 \
+\pard\pardeftab720\ri0\sl340\partightenfactor0
+\cf0 When viewing the OBV line in tandem with a price chart, the \
+\
+1.OBV line is confirming the price movement when it moves in the same direction as price. \
+\
+2. When price moves in one direction and the OBV moves in the opposite direction, a negative divergence is taking place. This serves as a warning that the current price trend may be reversing. When such a circumstance exists, you would want to place a trade in the direction of the OBV line because, eventually, we expect the price trend to reverse in the direction of the OBV line. In other words, if the OBV line were falling while the price is in an uptrend, you would want to sell or go short. \
+\
+3. In contrast, if the OBV line were rising while prices are falling, you would want to buy or go long. Keep in mind that it is the direction of the OBV line that is important, not the OBV values themselves.\cf2 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\ri0\sl360\slmult1\partightenfactor0
+\cf2 \
+\
+OBV Scenarios\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\ri0\sl360\slmult1\partightenfactor0
+\cf2 \ul \ulc2 Confirmation\ulnone \
+\ul \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\ri0\sl360\slmult1\partightenfactor0
+\cf2 \ulnone OBV rises when price is rising and falls when price is falling. This confirms that the current trend is likely to continue\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\ri0\sl360\slmult1\partightenfactor0
+\cf2 \ul Divergence\ulnone \
+\
+When price is trending higher but OBV is either flat or dropping overall. Or, when price is falling but OBV is either flat or rising overall.\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\ri0\sl360\slmult1\partightenfactor0
+
+\i \cf2 Strategy
+\i0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\ri0\sl360\slmult1\partightenfactor0
+\cf2 \ul \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\ri0\sl360\slmult1\partightenfactor0
+
+\i \cf2 \ulnone If the price trend is up and OBV is now dropping, take a short position when price breaks below its current trend line. Place a stop loss above the most recent swing higher in price. Hold the trade as long as the OBV confirms it and the price is trending lower. Exit if the price breaks above its trend line. \
+\
+If the price trend is down, and OBV is now rising, take a long position when the price breaks above its current trend line. Place a stop loss below the most recent swing lower in price. Hold the trade for as long as the OBV confirms it. Exit if the price breaks below its trend line.  
+\i0 \ul \
+Interpreting Open Interest (FUTURES)\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\ri0\sl360\slmult1\partightenfactor0
+\cf2 \ulnone \
+OI means the total number of contracts that are still open. The OI position calculated each day is either positive or negative versus the previous day. More positions would mean more cash flows into the market, while a decline in position would imply liquidity and that the prevailing price movement has reached its end and its time for a reversal.\
+\
+Relationship between Price and OI\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\ri0\sl360\slmult1\partightenfactor0
+
+\b \cf2 Price	
+\b0 				
+\b OI
+\b0 						
+\b Position
+\b0 \
+Up						Up						Long\
+Down					Up						Short\
+Up						Down					Short Covering\
+Down					Down					Long Unwinding	\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\ri0\sl360\slmult1\partightenfactor0
+\cf2 \ul OI and Options\ulnone \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\ri0\sl360\slmult1\partightenfactor0
+
+\b \cf2 Put Call Ratio
+\b0  -  It is the total number of put options by total number of call options.\
+\
+\
+
+\b PCR OI
+\b0  - Sentiment is bullish if PCR OI is low, and bearish off PCR is high. \
+\
+
+\b Contrarian View - 
+\b0 It says PCR is usually headed in the wrong direction. In an oversold market, puts will be high. Hence market is likely to rebound when PCR is high. Conversely, in an overbought market, the number of calls will be high and the market is likely to move down further. Contrarians will be bearish if PCR is low and bullish if PCR is high.\
+\
+In general PCR will be low in stock options. People always buy more stock calls. Most Indian stock options are not liquid enough to allow for use of PCR. Sometimes there is a near zero IO. Some traders use 0.7 PCR as a balanced level in stock options, some use 0.5. \
+\
+Index options are more liquid. In Nifty, a PCR of 0.95 - 1.05 is taken as neutral. < 0.95 will be taken as overbought(bearish) and >1.05 will be taken as oversold ( bullish)\
+\
+Bank Nifty PCR rarely rises above 0.7 or 0.8. There it is best to take 0.5 as the neutral level.  \
+BOLLINGER BANDS\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardeftab720\ri0\sl360\slmult1\partightenfactor0
+{\field{\*\fldinst{HYPERLINK "https://www.bollingerbands.com/bo"}}{\fldrslt \cf2 https://www.bollingerbands.com/bollinger-band-rules}}\
+\
+Middle band - 20 day SMA\
+Upper band - 20 day SMA + (20 day sd of price X 2)\
+Lower band - 20 day SMA - (20 day SD of price X 2)\
+\
+\pard\pardeftab720\ri0\sl380\partightenfactor0
+\cf3 Bollinger suggests increasing the standard deviation multiplier to 2.1 for a 50-period SMA and decreasing the standard deviation multiplier to 1.9 for a 10-period SMA.\
+\pard\pardeftab720\ri0\sl380\partightenfactor0
+
+\f1\fs32 \cf3 \
+\pard\pardeftab720\ri0\sl380\partightenfactor0
+
+\f0\fs24 \cf3 Analysing Bollinger Bands\
+\
+\pard\tx940\tx1440\pardeftab720\li1440\fi-1440\ri0\sl380\partightenfactor0
+\ls1\ilvl1\cf3 \uc0\u8259 	During strong trends, price stays closer to the outer band\
+\uc0\u8259 	If price pulls away from the outer band as the trend continues, it shows fading momentum\
+\uc0\u8259 	Repeated pushes into the outer bands that don't actually reach the band show a lack of power\
+\uc0\u8259 	A break of the moving average is often the signal that a trend is ending\
+\uc0\u8259 	Width of the band can be an indicator of volatility. - narrower band indicates less volatility and wider band indicates higher volatility\
+\uc0\u8259 	Prices touching the higher or lower band does not mean an indication to sell or buy. Instead, look for a double bottom (W) formation or a double top (M) formation or a triple top formation. \
+\pard\tx1660\tx2160\pardeftab720\li2160\fi-2160\ri0\sl380\partightenfactor0
+\ls1\ilvl2\cf3 \uc0\u8259 	Double bottom formation - Say the first low is touching or outside the lower band, then the price reacts and rises close to the middle band, and then the second low is inside the lower band. The second low may be higher or lower than the first low. But if the second low is within the lower band (even if it is lower than the first low), there is a double bottom, which may give traders more confidence buying on second low. \
+\uc0\u8259 	Double Top (M) formation - the classic M top is formed by a push to a high, followed by a sell off reaction and then a test of the previous high. The second high can be higher or lower than the previous high. Using bollinger band, the first high is touching or outside the upper band, the reaction gets close to the middle band, and the second high is inside the upper band. The second high can be higher or lower than the first high. The fact that the second high is within the upper band suggested that it is a high on a relative basis. For many traders, the second high then signals a sell.\
+\uc0\u8259 	Three pushes to a high - the first push will make a new high outside the upper band, the second push will make a new high and touch the upper band, and the third push will make a new high but will be within the upper band. This may a reliable indicator of decreasing momentum if there is also decreasing volume. \
+\uc0\u8259 	\
+\uc0\u8259 	Signalling the start or end of a trend\
+\uc0\u8259 	\
+\pard\tx-20\tx2160\pardeftab720\li-20\fi20\ri0\sl380\partightenfactor0
+\ls1\ilvl2\cf3 \uc0\u8259 	Bollinger Bands can be used to indicate the ends of strong trends. Strong trends cause an expansion in volatility that will cause the bands to initially move apart, meaning the lower band will actually move down opposite the trend. When a trend begins to fade, the lower band in an uptrend will turn back up, which can be signal that the move might be over. (Atlas for a while)\
+\uc0\u8259 	\
+\uc0\u8259 	When the bands are narrow it is called a squeeze, it means that volatility is low. But since volatility is mean reverting, the bands will probably expand, signalling a potential for an explosive move. A simple way to spot a squeeze is when the bands are narrowest they have been for the last six months.\
+\uc0\u8259 	\
+\uc0\u8259 	
+\b Strategy (Playing a squeeze)  
+\b0 \
+\uc0\u8259 	\
+\uc0\u8259 	When trading a squeeze, you might consider placing a buy entry point above the upper band, or a sell entry point below the lower band in the squeeze area. For buys, consider placing an initial stop under the low of the breakout formation or under the lower bands. For sells, consider placing your initial stop over the high of the breakout formation or over the upper band. Then, to exit the trade consider using a trailing stop, a fix percentage or a parabola SAR. Another exit strategy could be to exit when the stock page the opposite band. 
+\f2 \uc0\u8232 
+\f0 \
+\pard\tx560\tx1120\pardeftab720\ri0\sl380\partightenfactor0
+
+\f1\fs32 \cf3 \
+\
+\pard\tx560\tx1120\pardeftab720\ri0\sl380\partightenfactor0
+
+\f0\b\fs24 \cf3 Scenarios\
+\
+\pard\tx220\tx720\tx1120\pardeftab720\li720\fi-720\ri0\sl380\partightenfactor0
+\ls2\ilvl2
+\b0 \cf3 \'95	Price is in a strong downtrend and price stays close to the outer bands all the time -very bearish signal\
+\'95	price fails to reach the outer band and then shots up very strongly, even showing an engulfing pattern. This is a classic reversal pattern where bearish trend strength fades.\
+\'95	three swing highs with lower highs. The first swing high reached the outer band whereas the following two failed - fading strength. \
+\pard\tx560\tx1120\pardeftab720\ri0\sl380\partightenfactor0
+
+\b \cf3 \
+Combining Bollinger bands with RSI (Recommended)\
+\
+\pard\tx220\tx720\tx1120\pardeftab720\li720\fi-720\ri0\sl380\partightenfactor0
+\ls3\ilvl2
+\f3\b0 \cf3 \uc0\u9642 
+\f0 	After a trend move, price fails to reach the outer band as the uptrend becomes weaker. His signal is usually accompanied by an RSI divergence - trend continuation signal\
+\ls3\ilvl2
+\f3 \uc0\u9642 
+\f0 	During a consolidation, price spikes into the outer Bollinger bands which get rejected immediately - reversal signal into the short direction. 
+\b \
+\pard\tx560\tx1120\pardeftab720\ri0\sl380\partightenfactor0
+\cf3 \
+\pard\tx560\tx1120\pardeftab720\ri0\sl380\partightenfactor0
+
+\b0 \cf3 \
+\pard\tx560\tx1120\pardeftab720\ri0\sl380\partightenfactor0
+
+\b \cf3 \ul %B Indicator
+\b0 \ulnone \
+\
+\pard\tx220\tx720\pardeftab720\li720\fi-720\ri0\sl580\partightenfactor0
+\ls4\ilvl2
+\f3 \cf2 \uc0\u9642 
+\f0 	%B equals 1 when price is at the upper band\cf4 \
+\ls4\ilvl2
+\f3 \cf2 \uc0\u9642 
+\f0 	%B equals 0 when price is at the lower band\cf4 \
+\ls4\ilvl2
+\f3 \cf2 \uc0\u9642 
+\f0 	%B is above 1 when price is above the upper band\cf4 \
+\ls4\ilvl2
+\f3 \cf2 \uc0\u9642 
+\f0 	%B is below 0 when price is below the lower band\cf4 \
+\ls4\ilvl2
+\f3 \cf2 \uc0\u9642 
+\f0 	%B is above .50 when price is above the middle band (20-day SMA)\cf4 \
+\ls4\ilvl2
+\f3 \cf2 \uc0\u9642 
+\f0 	%B is below .50 when price is below the middle band (20-day SMA)
+\f2 \uc0\u8232 
+\f0 \cf4 \
+\pard\tx560\tx1120\pardeftab720\ri0\sl380\partightenfactor0
+\cf3 MFI\
+\
+MFI uses both price and volume to measure buying and selling pressure. MFI is positive when typical price rises and negative when typical price falls. \
+\
+MFI and %B\
+\
+\pard\pardeftab720\ri0\sl380\partightenfactor0
+\cf3 Bollinger described a trend-following system using %B with the Money Flow Index (MFI). An uptrend begins when %B is above .80 and MFI(10) is above 80. MFI is bound between zero and one hundred. A move above 80 places MFI(10) in the upper 20% of its range, which is a strong reading. Downtrends are identified when %B is below .20 and MFI(10) is below 20.\
+\
+\pard\pardeftab720\ri0\sl360\partightenfactor0
+\cf2  * 1. Typical Price = (High + Low + Close)/3\
+  * 2. Raw Money Flow = Typical Price x Volume\
+  * 3. Money Flow Ratio = (14-period Positive Money Flow)/(14-period Negative Money Flow)\
+  * 4. Money Flow Index = 100 - 100/(1 + Money Flow Ratio)
+\f2\fs26 \
+}

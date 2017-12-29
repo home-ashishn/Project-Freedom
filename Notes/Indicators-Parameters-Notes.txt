@@ -1,0 +1,456 @@
+For all indicators - backtesting done for 183 days back !! - Line 419 in IndicatorsDBHelper.
+-------------------------------------------------------------------------------------------------------------------------
+RSI Calculator -  
+
+	1.		
+		checkMarketTrend -
+		EMAIndicator shortEma = new EMAIndicator(closePrice, 9);
+		EMAIndicator longEma = new EMAIndicator(closePrice, 26);
+
+				if (shortEmaValue.isGreaterThan(longEmaValue.multipliedBy(Decimal.valueOf(1.01)))) {
+			return 1;
+
+		}
+
+		else if (longEmaValue.isGreaterThan(shortEmaValue.multipliedBy(Decimal.valueOf(1.01))))
+
+		{
+			return -1;
+
+		}
+
+	2. LAST 14 DAYS USED TO CALCULATE RSI TREND	
+	
+	3. min_per_day_for_rally_or_drop - rate used as min value to calculate rate of change in rsi in process of
+	check Signal for Trending Market - 
+	
+	e.g
+	
+// 0.5 point per day is rally
+					if ((rsiValue.minus(prevValueRSI)).toDouble() / (index - i) > min_per_day_for_rally_or_drop)
+					
+-----------------------------------------------------------------------------------------------------------------------------					
+
+EODStochasticCalculator - 
+
+	1.		
+		checkMarketTrend -
+		EMAIndicator shortEma = new EMAIndicator(closePrice, 9);
+		EMAIndicator longEma = new EMAIndicator(closePrice, 26);
+
+				if (shortEmaValue.isGreaterThan(longEmaValue.multipliedBy(Decimal.valueOf(1.01)))) {
+			return 1;
+
+		}
+
+		else if (longEmaValue.isGreaterThan(shortEmaValue.multipliedBy(Decimal.valueOf(1.01))))
+
+		{
+			return -1;
+
+		}
+
+	2. LAST 14 DAYS USED TO CALCULATE STOCHASTIC TREND
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------					
+EODOBVCalculator - 
+
+
+
+	1.		
+		checkMarketTrend -
+		EMAIndicator shortEma = new EMAIndicator(closePrice, 9);
+		EMAIndicator longEma = new EMAIndicator(closePrice, 26);
+
+				if (shortEmaValue.isGreaterThan(longEmaValue.multipliedBy(Decimal.valueOf(1.01)))) {
+			return 1;
+
+		}
+
+		else if (longEmaValue.isGreaterThan(shortEmaValue.multipliedBy(Decimal.valueOf(1.01))))
+
+		{
+			return -1;
+
+		}
+		
+		
+    2. 	For OBV's trend Calculation - 
+
+		SMAIndicator shortEma = new SMAIndicator(obvIndicator, 3);
+		SMAIndicator longEma = new SMAIndicator(obvIndicator, 9);
+
+		
+				if (shortEmaValue.isGreaterThan(longEmaValue.multipliedBy(Decimal.valueOf(1.03)))) {
+			return 1;
+
+		}
+
+		else if (longEmaValue.isGreaterThan(shortEmaValue.multipliedBy(Decimal.valueOf(1.03))))
+
+		{
+			return -1;
+
+		}
+
+	
+-----------------------------------------------------------------------------------------------------------------------------					
+
+EODPercentBCalculator - 
+
+	1.		
+		checkMarketTrend -
+		EMAIndicator shortEma = new EMAIndicator(closePrice, 9);
+		EMAIndicator longEma = new EMAIndicator(closePrice, 26);
+
+				if (shortEmaValue.isGreaterThan(longEmaValue.multipliedBy(Decimal.valueOf(1.01)))) {
+			return 1;
+
+		}
+
+		else if (longEmaValue.isGreaterThan(shortEmaValue.multipliedBy(Decimal.valueOf(1.01))))
+
+		{
+			return -1;
+
+		}
+
+	2. LAST 14 DAYS USED TO CALCULATE MFI
+	
+	3. 
+		PercentB and MFI upper threshold = 0.75 and 75 respectively
+		PercentB and MFI lower threshold = 0.25 and 25 respectively
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+else
+if(var_price_mode < var_l1) then
+
+
+
+  set var_nearest_level = compute_nearest_level(var_l2,var_l1,var_price_mode);
+
+  if  (var_nearest_level =  1) then
+
+  select l2_strength from basis_for_calls
+  where symbol = input_symbol
+  into  var_level_strength;
+
+    if( var_level_strength < var_max_count_mode)    then
+
+    update basis_for_calls
+    set l2 = var_price_mode,l2_strength = var_max_count_mode
+    where symbol = input_symbol;
+
+      else
+
+          select l1_strength from basis_for_calls
+          where symbol = input_symbol
+          into  var_level_strength;
+
+          if( var_level_strength < var_max_count_mode)    then
+
+          update basis_for_calls
+          set l1 = var_price_mode,l1_strength = var_max_count_mode
+          where symbol = input_symbol;
+
+      end if;
+
+    end if;
+
+  else   if  (var_nearest_level =  2) then
+
+  select l1_strength from basis_for_calls
+  where symbol = input_symbol
+  into  var_level_strength;
+
+    if( var_level_strength < var_max_count_mode)    then
+
+    update basis_for_calls
+    set l1 = var_price_mode,l1_strength = var_max_count_mode
+    where symbol = input_symbol;
+
+      else
+
+          select l2_strength from basis_for_calls
+          where symbol = input_symbol
+          into  var_level_strength;
+
+          if( var_level_strength < var_max_count_mode)    then
+
+          update basis_for_calls
+          set l2 = var_price_mode,l2_strength = var_max_count_mode
+          where symbol = input_symbol;
+
+      end if;
+
+    end if;
+
+
+
+else
+
+if(var_price_mode < var_h1) then
+
+
+
+
+  set var_nearest_level = compute_nearest_level(var_l1,var_h1,var_price_mode);
+
+  if  (var_nearest_level =  1) then
+
+  select l1_strength from basis_for_calls
+  where symbol = input_symbol
+  into  var_level_strength;
+
+    if( var_level_strength < var_max_count_mode)    then
+
+    update basis_for_calls
+    set l1 = var_price_mode,l1_strength = var_max_count_mode
+    where symbol = input_symbol;
+
+      else
+
+          select h1_strength from basis_for_calls
+          where symbol = input_symbol
+          into  var_level_strength;
+
+          if( var_level_strength < var_max_count_mode)    then
+
+          update basis_for_calls
+          set h1 = var_price_mode,h1_strength = var_max_count_mode
+          where symbol = input_symbol;
+
+      end if;
+
+    end if;
+
+  else   if  (var_nearest_level =  2) then
+
+  select h1_strength from basis_for_calls
+  where symbol = input_symbol
+  into  var_level_strength;
+
+    if( var_level_strength < var_max_count_mode)    then
+
+    update basis_for_calls
+    set h1 = var_price_mode,h1_strength = var_max_count_mode
+    where symbol = input_symbol;
+
+      else
+
+          select l1_strength from basis_for_calls
+          where symbol = input_symbol
+          into  var_level_strength;
+
+          if( var_level_strength < var_max_count_mode)    then
+
+          update basis_for_calls
+          set l1 = var_price_mode,l1_strength = var_max_count_mode
+          where symbol = input_symbol;
+
+      end if;
+
+    end if;
+
+
+
+else
+if(var_price_mode < var_h2) then
+
+
+
+  set var_nearest_level = compute_nearest_level(var_h1,var_h2,var_price_mode);
+
+  if  (var_nearest_level =  1) then
+
+  select h1_strength from basis_for_calls
+  where symbol = input_symbol
+  into  var_level_strength;
+
+    if( var_level_strength < var_max_count_mode)    then
+
+    update basis_for_calls
+    set h1 = var_price_mode,h1_strength = var_max_count_mode
+    where symbol = input_symbol;
+
+      else
+
+          select h2_strength from basis_for_calls
+          where symbol = input_symbol
+          into  var_level_strength;
+
+          if( var_level_strength < var_max_count_mode)    then
+
+          update basis_for_calls
+          set h2 = var_price_mode,h2_strength = var_max_count_mode
+          where symbol = input_symbol;
+
+      end if;
+
+    end if;
+
+  else   if  (var_nearest_level =  2) then
+
+  select h2_strength from basis_for_calls
+  where symbol = input_symbol
+  into  var_level_strength;
+
+    if( var_level_strength < var_max_count_mode)    then
+
+    update basis_for_calls
+    set h2 = var_price_mode,h2_strength = var_max_count_mode
+    where symbol = input_symbol;
+
+      else
+
+          select h1_strength from basis_for_calls
+          where symbol = input_symbol
+          into  var_level_strength;
+
+          if( var_level_strength < var_max_count_mode)    then
+
+          update basis_for_calls
+          set h1 = var_price_mode,h1_strength = var_max_count_mode
+          where symbol = input_symbol;
+
+      end if;
+
+    end if;
+
+
+
+
+else
+if(var_price_mode < var_h3) then
+
+
+
+  set var_nearest_level = compute_nearest_level(var_h2,var_h3,var_price_mode);
+
+  if  (var_nearest_level =  1) then
+
+  select h2_strength from basis_for_calls
+  where symbol = input_symbol
+  into  var_level_strength;
+
+    if( var_level_strength < var_max_count_mode)    then
+
+    update basis_for_calls
+    set h2 = var_price_mode,h2_strength = var_max_count_mode
+    where symbol = input_symbol;
+
+      else
+
+          select h3_strength from basis_for_calls
+          where symbol = input_symbol
+          into  var_level_strength;
+
+          if( var_level_strength < var_max_count_mode)    then
+
+          update basis_for_calls
+          set h3 = var_price_mode,h3_strength = var_max_count_mode
+          where symbol = input_symbol;
+
+      end if;
+
+    end if;
+
+  else   if  (var_nearest_level =  2) then
+
+  select h3_strength from basis_for_calls
+  where symbol = input_symbol
+  into  var_level_strength;
+
+    if( var_level_strength < var_max_count_mode)    then
+
+    update basis_for_calls
+    set h3 = var_price_mode,h3_strength = var_max_count_mode
+    where symbol = input_symbol;
+
+      else
+
+          select h2_strength from basis_for_calls
+          where symbol = input_symbol
+          into  var_level_strength;
+
+          if( var_level_strength < var_max_count_mode)    then
+
+          update basis_for_calls
+          set h2 = var_price_mode,h2_strength = var_max_count_mode
+          where symbol = input_symbol;
+
+      end if;
+
+    end if;
+
+
+
+
+else
+if(var_price_mode > var_h3) then
+
+select h3_strength from basis_for_calls
+where symbol = input_symbol
+into  var_level_strength;
+
+if( var_level_strength < var_max_count_mode)    then
+
+update basis_for_calls
+set h3 = var_price_mode,h3_strength = var_max_count_mode
+where symbol = input_symbol;
+
+end if;

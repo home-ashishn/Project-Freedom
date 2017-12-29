@@ -1,0 +1,30 @@
+HAS pattern
+
+1. incorporate check that head is above 1st shoulder by 0.5 % per 30 days
+
+2. Volume consideration for identification of head and shoulders
+
+3. update holidays and market sessions table frequently.
+
+4. update expiry master table frequently
+
+5. Make all turnover columns as double datatype
+
+
+
+
+
+
+PENDING
+
+1. Equity data for last 3 years for top 25 securities - MANUAL WORK AS OF NOW.
+
+2. Daily upload of equity data, and then filter based on top 25 securities - MANUAL WORK AS OF NOW - SP WRITTEN, REST IS WAITING FOR 1 above.
+
+3. Live Capture of Cash Market Data(For Identified Securities as per EOD Analysis) - For Support of EOD Analysis, and to identify triggers for taking trade positions.
+
+4. Live Capture of Derivative Market Data(For Identified Securities as per EOD Analysis) - For Support of EOD Analysis, and to identify triggers for taking trade positions.
+
+5. Work for indicators and their confidence calculation.
+
+6. Work for other patterns based on HAS pattern.
