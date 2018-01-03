@@ -34,7 +34,7 @@ public class EquityCurrentTime {
 
 		LiveStockData liveStockData = new LiveStockData();
 
-		Document document = Jsoup.connect(url).post();
+		Document document = Jsoup.connect(url).get();
 
 		String xpathExpPrice = "//*[@id=\"Nse_Prc_tick\"]/strong";
 
