@@ -86,7 +86,7 @@ public class JsoupTest {
 				String url = mapUrls.get(symbol);
 
 				try {
-					document = Jsoup.connect(url).post();
+					document = Jsoup.connect(url).execute().parse();
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					// e.printStackTrace();
