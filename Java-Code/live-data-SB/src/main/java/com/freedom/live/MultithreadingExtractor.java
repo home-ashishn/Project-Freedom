@@ -312,7 +312,7 @@ public class MultithreadingExtractor {
 
 	private void sop(String text) {
 
-		System.out.println(text);
+		// System.out.println(text);
 	}
 
 }
