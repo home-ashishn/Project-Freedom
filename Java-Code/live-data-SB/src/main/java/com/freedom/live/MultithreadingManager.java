@@ -29,7 +29,7 @@ public class MultithreadingManager {
 	
 	private void init() {
 		
-		String[] symbols = { "HPC","COAL","TM","BATA","WIPRO","ADANIPORT","ONGC","IOC","ZEE","BOSCH"
+		String[] symbols = { "HPC","COAL","TM","BATAINDIA","WIPRO","ADANIPORT","ONGC","IOC","ZEE","BOSCH"
 
 		};
 
