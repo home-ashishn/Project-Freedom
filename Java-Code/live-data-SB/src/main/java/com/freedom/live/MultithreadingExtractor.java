@@ -196,7 +196,7 @@ public class MultithreadingExtractor {
 
 		}
 
-		sop("Time Taken = " + (endTime.getTime() - startTime.getTime()) + " ms for symbol = " + symbol + " and " + "scrapeCount = " + scrapeCount);
+		// sop("Time Taken = " + (endTime.getTime() - startTime.getTime()) + " ms for symbol = " + symbol + " and " + "scrapeCount = " + scrapeCount);
 
 		return null;
 
@@ -272,7 +272,7 @@ public class MultithreadingExtractor {
 
 	private void sop(String text) {
 
-		// System.out.println(text);
+		System.out.println(text);
 	}
 
 }
