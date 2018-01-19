@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -18,13 +16,16 @@ import java.util.concurrent.TimeoutException;
 import org.joda.time.DateTime;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.BasicJsonParser;
+import org.springframework.boot.json.JsonParser;
 import org.springframework.stereotype.Component;
 
-import com.freedom.live.models.LiveStockData;
-import com.freedom.live.models.LiveStockDataRepository;
-
-import us.codecraft.xsoup.Xsoup;
+import com.freedom.live.models.LiveOptionPriceData;
+import com.freedom.live.models.LiveOptionPriceDataRepository;
 
 @Component
 public class MultithreadingExtractor {
@@ -40,7 +41,7 @@ public class MultithreadingExtractor {
 	 */
 
 	@Autowired
-	private LiveStockDataRepository liveStockDataRepository;
+	private LiveOptionPriceDataRepository LiveOptionPriceDataRepository;
 
 	List<String> symbols = new ArrayList<>();
 
@@ -52,7 +53,7 @@ public class MultithreadingExtractor {
 
 	Map<String, Long> mapGlobalVolumes;
 
-	List<LiveStockData> liveDataObjs = new ArrayList<>();
+	List<LiveOptionPriceData> liveDataObjs = new ArrayList<>();
 
 	public MultithreadingExtractor() {
 
@@ -82,7 +83,7 @@ public class MultithreadingExtractor {
 			for (String symbol : symbols)
 
 			{
-				if(executor.getQueue().size() > 5)
+				if(executor.getQueue().size() > 2)
 				{
 					continue;
 				}
@@ -93,7 +94,7 @@ public class MultithreadingExtractor {
 				//
 				Callable<?> callable = new Callable<Object>() {
 					public String call() throws Exception {
-						LiveStockData data = scrapeIndividualURls(symbol, urlstr);
+						LiveOptionPriceData data = scrapeIndividualURls(symbol, urlstr);
 
 						if (data == null) {
 							return "";
@@ -136,44 +137,60 @@ public class MultithreadingExtractor {
 	 * @throws IOException
 	 */
 
-	// @Transactional
-	public LiveStockData scrapeIndividualURls(String symbol, String urlstr) throws IOException {
+	
+	public LiveOptionPriceData scrapeIndividualURls(String symbol, String urlstr) throws IOException {
 
 		if (startTime == null) {
 			startTime = new Date();
 		}
 
 		Document document = null;
-		
+
 		// synchronized (MultithreadingExtractor.this)
 		{
-		document = Jsoup.connect(urlstr)
-				// .header("Cache-control", "no-cache").header("Cache-store",
-				// "no-store").timeout(4000)
-				.post();
+			document = Jsoup.connect(urlstr)
+					// .header("Cache-control",
+					// "no-cache").header("Cache-store",
+					// "no-store").timeout(4000)
+					.post();
+
+			// sop(""+document);
 		}
 		scrapeCount++;
 
 		Date endTime = new Date();
 
-		// sop("scrapeCount = " + scrapeCount);
+		Elements descs = document.select("div#responseDiv");
+		Element desc;
+		desc = descs.first();
+		List<Node> childNodes = desc.childNodes();
 
-		String xpathExpPrice = "//*[@id=\"Nse_Prc_tick\"]/strong";
+		Node first = childNodes.get(0);
 
 		String lastPrice = "0";
 
-		lastPrice = Xsoup.compile(xpathExpPrice).evaluate(document).get();
-		lastPrice = cleanData(lastPrice);
+		lastPrice = getValueFromNode(first, "lastPrice", "lowPrice",2);
 
-		String xpathExpVolume = "//*[@id=\"nse_volume\"]/strong";
-
+		
 		String volume = "0";
+		
+		volume = getValueFromNode(first, "numberOfContractsTraded", "underlyingValue",2);
 
-		volume = Xsoup.compile(xpathExpVolume).evaluate(document).get();
-		volume = cleanData(volume);
 
-		// // sop("lastPrice = " + lastPrice);
-		// // sop("volume = " + volume);
+		String openPrice = "0";
+		
+		openPrice = getValueFromNode(first, "openPrice", "closePrice",2);
+
+
+		String highPrice = "0";
+		
+		highPrice = getValueFromNode(first, "highPrice", "companyName",4);
+
+
+		String lowPrice = "0";
+		
+		lowPrice = getValueFromNode(first, "lowPrice", "strikePrice",2);
+
 
 		if (new Long(volume).compareTo(mapGlobalVolumes.get(symbol)) == 1) {
 
@@ -183,29 +200,58 @@ public class MultithreadingExtractor {
 
 			mapGlobalVolumes.put(symbol, globalVolume);
 
-			LiveStockData liveStockData = new LiveStockData();
+			LiveOptionPriceData LiveOptionPriceData = new LiveOptionPriceData();
 
-			// liveStockData.setId(0);
-			liveStockData.setCurr_time(new DateTime());
-			liveStockData.setSymbol(symbol);
-			liveStockData.setVolume(globalVolume);
-			liveStockData.setPrice(new Float(lastPrice));
+			// LiveOptionPriceData.setId(0);
+			LiveOptionPriceData.setCurr_time(new DateTime());
+			LiveOptionPriceData.setSymbol(symbol);
+			LiveOptionPriceData.setVolume(globalVolume);
+			LiveOptionPriceData.setLast_price(new Float(lastPrice));
+			LiveOptionPriceData.setOpen_price(new Float(openPrice));
+			LiveOptionPriceData.setHigh_price(new Float(highPrice));
+			LiveOptionPriceData.setLow_price(new Float(lowPrice));
 
-			return liveStockData;
-
+			return LiveOptionPriceData;
 
 		}
 
-		// sop("Time Taken = " + (endTime.getTime() - startTime.getTime()) + " ms for symbol = " + symbol + " and " + "scrapeCount = " + scrapeCount);
+		// sop("Time Taken = " + (endTime.getTime() - startTime.getTime()) + "
+		// ms for symbol = " + symbol + " and " + "scrapeCount = " +
+		// scrapeCount);
 
 		return null;
 
 	}
 
-	private void putDatainList(LiveStockData liveStockData) {
+	private String getValueFromNode(Node first, String strTarget, String strNext, int noCharsFromNext) {
+
+		JsonParser parser = new BasicJsonParser();
+		Map<String, Object> output = null;
+		String finalBit = "";
+		try {
+			String input = first.toString().trim();
+			int indexOfLowPrice = input.lastIndexOf(strNext);
+			String lastPriceBit = input.substring(input.lastIndexOf(strTarget) - 1, indexOfLowPrice - noCharsFromNext);
+
+			 finalBit = "{" + lastPriceBit + "}";
+			 finalBit = finalBit.replaceAll(",", "");
+			// input = input.replace("\"","");
+			// input = "{\"bar\" : \"true\",\"baz\" : \"1\"}";
+			output = parser.parseMap(finalBit);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			//return getValueFromNode(first,strTarget,strNext,noCharsFromNext);
+		}
+
+		return "" + output.get(strTarget);
+	}
+
+	
+	private void putDatainList(LiveOptionPriceData LiveOptionPriceData) {
 
 		synchronized (liveDataObjs) {
-			liveDataObjs.add(liveStockData);
+			liveDataObjs.add(LiveOptionPriceData);
 		}
 
 	}
@@ -214,8 +260,8 @@ public class MultithreadingExtractor {
 
 		try {
 			synchronized (liveDataObjs) {
-				liveStockDataRepository.save(liveDataObjs);
-				liveDataObjs = new ArrayList<LiveStockData>();
+				LiveOptionPriceDataRepository.save(liveDataObjs);
+				liveDataObjs = new ArrayList<LiveOptionPriceData>();
 			}
 		} catch (Exception e) {
 			
@@ -272,7 +318,7 @@ public class MultithreadingExtractor {
 
 	private void sop(String text) {
 
-		// System.out.println(text);
+		System.out.println(text);
 	}
 
 }
