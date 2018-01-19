@@ -70,7 +70,7 @@ public class MultithreadingExtractor {
 	}
 
 	public void scrapeURLs() throws InterruptedException, ExecutionException, TimeoutException {
-			ThreadPoolExecutor executor = new ThreadPoolExecutor(10, 20,
+			ThreadPoolExecutor executor = new ThreadPoolExecutor(7, 14,
                 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<Runnable>());
 //		ExecutorService executorService = Executors.newFixedThreadPool(20);
@@ -82,7 +82,7 @@ public class MultithreadingExtractor {
 			for (String symbol : symbols)
 
 			{
-				if(executor.getQueue().size() > 5)
+				if(executor.getQueue().size() > 3)
 				{
 					continue;
 				}
