@@ -118,7 +118,7 @@ public void setUp() throws Exception {
 	// TODO Auto-generated catch block
 }
   
-  Thread.sleep(15000);
+  Thread.sleep(5000);
 
   
 	  
@@ -141,7 +141,7 @@ public void setUp() throws Exception {
 	// e.printStackTrace();
 }
   driver.findElement(By.linkText("Download file in csv format")).click();
-  Thread.sleep(15000);
+  Thread.sleep(5000);
 
   }
 
