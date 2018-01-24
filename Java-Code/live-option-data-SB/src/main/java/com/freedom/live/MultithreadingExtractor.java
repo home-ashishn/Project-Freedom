@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 
 import com.freedom.live.models.LiveOptionPriceData;
 import com.freedom.live.models.LiveOptionPriceDataRepository;
+import com.freedom.live.models.SelectedInstrument;
 
 @Component
 public class MultithreadingExtractor {
@@ -43,25 +44,25 @@ public class MultithreadingExtractor {
 	@Autowired
 	private LiveOptionPriceDataRepository LiveOptionPriceDataRepository;
 
-	List<String> symbols = new ArrayList<>();
+	List<SelectedInstrument> instrumentList = new ArrayList<>();
 
-	Map<String, String> mapUrls = new HashMap<String, String>();
+	Map<SelectedInstrument, String> mapUrls = new HashMap<SelectedInstrument, String>();
 
 	Date startTime;
 
 	int scrapeCount = 0;
 
-	Map<String, Long> mapGlobalVolumes;
+	Map<SelectedInstrument, Long> mapGlobalVolumes;
 
 	List<LiveOptionPriceData> liveDataObjs = new ArrayList<>();
 
 	public MultithreadingExtractor() {
 
 		try {
-			this.symbols = new ArrayList<>();
-			this.mapUrls = new HashMap<String, String>();
+			this.instrumentList = new ArrayList<SelectedInstrument>();
+			this.mapUrls = new HashMap<SelectedInstrument, String>();
 			// this.mapUrlDocuments = new HashMap<String, Document>();
-			this.mapGlobalVolumes = new HashMap<String, Long>();
+			this.mapGlobalVolumes = new HashMap<SelectedInstrument, Long>();
 			this.liveDataObjs = new ArrayList<>();
 		} catch (Exception e) {
 			
@@ -80,21 +81,21 @@ public class MultithreadingExtractor {
 			int count = 0;
 
 		while (true/* count < 500 */) {
-			for (String symbol : symbols)
+			for (SelectedInstrument instrument : instrumentList)
 
 			{
 				if(executor.getQueue().size() > 0)
 				{
 					continue;
 				}
-				String urlstr = "" + mapUrls.get(symbol);
+				String urlstr = "" + mapUrls.get(instrument);
 				//
 				// Create a callable instance which calls the function that invokes the scraping
 				// for each URL
 				//
 				Callable<?> callable = new Callable<Object>() {
 					public String call() throws Exception {
-						LiveOptionPriceData data = scrapeIndividualURls(symbol, urlstr);
+						LiveOptionPriceData data = scrapeIndividualURls(instrument, urlstr);
 
 						if (data == null) {
 							return "";
@@ -138,12 +139,16 @@ public class MultithreadingExtractor {
 	 */
 
 	
-	public LiveOptionPriceData scrapeIndividualURls(String symbol, String urlstr) throws IOException {
+	public LiveOptionPriceData scrapeIndividualURls(SelectedInstrument instrument, String urlstr) throws IOException {
 
 		if (startTime == null) {
 			startTime = new Date();
 		}
 
+		String symbol = instrument.getSymbol();
+		String optionType = instrument.getOption_type();
+		float strikePrice = instrument.getOption_strike_price();
+		
 		Document document = null;
 
 		// synchronized (MultithreadingExtractor.this)
@@ -192,26 +197,28 @@ public class MultithreadingExtractor {
 		lowPrice = getValueFromNode(first, "lowPrice", "strikePrice",2);
 
 
-		if (new Long(volume).compareTo(mapGlobalVolumes.get(symbol)) == 1) {
+		if (new Long(volume).compareTo(mapGlobalVolumes.get(instrument)) != 0) {
 
-			sop("update for symbol = " + symbol);
+			sop("update for symbol = " + symbol + ", optionType = " + optionType + ", strikePrice = " + strikePrice);
 
 			long globalVolume = new Long(volume);
 
-			mapGlobalVolumes.put(symbol, globalVolume);
+			mapGlobalVolumes.put(instrument, globalVolume);
 
-			LiveOptionPriceData LiveOptionPriceData = new LiveOptionPriceData();
+			LiveOptionPriceData liveOptionPriceData = new LiveOptionPriceData();
 
 			// LiveOptionPriceData.setId(0);
-			LiveOptionPriceData.setCurr_time(new DateTime());
-			LiveOptionPriceData.setSymbol(symbol);
-			LiveOptionPriceData.setVolume(globalVolume);
-			LiveOptionPriceData.setLast_price(new Float(lastPrice));
-			LiveOptionPriceData.setOpen_price(new Float(openPrice));
-			LiveOptionPriceData.setHigh_price(new Float(highPrice));
-			LiveOptionPriceData.setLow_price(new Float(lowPrice));
+			liveOptionPriceData.setCurr_time(new DateTime());
+			liveOptionPriceData.setSymbol(symbol);
+			liveOptionPriceData.setOption_type(instrument.getOption_type());
+			liveOptionPriceData.setOption_strike_price(instrument.getOption_strike_price());
+			liveOptionPriceData.setVolume(globalVolume);
+			liveOptionPriceData.setLast_price(new Float(lastPrice));
+			liveOptionPriceData.setOpen_price(new Float(openPrice));
+			liveOptionPriceData.setHigh_price(new Float(highPrice));
+			liveOptionPriceData.setLow_price(new Float(lowPrice));
 
-			return LiveOptionPriceData;
+			return liveOptionPriceData;
 
 		}
 
@@ -270,7 +277,7 @@ public class MultithreadingExtractor {
 
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws Exception {/*
 
 		// JsoupTest jt = new JsoupTest();
 
@@ -296,9 +303,9 @@ public class MultithreadingExtractor {
 
 			String symbol = symbols[i];// "BATAINDIA" + i;
 
-			mt.symbols.add(symbol);
+			mt.instrumentList.add(symbol);
 
-			mt.mapUrls.put(symbol, urls[i]);
+			mt.mapUrls.put(SelectedInstrument, urls[i]);
 
 			long globalVolume = new Long(0);
 			mt.mapGlobalVolumes.put(symbol, globalVolume);
@@ -306,7 +313,7 @@ public class MultithreadingExtractor {
 
 		mt.scrapeURLs();
 		// currTime.downloadData();
-	}
+	*/}
 
 	private String cleanData(String input) {
 		input = input.replaceAll(",", "");

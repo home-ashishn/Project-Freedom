@@ -36,7 +36,7 @@ public class MultithreadingManager {
 		String[] symbols = new String[10];
 		String[] urls = new String[10];
 
-		Iterable<SelectedInstrument> basisList = basisForCallsRepository.findAll();
+		Iterable<SelectedInstrument> instrumentList = basisForCallsRepository.findAll();
 
 		/*
 		 * 
@@ -60,16 +60,15 @@ public class MultithreadingManager {
 		 * };
 		 */
 
-		for (SelectedInstrument basisForCalls : basisList) {
+		for (SelectedInstrument selectedInstrument : instrumentList) {
 
-			String symbol = basisForCalls.getSymbol();// "BATAINDIA" + i;
 
-			multithreadingExtractor.symbols.add(symbol);
+			multithreadingExtractor.instrumentList.add(selectedInstrument);
 
-			multithreadingExtractor.mapUrls.put(symbol, basisForCalls.getUrl());
+			multithreadingExtractor.mapUrls.put(selectedInstrument, selectedInstrument.getUrl());
 
 			long globalVolume = new Long(0);
-			multithreadingExtractor.mapGlobalVolumes.put(symbol, globalVolume);
+			multithreadingExtractor.mapGlobalVolumes.put(selectedInstrument, globalVolume);
 
 		}
 

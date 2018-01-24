@@ -175,7 +175,7 @@ public class MultithreadingExtractor {
 		// // sop("lastPrice = " + lastPrice);
 		// // sop("volume = " + volume);
 
-		if (new Long(volume).compareTo(mapGlobalVolumes.get(symbol)) == 1) {
+		if (new Long(volume).compareTo(mapGlobalVolumes.get(symbol)) != 0) {
 
 			sop("update for symbol = " + symbol);
 

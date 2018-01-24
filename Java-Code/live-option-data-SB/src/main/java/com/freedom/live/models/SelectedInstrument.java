@@ -2,20 +2,25 @@ package com.freedom.live.models;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 
 @Entity
 @Table(name = "selected_instrument")
+@IdClass(SelectedInstrumentId.class)
 public class SelectedInstrument {
 	
 	@Id
 	private String symbol;
 	
+	@Id
 	private String option_type;
 
+	@Id
 	private float option_strike_price;
-		
+	
+	private String url;
 	
 	public String getOption_type() {
 		return option_type;
@@ -33,7 +38,6 @@ public class SelectedInstrument {
 		this.option_strike_price = option_strike_price;
 	}
 
-	private String url;
 	
 	public String getSymbol() {
 		return symbol;
