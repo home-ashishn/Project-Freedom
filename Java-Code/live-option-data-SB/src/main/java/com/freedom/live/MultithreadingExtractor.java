@@ -1,7 +1,9 @@
 package com.freedom.live;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +57,8 @@ public class MultithreadingExtractor {
 	Map<SelectedInstrument, Long> mapGlobalVolumes;
 
 	List<LiveOptionPriceData> liveDataObjs = new ArrayList<>();
+	
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss");
 
 	public MultithreadingExtractor() {
 
@@ -163,7 +167,7 @@ public class MultithreadingExtractor {
 		}
 		scrapeCount++;
 
-		Date endTime = new Date();
+		// Date endTime = new Date();
 
 		Elements descs = document.select("div#responseDiv");
 		Element desc;
@@ -195,9 +199,13 @@ public class MultithreadingExtractor {
 		String lowPrice = "0";
 		
 		lowPrice = getValueFromNode(first, "lowPrice", "strikePrice",2);
+		
+		String currTime = "0";
+		
+		currTime = getValueFromNode(first, "lastUpdateTime", "ocLink",2);
 
 
-		if (new Long(volume).compareTo(mapGlobalVolumes.get(instrument)) != 0) {
+		if (new Long(volume).compareTo(mapGlobalVolumes.get(instrument)) > 0) {
 
 			sop("update for symbol = " + symbol + ", optionType = " + optionType + ", strikePrice = " + strikePrice);
 
@@ -208,7 +216,18 @@ public class MultithreadingExtractor {
 			LiveOptionPriceData liveOptionPriceData = new LiveOptionPriceData();
 
 			// LiveOptionPriceData.setId(0);
-			liveOptionPriceData.setCurr_time(new DateTime());
+			
+			try {
+
+				liveOptionPriceData.setCurr_time(new DateTime(simpleDateFormat.parse(currTime)));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				Calendar cal = Calendar.getInstance();
+				cal.add(Calendar.MINUTE, -2);
+				liveOptionPriceData.setCurr_time(new DateTime(cal.getTime()));
+			}
+			
 			liveOptionPriceData.setSymbol(symbol);
 			liveOptionPriceData.setOption_type(instrument.getOption_type());
 			liveOptionPriceData.setOption_strike_price(instrument.getOption_strike_price());
