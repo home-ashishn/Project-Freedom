@@ -176,16 +176,12 @@ public class MultithreadingExtractor {
 
 		Node first = childNodes.get(0);
 
-		String lastPrice = "0";
-
-		lastPrice = getValueFromNode(first, "lastPrice", "lowPrice",2);
-
 		
 		String volume = "0";
 		
 		volume = getValueFromNode(first, "numberOfContractsTraded", "underlyingValue",2);
 
-
+/*
 		String openPrice = "0";
 		
 		openPrice = getValueFromNode(first, "openPrice", "closePrice",2);
@@ -199,10 +195,8 @@ public class MultithreadingExtractor {
 		String lowPrice = "0";
 		
 		lowPrice = getValueFromNode(first, "lowPrice", "strikePrice",2);
-		
-		String currTime = "0";
-		
-		currTime = getValueFromNode(first, "lastUpdateTime", "ocLink",2);
+*/		
+
 
 
 		if (new Long(volume).compareTo(mapGlobalVolumes.get(instrument)) > 0) {
@@ -212,6 +206,48 @@ public class MultithreadingExtractor {
 			long globalVolume = new Long(volume);
 
 			mapGlobalVolumes.put(instrument, globalVolume);
+
+			String lastPrice = "0";
+
+			lastPrice = getValueFromNode(first, "lastPrice", "lowPrice",2);
+
+			String currTime = "0";
+			
+			currTime = getValueFromNode(first, "lastUpdateTime", "ocLink",2);
+			
+			String bidPrice1 = "0";
+
+			bidPrice1 = getValueFromNode(first, "buyPrice1", "sellQuantity4",2);
+			
+			String bidQuantity1 = "0";
+
+			bidQuantity1 = getValueFromNode(first, "buyQuantity1", "ltp",2);
+			
+			String bidPrice2 = "0";
+
+			bidPrice2 = getValueFromNode(first, "buyPrice2", "sellQuantity3",2);
+			
+			String bidQuantity2 = "0";
+
+			bidQuantity2 = getValueFromNode(first, "buyQuantity2", "sellPrice5",2);
+			
+			String offerPrice1 = "0";
+
+			offerPrice1 = getValueFromNode(first, "sellPrice1", "buyQuantity3",2);
+			
+			String offerQuantity1 = "0";
+
+			offerQuantity1 = getValueFromNode(first, "sellQuantity1", "buyPrice1",2);
+			
+			String offerPrice2 = "0";
+
+			offerPrice2 = getValueFromNode(first, "sellPrice2", "buyQuantity4",2);
+			
+			String offerQuantity2 = "0";
+
+			offerQuantity2 = getValueFromNode(first, "sellQuantity2", "sellQuantity1",2);
+			
+			
 
 			LiveOptionPriceData liveOptionPriceData = new LiveOptionPriceData();
 
@@ -233,9 +269,18 @@ public class MultithreadingExtractor {
 			liveOptionPriceData.setOption_strike_price(instrument.getOption_strike_price());
 			liveOptionPriceData.setVolume(globalVolume);
 			liveOptionPriceData.setLast_price(new Float(lastPrice));
-			liveOptionPriceData.setOpen_price(new Float(openPrice));
+/*			liveOptionPriceData.setOpen_price(new Float(openPrice));
 			liveOptionPriceData.setHigh_price(new Float(highPrice));
-			liveOptionPriceData.setLow_price(new Float(lowPrice));
+			liveOptionPriceData.setLow_price(new Float(lowPrice));*/
+			
+			liveOptionPriceData.setBid_price_1(new Float(bidPrice1));
+			liveOptionPriceData.setBid_quantity_1(new Float(bidQuantity1));
+			liveOptionPriceData.setBid_price_2(new Float(bidPrice2));
+			liveOptionPriceData.setBid_quantity_2(new Float(bidQuantity2));
+			liveOptionPriceData.setOffer_price_1(new Float(offerPrice1));
+			liveOptionPriceData.setOffer_quantity_1(new Float(offerQuantity1));
+			liveOptionPriceData.setOffer_price_2(new Float(offerPrice2));
+			liveOptionPriceData.setOffer_quantity_2(new Float(offerQuantity2));
 
 			return liveOptionPriceData;
 
@@ -260,7 +305,7 @@ public class MultithreadingExtractor {
 			String lastPriceBit = input.substring(input.lastIndexOf(strTarget) - 1, indexOfLowPrice - noCharsFromNext);
 
 			 finalBit = "{" + lastPriceBit + "}";
-			 finalBit = finalBit.replaceAll(",", "");
+			 finalBit = finalBit.replaceAll("," , "");
 			// input = input.replace("\"","");
 			// input = "{\"bar\" : \"true\",\"baz\" : \"1\"}";
 			output = parser.parseMap(finalBit);

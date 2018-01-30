@@ -26,15 +26,29 @@ public class LiveOptionPriceData {
 	private float option_strike_price = 0;
 	
 	private long volume;
-
 	
 	private float last_price;
+	
+	private float bid_price_1;
+	
+	private float offer_price_1;
+	
+	private float bid_price_2;
+	
+	private float offer_price_2;
+	
+	private float bid_quantity_1;
+	
+	private float offer_quantity_1;
 
-	private float open_price;
+	private float bid_quantity_2;
+	
+	private float offer_quantity_2;
+/*	private float open_price;
 
 	private float high_price;
 
-	private float low_price;
+	private float low_price;*/
 
 	public Long getId() {
 		return id;
@@ -92,7 +106,71 @@ public class LiveOptionPriceData {
 		this.last_price = last_price;
 	}
 
-	public float getOpen_price() {
+	public float getBid_price_1() {
+		return bid_price_1;
+	}
+
+	public void setBid_price_1(float bid_price_1) {
+		this.bid_price_1 = bid_price_1;
+	}
+
+	public float getOffer_price_1() {
+		return offer_price_1;
+	}
+
+	public void setOffer_price_1(float offer_price_1) {
+		this.offer_price_1 = offer_price_1;
+	}
+
+	public float getBid_price_2() {
+		return bid_price_2;
+	}
+
+	public void setBid_price_2(float bid_price_2) {
+		this.bid_price_2 = bid_price_2;
+	}
+
+	public float getOffer_price_2() {
+		return offer_price_2;
+	}
+
+	public void setOffer_price_2(float offer_price_2) {
+		this.offer_price_2 = offer_price_2;
+	}
+
+	public float getBid_quantity_1() {
+		return bid_quantity_1;
+	}
+
+	public void setBid_quantity_1(float bid_quantity_1) {
+		this.bid_quantity_1 = bid_quantity_1;
+	}
+
+	public float getOffer_quantity_1() {
+		return offer_quantity_1;
+	}
+
+	public void setOffer_quantity_1(float offer_quantity_1) {
+		this.offer_quantity_1 = offer_quantity_1;
+	}
+
+	public float getBid_quantity_2() {
+		return bid_quantity_2;
+	}
+
+	public void setBid_quantity_2(float bid_quantity_2) {
+		this.bid_quantity_2 = bid_quantity_2;
+	}
+
+	public float getOffer_quantity_2() {
+		return offer_quantity_2;
+	}
+
+	public void setOffer_quantity_2(float offer_quantity_2) {
+		this.offer_quantity_2 = offer_quantity_2;
+	}
+
+/*	public float getOpen_price() {
 		return open_price;
 	}
 
@@ -116,4 +194,6 @@ public class LiveOptionPriceData {
 		this.low_price = low_price;
 	}
 
+*/
+	
 }
