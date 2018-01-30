@@ -1,10 +1,10 @@
 replace into basis_for_calls_archive(
-SELECT '2018-01-19',a.* FROM engine_live.basis_for_calls a);
+SELECT '2018-01-29',a.* FROM engine_live.basis_for_calls a);
 
 delete from engine_live.basis_for_calls;
 
 replace into selected_instrument_archive(
-SELECT '2018-01-19',a.* FROM engine_live.selected_instrument a);
+SELECT '2018-01-29',a.* FROM engine_live.selected_instrument a);
 
 delete from engine_live.selected_instrument;
 
