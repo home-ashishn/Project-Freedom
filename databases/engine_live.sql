@@ -66,7 +66,7 @@ CREATE TABLE `live_data` (
   `volume` int(11) DEFAULT NULL,
   `price` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=187621 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=187786 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -177,7 +177,7 @@ CREATE TABLE `negative_price_trend_data` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1649 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1714 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -248,7 +248,7 @@ CREATE TABLE `option_buy_order` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14312435 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14312561 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -319,7 +319,7 @@ CREATE TABLE `option_position` (
   `buy_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `sell_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`order_id`,`buy_time`,`sell_time`)
-) ENGINE=InnoDB AUTO_INCREMENT=2439 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14312561 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -342,7 +342,7 @@ CREATE TABLE `option_sell_order` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9898999 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9899039 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -404,7 +404,7 @@ CREATE TABLE `option_stop_loss_order_price` (
   `buy_price` float DEFAULT NULL,
   `sl_price` float NOT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=908 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=948 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -429,7 +429,7 @@ CREATE TABLE `positive_price_trend_data` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2356 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2448 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1308,6 +1308,11 @@ END IF;
 
 IF( EFFICIENT_ORDER_PRICE_OUT >   LATEST_OPTION_BID2_PRICE) THEN
 
+/*
+IF BID QUANTITY IS LESS THEN MOVE PRICE DOWN TO BID PRICE AS THE SUPPORT IS WEAK AT BID PRICE.
+
+*/
+
 IF( LATEST_OPTION_BID2_PRICE_QUANTITY <  QUANTITY_IN) THEN
 
 SET EFFICIENT_ORDER_PRICE_OUT =  LATEST_OPTION_BID2_PRICE;
@@ -1318,6 +1323,11 @@ END IF;
 
 
 IF( EFFICIENT_ORDER_PRICE_OUT >   LATEST_OPTION_BID1_PRICE) THEN
+
+/*
+IF BID QUANTITY IS LESS THEN MOVE PRICE DOWN TO BID PRICE AS THE SUPPORT IS WEAK AT BID PRICE.
+
+*/
 
 IF( LATEST_OPTION_BID1_PRICE_QUANTITY <  QUANTITY_IN) THEN
 
@@ -1330,6 +1340,120 @@ END IF;
 
 
 IF( EFFICIENT_ORDER_PRICE_OUT >  LATEST_OPTION_PRICE) THEN
+
+SET EFFICIENT_ORDER_PRICE_OUT = LATEST_OPTION_PRICE;
+
+END IF;
+
+
+
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `CALCULATE_EFFICIENT_SELL_ORDER_PRICE` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `CALCULATE_EFFICIENT_SELL_ORDER_PRICE`(
+SYMBOL_IN VARCHAR(20),
+OPTION_TYPE_IN varchar(2),
+OPTION_STRIKE_PRICE_IN FLOAT,
+ORDER_PRICE_IN FLOAT(6,2),
+QUANTITY_IN INT,
+time_in datetime,
+OUT EFFICIENT_ORDER_PRICE_OUT FLOAT(6,2)
+)
+proc_ceSop : BEGIN
+
+DECLARE LATEST_OPTION_PRICE FLOAT;
+
+DECLARE LATEST_OPTION_OFFER1_PRICE FLOAT;
+
+DECLARE LATEST_OPTION_OFFER2_PRICE FLOAT;
+
+DECLARE LATEST_OPTION_OFFER1_PRICE_QUANTITY INT(11);
+
+DECLARE LATEST_OPTION_OFFER2_PRICE_QUANTITY INT(11);
+
+
+SET ORDER_PRICE_IN = round(ORDER_PRICE_IN);
+
+SET EFFICIENT_ORDER_PRICE_OUT =  ORDER_PRICE_IN;
+
+
+
+
+
+
+
+
+SELECT last_price,offer_price_1,offer_price_2,offer_quantity_1,offer_quantity_2 FROM live_option_price_data
+where symbol = SYMBOL_IN
+and option_type = OPTION_TYPE_IN
+and option_strike_price = OPTION_STRIKE_PRICE_IN
+and curr_time < time_in and curr_time > DATE_SUB(time_in, INTERVAL 180 SECOND)
+order by curr_time desc
+limit 1
+into LATEST_OPTION_PRICE,LATEST_OPTION_OFFER1_PRICE,LATEST_OPTION_OFFER2_PRICE,
+LATEST_OPTION_OFFER1_PRICE_QUANTITY,LATEST_OPTION_OFFER2_PRICE_QUANTITY;
+
+
+IF(LATEST_OPTION_PRICE IS NULL OR LATEST_OPTION_OFFER1_PRICE IS NULL OR LATEST_OPTION_OFFER2_PRICE IS NULL) THEN
+
+SET EFFICIENT_ORDER_PRICE_OUT = NULL;
+
+LEAVE  proc_ceSop;
+
+
+END IF;
+
+
+IF( EFFICIENT_ORDER_PRICE_OUT <  LATEST_OPTION_OFFER2_PRICE) THEN
+
+/*
+IF OFFER QUANTITY IS LESS THEN MOVE PRICE UP TO BID PRICE AS THE
+RESISTANCE IS WEAK AT OFFER PRICE.
+
+*/
+
+IF( LATEST_OPTION_OFFER2_PRICE_QUANTITY <  QUANTITY_IN) THEN
+
+SET EFFICIENT_ORDER_PRICE_OUT =  LATEST_OPTION_OFFER2_PRICE;
+
+END IF;
+
+END IF;
+
+
+IF( EFFICIENT_ORDER_PRICE_OUT <   LATEST_OPTION_OFFER1_PRICE) THEN
+
+/*
+IF OFFER QUANTITY IS LESS THEN MOVE PRICE UP TO BID PRICE AS THE
+RESISTANCE IS WEAK AT OFFER PRICE.
+
+*/
+
+IF( LATEST_OPTION_OFFER1_PRICE_QUANTITY <  QUANTITY_IN) THEN
+
+SET EFFICIENT_ORDER_PRICE_OUT =  LATEST_OPTION_OFFER1_PRICE;
+
+END IF;
+
+END IF;
+
+
+
+IF( EFFICIENT_ORDER_PRICE_OUT <  LATEST_OPTION_PRICE) THEN
 
 SET EFFICIENT_ORDER_PRICE_OUT = LATEST_OPTION_PRICE;
 
@@ -2433,16 +2557,24 @@ DECLARE VAR_QUANTITY INT DEFAULT 0;
 
 DECLARE TARGET_SELL_PRICE FLOAT DEFAULT 0;
 
-DECLARE VAR_LAST_ORDER_PRICE FLOAT;
+-- DECLARE VAR_LAST_ORDER_PRICE FLOAT;
 
 DECLARE FINAL_MIN_LAST_PRICE FLOAT;
 
-
+/*
 SELECT sell_price,no_of_lots,quantity FROM option_sell_order
 where symbol = VAR_SYMBOL
 and option_type = VAR_OPTION_TYPE
 and option_strike_price = VAR_OPTION_STRIKE_PRICE
 INTO VAR_LAST_ORDER_PRICE,VAR_NO_OF_LOTS ,
+VAR_QUANTITY;
+*/
+
+SELECT no_of_lots,quantity FROM option_sell_order
+where symbol = VAR_SYMBOL
+and option_type = VAR_OPTION_TYPE
+and option_strike_price = VAR_OPTION_STRIKE_PRICE
+INTO VAR_NO_OF_LOTS ,
 VAR_QUANTITY;
 
 
@@ -2478,11 +2610,11 @@ END IF;
 IF(TARGET_SELL_PRICE > 0) THEN
 
 
-SET VAR_LAST_ORDER_PRICE = round_price_value( VAR_LAST_ORDER_PRICE);
+-- SET VAR_LAST_ORDER_PRICE = round_price_value( VAR_LAST_ORDER_PRICE);
 
 SET TARGET_SELL_PRICE = round_price_value( TARGET_SELL_PRICE);
 
-IF(TARGET_SELL_PRICE != VAR_LAST_ORDER_PRICE) THEN
+-- IF(TARGET_SELL_PRICE != VAR_LAST_ORDER_PRICE) THEN
 
 CALL PUT_MODIFY_OPTION_SELL_ORDER_EVENT(
 VAR_SYMBOL,
@@ -2496,7 +2628,7 @@ time_in,
 1
 );
 
-END IF;
+-- END IF;
 
 
 END IF;
@@ -2554,7 +2686,7 @@ SET MIN_SELL1_PRICE = round_price_value(MIN_SELL1_PRICE);
 
 IF(MIN_SELL1_PRICE < MIN_LAST_PRICE_IN) THEN
 
-SELECT min(offer_quantity_1) FROM live_option_price_data where symbol = VAR_SYMBOL
+SELECT max(offer_quantity_1) FROM live_option_price_data where symbol = VAR_SYMBOL
 and option_type = VAR_OPTION_TYPE and option_strike_price = VAR_OPTION_STRIKE_PRICE
 and curr_time < time_in
 and curr_time > DATE_SUB(time_in, INTERVAL INTERVAL_SECONDS_IN SECOND)
@@ -2643,7 +2775,7 @@ BEGIN
 
        CALL CHECK_ORDER_CYCLE(DUMMY_CURRENT_TIME);
 
-       IF(time(DUMMY_CURRENT_TIME) = time('2018-01-19 09:30:00')) THEN
+       IF(time(DUMMY_CURRENT_TIME) = time('2018-01-19 09:35:00')) THEN
 
        CALL  MARKET_NEW_ORDER_MASTER(DUMMY_CURRENT_TIME);
 
@@ -3336,6 +3468,8 @@ DECLARE IS_FULL_ORDER_FILLED BOOLEAN DEFAULT TRUE;
 DECLARE INTERVAL_START_PRICE FLOAT DEFAULT NULL ;
 
 
+
+
 -- DECLARE LOWER_THAN_ORDER_PRICE FLOAT DEFAULT NULL ;
 
 DECLARE FINAL_BUY_PRICE FLOAT DEFAULT NULL;
@@ -3379,6 +3513,12 @@ into INTERVAL_START_PRICE;
 IF( INTERVAL_START_PRICE IS NOT NULL AND INTERVAL_START_PRICE <=   VAR_BUY_PRICE ) THEN
 
 SET FINAL_BUY_PRICE = VAR_BUY_PRICE;
+
+ELSE
+
+CALL DUMMY_CHECK_BUY_ORDER_POSITION_FOR_OFFER_PRICE(VAR_SYMBOL,VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE,
+VAR_NO_OF_LOTS,VAR_QUANTITY,VAR_BUY_PRICE,time_in,INTERVAL_SECONDS_IN,FINAL_BUY_PRICE);
+
 
 END IF;
 
@@ -3451,6 +3591,91 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `DUMMY_CHECK_BUY_ORDER_POSITION_FOR_OFFER_PRICE` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `DUMMY_CHECK_BUY_ORDER_POSITION_FOR_OFFER_PRICE`(
+VAR_SYMBOL VARCHAR(20),
+VAR_OPTION_TYPE varchar(2),
+VAR_OPTION_STRIKE_PRICE FLOAT,
+VAR_NO_OF_LOTS INT,
+VAR_QUANTITY INT,
+VAR_BUY_PRICE FLOAT,
+time_in datetime,
+INTERVAL_SECONDS_IN INT,
+OUT FINAL_MIN_LAST_PRICE_OUT FLOAT
+
+)
+proc_dcbopfop : BEGIN
+
+
+DECLARE MIN_OFFER1_PRICE FLOAT;
+
+DECLARE MIN_OFFER1_PRICE_ID INT;
+
+DECLARE MIN_OFFER1_PRICE_QUANTITY INT(11);
+
+DECLARE MIN_OFFER2_PRICE FLOAT(6,2);
+
+-- DECLARE MIN_OFFER2_PRICE_ID INT;
+
+DECLARE MIN_OFFER2_PRICE_QUANTITY INT;
+
+
+
+SELECT min(offer_price_2) FROM live_option_price_data where symbol = VAR_SYMBOL
+and option_type = VAR_OPTION_TYPE and option_strike_price = VAR_OPTION_STRIKE_PRICE
+and curr_time < time_in and curr_time > DATE_SUB(time_in, INTERVAL INTERVAL_SECONDS_IN SECOND)
+INTO MIN_OFFER2_PRICE;
+
+SET MIN_OFFER2_PRICE = round_price_value(MIN_OFFER2_PRICE);
+
+IF(MIN_OFFER2_PRICE <= VAR_BUY_PRICE) THEN
+
+SET FINAL_MIN_LAST_PRICE_OUT = VAR_BUY_PRICE;
+
+LEAVE proc_dcbopfop;
+
+END IF;
+
+SELECT min(offer_price_1) FROM live_option_price_data where symbol = VAR_SYMBOL
+and option_type = VAR_OPTION_TYPE and option_strike_price = VAR_OPTION_STRIKE_PRICE
+and curr_time < time_in and curr_time > DATE_SUB(time_in, INTERVAL INTERVAL_SECONDS_IN SECOND)
+INTO MIN_OFFER1_PRICE;
+
+SET MIN_OFFER1_PRICE = round_price_value(MIN_OFFER1_PRICE);
+
+IF(MIN_OFFER1_PRICE <= VAR_BUY_PRICE) THEN
+
+SELECT max(offer_quantity_1) FROM live_option_price_data where symbol = VAR_SYMBOL
+and option_type = VAR_OPTION_TYPE and option_strike_price = VAR_OPTION_STRIKE_PRICE
+and curr_time < time_in
+and curr_time > DATE_SUB(time_in, INTERVAL INTERVAL_SECONDS_IN SECOND)
+and round_price_value(offer_price_1) = round_price_value(MIN_OFFER1_PRICE)
+INTO MIN_OFFER1_PRICE_QUANTITY;
+
+IF(MIN_OFFER1_PRICE_QUANTITY >= VAR_QUANTITY) THEN
+
+SET FINAL_MIN_LAST_PRICE_OUT = VAR_BUY_PRICE;
+
+END IF;
+
+END IF;
+
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `DUMMY_CHECK_POSITIONS` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -3466,7 +3691,7 @@ CURRENT_TIME_IN DATETIME,
 INTERVAL_SECONDS_IN INT)
 BEGIN
 
-if(time(CURRENT_TIME_IN) > time('2018-01-21 09:30:00')) then
+if(time(CURRENT_TIME_IN) > time('2018-01-21 09:35:00')) then
 
 
 CALL DUMMY_CHECK_BUY_ORDER_CYCLE_POSITIONS(CURRENT_TIME_IN,INTERVAL_SECONDS_IN);
@@ -3619,12 +3844,17 @@ IF( INTERVAL_START_PRICE IS NOT NULL AND INTERVAL_START_PRICE >=   VAR_SELL_PRIC
 
 SET TARGET_SELL_PRICE = VAR_SELL_PRICE;
 
+ELSE
+
+CALL DUMMY_CHECK_SELL_ORDER_POSITION_FOR_BID_PRICE(VAR_SYMBOL,VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE,
+VAR_NO_OF_LOTS,VAR_QUANTITY,VAR_SELL_PRICE,time_in,INTERVAL_SECONDS_IN,TARGET_SELL_PRICE);
+
 END IF;
 
 IF(TARGET_SELL_PRICE IS NULL) THEN
 
-
-IF(VAR_SELL_PRICE IS NULL OR VAR_SELL_PRICE = 0) THEN
+/*
+IF(VAR_SELL_PRICE IS NULL OR VAR_SELL_PRICE = 0) THEN -- code for market orders
 
 SELECT last_price FROM live_option_price_data where symbol = VAR_SYMBOL
 and option_type = VAR_OPTION_TYPE and option_strike_price = VAR_OPTION_STRIKE_PRICE
@@ -3634,7 +3864,7 @@ limit 1
 INTO TARGET_SELL_PRICE;
 
 END IF;
-
+*/
 SELECT count(*) FROM live_option_price_data where symbol = VAR_SYMBOL
 and option_type = VAR_OPTION_TYPE and option_strike_price = VAR_OPTION_STRIKE_PRICE
 and curr_time < time_in and curr_time > DATE_SUB(time_in, INTERVAL INTERVAL_SECONDS_IN SECOND)
@@ -3664,6 +3894,8 @@ END IF;
 
 END IF;
 
+
+
 IF(TARGET_SELL_PRICE IS NOT NULL AND TARGET_SELL_PRICE !=0) THEN
 
 update option_position
@@ -3679,6 +3911,91 @@ and option_type = VAR_OPTION_TYPE and option_strike_price = VAR_OPTION_STRIKE_PR
 
 
 END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `DUMMY_CHECK_SELL_ORDER_POSITION_FOR_BID_PRICE` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `DUMMY_CHECK_SELL_ORDER_POSITION_FOR_BID_PRICE`(
+VAR_SYMBOL VARCHAR(20),
+VAR_OPTION_TYPE varchar(2),
+VAR_OPTION_STRIKE_PRICE FLOAT,
+VAR_NO_OF_LOTS INT,
+VAR_QUANTITY INT,
+VAR_SELL_PRICE FLOAT,
+time_in datetime,
+INTERVAL_SECONDS_IN INT,
+OUT FINAL_MAX_LAST_PRICE_OUT FLOAT
+
+)
+proc_dcsopfbp : BEGIN
+
+
+DECLARE MAX_BID1_PRICE FLOAT;
+
+DECLARE MAX_BID1_PRICE_ID INT;
+
+DECLARE MAX_BID1_PRICE_QUANTITY INT(11);
+
+DECLARE MAX_BID2_PRICE FLOAT(6,2);
+
+-- DECLARE MAX_BID2_PRICE_ID INT;
+
+DECLARE MAX_BID2_PRICE_QUANTITY INT;
+
+
+
+SELECT max(bid_price_2) FROM live_option_price_data where symbol = VAR_SYMBOL
+and option_type = VAR_OPTION_TYPE and option_strike_price = VAR_OPTION_STRIKE_PRICE
+and curr_time < time_in and curr_time > DATE_SUB(time_in, INTERVAL INTERVAL_SECONDS_IN SECOND)
+INTO MAX_BID2_PRICE;
+
+SET MAX_BID2_PRICE = round_price_value(MAX_BID2_PRICE);
+
+IF(MAX_BID2_PRICE >= VAR_SELL_PRICE) THEN
+
+SET FINAL_MAX_LAST_PRICE_OUT = VAR_SELL_PRICE;
+
+LEAVE proc_dcsopfbp;
+
+END IF;
+
+SELECT max(bid_price_1) FROM live_option_price_data where symbol = VAR_SYMBOL
+and option_type = VAR_OPTION_TYPE and option_strike_price = VAR_OPTION_STRIKE_PRICE
+and curr_time < time_in and curr_time > DATE_SUB(time_in, INTERVAL INTERVAL_SECONDS_IN SECOND)
+INTO MAX_BID1_PRICE;
+
+SET MAX_BID1_PRICE = round_price_value(MAX_BID1_PRICE);
+
+IF(MAX_BID1_PRICE >= VAR_SELL_PRICE) THEN
+
+SELECT max(bid_quantity_1) FROM live_option_price_data where symbol = VAR_SYMBOL
+and option_type = VAR_OPTION_TYPE and option_strike_price = VAR_OPTION_STRIKE_PRICE
+and curr_time < time_in
+and curr_time > DATE_SUB(time_in, INTERVAL INTERVAL_SECONDS_IN SECOND)
+and round_price_value(bid_price_1) = round_price_value(MAX_BID1_PRICE)
+INTO MAX_BID1_PRICE_QUANTITY;
+
+IF(MAX_BID1_PRICE_QUANTITY >= VAR_QUANTITY) THEN
+
+SET FINAL_MAX_LAST_PRICE_OUT = VAR_SELL_PRICE;
+
+END IF;
+
+END IF;
+
+
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -4554,7 +4871,7 @@ QUANTITY_IN INT,
 MODIFIED_PRICE FLOAT,
 time_in datetime
 )
-BEGIN
+proc_pmoboe : BEGIN
 
 DECLARE VAR_ORDER_ID INT(11) DEFAULT 0;
 
@@ -4565,6 +4882,9 @@ DECLARE VAR_NO_OF_LOTS INT DEFAULT 0;
 DECLARE VAR_QUANTITY INT DEFAULT 0;
 
 DECLARE VAR_MARGIN_FOR_STOCK FLOAT;
+
+DECLARE VAR_INITIAL_ORDER_PRICE FLOAT;
+
 
 DECLARE VAR_EFFICIENT_ORDER_PRICE FLOAT;
 
@@ -4585,25 +4905,53 @@ SET VAR_QUANTITY = VAR_LOT_SIZE * VAR_NO_OF_LOTS;
 
 
 
-SELECT order_id FROM option_buy_order
+SELECT order_id,buy_price FROM option_buy_order
 where symbol = SYMBOL_IN
 and option_type = OPTION_TYPE_IN
 and option_strike_price = OPTION_STRIKE_PRICE_IN
-INTO VAR_ORDER_ID;
+INTO VAR_ORDER_ID,VAR_INITIAL_ORDER_PRICE;
 
-update option_buy_order
-set buy_price = MODIFIED_PRICE,
-no_of_lots = VAR_NO_OF_LOTS,
-quantity = VAR_QUANTITY
-where order_id = VAR_ORDER_ID;
 
+SET VAR_EFFICIENT_ORDER_PRICE = MODIFIED_PRICE;
+
+
+
+IF(time(time_in) > time('2018-01-21 09:30:10')) THEN
 
 CALL CALCULATE_EFFICIENT_BUY_ORDER_PRICE(SYMBOL_IN,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,
 MODIFIED_PRICE,VAR_QUANTITY,time_in,VAR_EFFICIENT_ORDER_PRICE);
 
+IF(VAR_EFFICIENT_ORDER_PRICE IS NULL OR VAR_EFFICIENT_ORDER_PRICE = 0) THEN
+
+REPLACE INTO option_buy_order_event
+VALUES
+(VAR_ORDER_ID,SYMBOL_IN,time_in,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,MODIFIED_PRICE,
+                        VAR_NO_OF_LOTS,VAR_QUANTITY,'ERMOD',0);
+
+LEAVE proc_pmoboe;
+
+END IF;
+
+
+END IF;
+
 SET VAR_EFFICIENT_ORDER_PRICE = round_price_value(VAR_EFFICIENT_ORDER_PRICE);
 
+-- For Logging Purposes - to log that this price was changed to efficient price
+INSERT INTO option_buy_order_log
+VALUES
+(VAR_ORDER_ID,SYMBOL_IN,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,MODIFIED_PRICE,
+VAR_NO_OF_LOTS,VAR_QUANTITY,0,time_in,0,VAR_QUANTITY);
 
+
+IF(VAR_EFFICIENT_ORDER_PRICE != VAR_INITIAL_ORDER_PRICE ) THEN
+
+
+update option_buy_order
+set buy_price = VAR_EFFICIENT_ORDER_PRICE,
+no_of_lots = VAR_NO_OF_LOTS,
+quantity = VAR_QUANTITY
+where order_id = VAR_ORDER_ID;
 
 
 INSERT INTO option_buy_order_log
@@ -4615,6 +4963,8 @@ REPLACE INTO option_buy_order_event
 VALUES
 (VAR_ORDER_ID,SYMBOL_IN,time_in,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,VAR_EFFICIENT_ORDER_PRICE,
                         VAR_NO_OF_LOTS,VAR_QUANTITY,'MOD',0);
+
+END IF;
 
 
 
@@ -4651,6 +5001,12 @@ proc_pmosoe : BEGIN
 
 DECLARE VAR_ORDER_ID INT(11) DEFAULT 0;
 
+DECLARE VAR_EFFICIENT_ORDER_PRICE FLOAT;
+
+DECLARE VAR_INITIAL_ORDER_PRICE FLOAT;
+
+
+
 IF(MODIFIED_PRICE IS NULL) THEN
 LEAVE proc_pmosoe;
 END IF;
@@ -4659,28 +5015,62 @@ END IF;
 set MODIFIED_PRICE = round_price_value(MODIFIED_PRICE);
 
 
-SELECT order_id FROM option_sell_order
+SELECT order_id,sell_price FROM option_sell_order
 where symbol = SYMBOL_IN
 and option_type = OPTION_TYPE_IN
 and option_strike_price = OPTION_STRIKE_PRICE_IN
-INTO VAR_ORDER_ID;
+INTO VAR_ORDER_ID, VAR_INITIAL_ORDER_PRICE ;
 
 
-update option_sell_order
-set sell_price = MODIFIED_PRICE,
-no_of_lots = NO_OF_LOTS_IN,
-quantity = QUANTITY_IN
-where order_id = VAR_ORDER_ID;
 
+
+CALL CALCULATE_EFFICIENT_SELL_ORDER_PRICE(SYMBOL_IN,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,
+MODIFIED_PRICE,QUANTITY_IN,time_in,VAR_EFFICIENT_ORDER_PRICE);
+
+IF(VAR_EFFICIENT_ORDER_PRICE IS NULL OR VAR_EFFICIENT_ORDER_PRICE = 0) THEN
+
+
+REPLACE INTO option_sell_order_event
+VALUES
+(VAR_ORDER_ID,SYMBOL_IN,time_in,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,MODIFIED_PRICE,
+                        NO_OF_LOTS_IN,QUANTITY_IN,'ERMOD',0);
 
 INSERT INTO option_sell_order_log
 VALUES
 (VAR_ORDER_ID,SYMBOL_IN,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,MODIFIED_PRICE,
 NO_OF_LOTS_IN,QUANTITY_IN,0,time_in,0,QUANTITY_IN);
 
+
+LEAVE proc_pmosoe;
+
+END IF;
+
+
+-- For Logging Purposes - to log that this price was changed to efficient price
+
+INSERT INTO option_sell_order_log
+VALUES
+(VAR_ORDER_ID,SYMBOL_IN,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,MODIFIED_PRICE,
+NO_OF_LOTS_IN,QUANTITY_IN,0,time_in,0,QUANTITY_IN);
+
+
+IF(VAR_EFFICIENT_ORDER_PRICE != VAR_INITIAL_ORDER_PRICE ) THEN
+
+
+update option_sell_order
+set sell_price = VAR_EFFICIENT_ORDER_PRICE,
+no_of_lots = NO_OF_LOTS_IN,
+quantity = QUANTITY_IN
+where order_id = VAR_ORDER_ID;
+
+INSERT INTO option_sell_order_log
+VALUES
+(VAR_ORDER_ID,SYMBOL_IN,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,VAR_EFFICIENT_ORDER_PRICE,
+NO_OF_LOTS_IN,QUANTITY_IN,0,time_in,0,QUANTITY_IN);
+
 REPLACE INTO option_sell_order_event
 VALUES
-(VAR_ORDER_ID,SYMBOL_IN,time_in,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,MODIFIED_PRICE,
+(VAR_ORDER_ID,SYMBOL_IN,time_in,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,VAR_EFFICIENT_ORDER_PRICE,
                         NO_OF_LOTS_IN,QUANTITY_IN,'MOD',0);
 
 
@@ -4699,6 +5089,8 @@ END IF;
 END IF;
 
 
+
+END IF;
 
 END ;;
 DELIMITER ;
@@ -4842,6 +5234,7 @@ VAR_NO_OF_LOTS,VAR_QUANTITY,0,time_in,0,VAR_QUANTITY);
 
 END IF;
 
+
 REPLACE INTO option_buy_order_event
 VALUES
 (VAR_ORDER_ID,SYMBOL_IN,time_in,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,VAR_EFFICIENT_ORDER_PRICE,
@@ -4871,13 +5264,16 @@ NO_OF_LOTS_IN INT,
 QUANTITY_IN INT,
 BUY_PRICE_IN FLOAT,
 time_in datetime)
-BEGIN
+proc_pnosoe : BEGIN
 
 DECLARE GENERATED_ORDER_ID INT DEFAULT 0;
 
 DECLARE CALCULATED_SELL_PRICE FLOAT DEFAULT 0;
 
 DECLARE VAR_INITIAL_TARGET_PROFIT_FACTOR FLOAT DEFAULT 1.15;
+
+DECLARE VAR_EFFICIENT_ORDER_PRICE FLOAT;
+
 
 
 SELECT  param_value FROM trading_parameters WHERE param_id = 'INITIAL_TARGET_PROFIT_FACTOR'
@@ -4886,9 +5282,33 @@ INTO VAR_INITIAL_TARGET_PROFIT_FACTOR;
 SET CALCULATED_SELL_PRICE = round_price_value(BUY_PRICE_IN * VAR_INITIAL_TARGET_PROFIT_FACTOR);
 
 
+
+CALL CALCULATE_EFFICIENT_SELL_ORDER_PRICE(SYMBOL_IN,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,
+CALCULATED_SELL_PRICE,QUANTITY_IN,time_in,VAR_EFFICIENT_ORDER_PRICE);
+
+IF(VAR_EFFICIENT_ORDER_PRICE IS NULL OR VAR_EFFICIENT_ORDER_PRICE = 0) THEN
+
+SET GENERATED_ORDER_ID =  999999999 * RAND();
+
+REPLACE INTO option_sell_order_event
+VALUES
+(GENERATED_ORDER_ID,SYMBOL_IN,time_in,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,CALCULATED_SELL_PRICE,
+                        NO_OF_LOTS_IN,QUANTITY_IN,'ERNEW',0);
+
+INSERT INTO option_sell_order_log
+VALUES
+(GENERATED_ORDER_ID,SYMBOL_IN,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,CALCULATED_SELL_PRICE,
+NO_OF_LOTS_IN,QUANTITY_IN,0,time_in,0,QUANTITY_IN);
+
+LEAVE proc_pnosoe;
+
+END IF;
+
+
+
 INSERT INTO option_sell_order
 VALUES
-(NULL,SYMBOL_IN,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,CALCULATED_SELL_PRICE,NO_OF_LOTS_IN,QUANTITY_IN,0,
+(NULL,SYMBOL_IN,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,VAR_EFFICIENT_ORDER_PRICE,NO_OF_LOTS_IN,QUANTITY_IN,0,
 0,0,QUANTITY_IN);
 
 
@@ -4896,12 +5316,12 @@ SET GENERATED_ORDER_ID =  LAST_INSERT_ID();
 
 INSERT INTO option_sell_order_log
 VALUES
-(GENERATED_ORDER_ID,SYMBOL_IN,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,CALCULATED_SELL_PRICE,
+(GENERATED_ORDER_ID,SYMBOL_IN,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,VAR_EFFICIENT_ORDER_PRICE,
 NO_OF_LOTS_IN,QUANTITY_IN,0,time_in,0,QUANTITY_IN);
 
 REPLACE INTO option_sell_order_event
 VALUES
-(GENERATED_ORDER_ID,SYMBOL_IN,time_in,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,CALCULATED_SELL_PRICE,
+(GENERATED_ORDER_ID,SYMBOL_IN,time_in,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,VAR_EFFICIENT_ORDER_PRICE,
                         NO_OF_LOTS_IN,QUANTITY_IN,'NEW',0);
 
 
@@ -5033,7 +5453,10 @@ loop0: loop
        end if;
 
        if(time(DUMMY_CURRENT_TIME) > time('2018-01-21 14:45:00')) then
+
           /* WRITE LOGIC FOR ORDER CANCELLATION HERE */
+
+
          DELETE FROM option_buy_order
          WHERE isExecuted = 0;
 
@@ -5448,4 +5871,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-01-30 22:24:26
+-- Dump completed on 2018-01-31 15:57:18
