@@ -1,10 +1,27 @@
-replace into basis_for_calls_archive(
-SELECT '2018-01-29',a.* FROM engine_live.basis_for_calls a);
+replace into basis_for_calls(
+select symbol,
+volume_prev_day,
+prev_close,
+curr_signal,
+url,
+confidence_level FROM engine_live.basis_for_calls_archive
+where curr_date = '2018-01-30' );
 
 delete from engine_live.basis_for_calls;
 
-replace into selected_instrument_archive(
-SELECT '2018-01-29',a.* FROM engine_live.selected_instrument a);
+
+
+replace into selected_instrument(
+SELECT symbol,
+option_type,
+option_strike_price,
+option_close_price,
+lot_size,
+margin_allowance,
+last_implied_volatility,
+expiry_factor_quotient,
+url FROM engine_live.selected_instrument_archive 
+where curr_date = '2018-01-30');
 
 delete from engine_live.selected_instrument;
 
