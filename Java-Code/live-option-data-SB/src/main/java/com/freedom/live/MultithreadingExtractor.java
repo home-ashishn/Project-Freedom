@@ -186,27 +186,27 @@ public class MultithreadingExtractor {
 		
 		String volume = "0";
 		
-		volume = getValueFromNode(first, "numberOfContractsTraded", "underlyingValue",2);
+		volume = getValueFromNode(instrument,first, "numberOfContractsTraded", "underlyingValue",2);
 
 
 		String openPrice = "0";
 		
-		openPrice = getValueFromNode(first, "openPrice", "closePrice",2);
+		openPrice = getValueFromNode(instrument,first, "openPrice", "closePrice",2);
 
 
 		String highPrice = "0";
 		
-		highPrice = getValueFromNode(first, "highPrice", "companyName",4);
+		highPrice = getValueFromNode(instrument,first, "highPrice", "companyName",4);
 
 
 		String lowPrice = "0";
 		
-		lowPrice = getValueFromNode(first, "lowPrice", "strikePrice",2);
+		lowPrice = getValueFromNode(instrument,first, "lowPrice", "strikePrice",2);
 		
 
 		String currTime = "0";
 		
-		currTime = getValueFromNode(first, "lastUpdateTime", "ocLink",2);
+		currTime = getValueFromNode(instrument,first, "lastUpdateTime", "ocLink",2);
 		DateTime newTimeStamp = null;
 		try {
 			newTimeStamp = new DateTime(simpleDateFormat.parse(currTime));
@@ -241,40 +241,40 @@ public class MultithreadingExtractor {
 
 			String lastPrice = "0";
 
-			lastPrice = getValueFromNode(first, "lastPrice", "lowPrice",2);
+			lastPrice = getValueFromNode(instrument,first, "lastPrice", "lowPrice",2);
 
 			
 			String bidPrice1 = "0";
 
-			bidPrice1 = getValueFromNode(first, "buyPrice1", "sellQuantity4",2);
+			bidPrice1 = getValueFromNode(instrument,first, "buyPrice1", "sellQuantity4",2);
 			
 			String bidQuantity1 = "0";
 
-			bidQuantity1 = getValueFromNode(first, "buyQuantity1", "ltp",2);
+			bidQuantity1 = getValueFromNode(instrument,first, "buyQuantity1", "ltp",2);
 			
 			String bidPrice2 = "0";
 
-			bidPrice2 = getValueFromNode(first, "buyPrice2", "sellQuantity3",2);
+			bidPrice2 = getValueFromNode(instrument,first, "buyPrice2", "sellQuantity3",2);
 			
 			String bidQuantity2 = "0";
 
-			bidQuantity2 = getValueFromNode(first, "buyQuantity2", "sellPrice5",2);
+			bidQuantity2 = getValueFromNode(instrument,first, "buyQuantity2", "sellPrice5",2);
 			
 			String offerPrice1 = "0";
 
-			offerPrice1 = getValueFromNode(first, "sellPrice1", "buyQuantity3",2);
+			offerPrice1 = getValueFromNode(instrument,first, "sellPrice1", "buyQuantity3",2);
 			
 			String offerQuantity1 = "0";
 
-			offerQuantity1 = getValueFromNode(first, "sellQuantity1", "buyPrice1",2);
+			offerQuantity1 = getValueFromNode(instrument,first, "sellQuantity1", "buyPrice1",2);
 			
 			String offerPrice2 = "0";
 
-			offerPrice2 = getValueFromNode(first, "sellPrice2", "buyQuantity4",2);
+			offerPrice2 = getValueFromNode(instrument,first, "sellPrice2", "buyQuantity4",2);
 			
 			String offerQuantity2 = "0";
 
-			offerQuantity2 = getValueFromNode(first, "sellQuantity2", "sellQuantity1",2);
+			offerQuantity2 = getValueFromNode(instrument,first, "sellQuantity2", "sellQuantity1",2);
 			
 			
 
@@ -350,22 +350,22 @@ public class MultithreadingExtractor {
 		
 		String volume = "0";
 		
-		volume = getValueFromNode(first, "numberOfContractsTraded", "underlyingValue",2);
+		volume = getValueFromNode(instrument,first, "numberOfContractsTraded", "underlyingValue",2);
 
 
 		String openPrice = "0";
 		
-		openPrice = getValueFromNode(first, "openPrice", "closePrice",2);
+		openPrice = getValueFromNode(instrument,first, "openPrice", "closePrice",2);
 
 
 		String highPrice = "0";
 		
-		highPrice = getValueFromNode(first, "highPrice", "companyName",4);
+		highPrice = getValueFromNode(instrument,first, "highPrice", "companyName",4);
 
 
 		String lowPrice = "0";
 		
-		lowPrice = getValueFromNode(first, "lowPrice", "strikePrice",2);
+		lowPrice = getValueFromNode(instrument,first, "lowPrice", "strikePrice",2);
 		
 
 		
@@ -382,7 +382,7 @@ public class MultithreadingExtractor {
 			
 			String currTime = "0";
 			
-			currTime = getValueFromNode(first, "lastUpdateTime", "ocLink",2);
+			currTime = getValueFromNode(instrument,first, "lastUpdateTime", "ocLink",2);
 			
 			
 			DateTime newTimeStamp = null;
@@ -398,40 +398,40 @@ public class MultithreadingExtractor {
 
 			String lastPrice = "0";
 
-			lastPrice = getValueFromNode(first, "lastPrice", "lowPrice",2);
+			lastPrice = getValueFromNode(instrument,first, "lastPrice", "lowPrice",2);
 
 			
 			String bidPrice1 = "0";
 
-			bidPrice1 = getValueFromNode(first, "buyPrice1", "sellQuantity4",2);
+			bidPrice1 = getValueFromNode(instrument,first, "buyPrice1", "sellQuantity4",2);
 			
 			String bidQuantity1 = "0";
 
-			bidQuantity1 = getValueFromNode(first, "buyQuantity1", "ltp",2);
+			bidQuantity1 = getValueFromNode(instrument,first, "buyQuantity1", "ltp",2);
 			
 			String bidPrice2 = "0";
 
-			bidPrice2 = getValueFromNode(first, "buyPrice2", "sellQuantity3",2);
+			bidPrice2 = getValueFromNode(instrument,first, "buyPrice2", "sellQuantity3",2);
 			
 			String bidQuantity2 = "0";
 
-			bidQuantity2 = getValueFromNode(first, "buyQuantity2", "sellPrice5",2);
+			bidQuantity2 = getValueFromNode(instrument,first, "buyQuantity2", "sellPrice5",2);
 			
 			String offerPrice1 = "0";
 
-			offerPrice1 = getValueFromNode(first, "sellPrice1", "buyQuantity3",2);
+			offerPrice1 = getValueFromNode(instrument,first, "sellPrice1", "buyQuantity3",2);
 			
 			String offerQuantity1 = "0";
 
-			offerQuantity1 = getValueFromNode(first, "sellQuantity1", "buyPrice1",2);
+			offerQuantity1 = getValueFromNode(instrument,first, "sellQuantity1", "buyPrice1",2);
 			
 			String offerPrice2 = "0";
 
-			offerPrice2 = getValueFromNode(first, "sellPrice2", "buyQuantity4",2);
+			offerPrice2 = getValueFromNode(instrument,first, "sellPrice2", "buyQuantity4",2);
 			
 			String offerQuantity2 = "0";
 
-			offerQuantity2 = getValueFromNode(first, "sellQuantity2", "sellQuantity1",2);
+			offerQuantity2 = getValueFromNode(instrument,first, "sellQuantity2", "sellQuantity1",2);
 			
 			
 
@@ -481,7 +481,7 @@ public class MultithreadingExtractor {
 
 
 */	
-	private String getValueFromNode(Node first, String strTarget, String strNext, int noCharsFromNext) {
+	private String getValueFromNode(SelectedInstrument instrument, Node first, String strTarget, String strNext, int noCharsFromNext) {
 
 		JsonParser parser = new BasicJsonParser();
 		Map<String, Object> output = null;
@@ -499,7 +499,9 @@ public class MultithreadingExtractor {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			//return getValueFromNode(first,strTarget,strNext,noCharsFromNext);
+			//return getValueFromNode(instrument,first,strTarget,strNext,noCharsFromNext);
+			sop("error for field " + strTarget + " for symbol-" + instrument.getSymbol() + " for optionType-"
+					+ instrument.getOption_type() + " for strikePrice-" + instrument.getOption_strike_price());
 		}
 
 		return "" + output.get(strTarget);
