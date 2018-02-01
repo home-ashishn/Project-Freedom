@@ -37,13 +37,14 @@ public class LiveOptionPriceData {
 	
 	private float offer_price_2;
 	
-	private float bid_quantity_1;
+	private int bid_quantity_1;
 	
-	private float offer_quantity_1;
+	private int offer_quantity_1;
 
-	private float bid_quantity_2;
+	private int bid_quantity_2;
 	
-	private float offer_quantity_2;
+	private int offer_quantity_2;
+	
 /*	private float open_price;
 
 	private float high_price;
@@ -138,37 +139,38 @@ public class LiveOptionPriceData {
 		this.offer_price_2 = offer_price_2;
 	}
 
-	public float getBid_quantity_1() {
+	public int getBid_quantity_1() {
 		return bid_quantity_1;
 	}
 
-	public void setBid_quantity_1(float bid_quantity_1) {
+	public void setBid_quantity_1(int bid_quantity_1) {
 		this.bid_quantity_1 = bid_quantity_1;
 	}
 
-	public float getOffer_quantity_1() {
+	public int getOffer_quantity_1() {
 		return offer_quantity_1;
 	}
 
-	public void setOffer_quantity_1(float offer_quantity_1) {
+	public void setOffer_quantity_1(int offer_quantity_1) {
 		this.offer_quantity_1 = offer_quantity_1;
 	}
 
-	public float getBid_quantity_2() {
+	public int getBid_quantity_2() {
 		return bid_quantity_2;
 	}
 
-	public void setBid_quantity_2(float bid_quantity_2) {
+	public void setBid_quantity_2(int bid_quantity_2) {
 		this.bid_quantity_2 = bid_quantity_2;
 	}
 
-	public float getOffer_quantity_2() {
+	public int getOffer_quantity_2() {
 		return offer_quantity_2;
 	}
 
-	public void setOffer_quantity_2(float offer_quantity_2) {
+	public void setOffer_quantity_2(int offer_quantity_2) {
 		this.offer_quantity_2 = offer_quantity_2;
 	}
+
 
 /*	public float getOpen_price() {
 		return open_price;

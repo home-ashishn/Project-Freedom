@@ -291,13 +291,13 @@ public class MultithreadingExtractor {
 			liveOptionPriceData.setVolume(globalVolume);
 			liveOptionPriceData.setLast_price(new Float(lastPrice));
 			liveOptionPriceData.setBid_price_1(new Float(bidPrice1));
-			liveOptionPriceData.setBid_quantity_1(new Float(bidQuantity1));
+			liveOptionPriceData.setBid_quantity_1(new Integer(bidQuantity1));
 			liveOptionPriceData.setBid_price_2(new Float(bidPrice2));
-			liveOptionPriceData.setBid_quantity_2(new Float(bidQuantity2));
+			liveOptionPriceData.setBid_quantity_2(new Integer(bidQuantity2));
 			liveOptionPriceData.setOffer_price_1(new Float(offerPrice1));
-			liveOptionPriceData.setOffer_quantity_1(new Float(offerQuantity1));
+			liveOptionPriceData.setOffer_quantity_1(new Integer(offerQuantity1));
 			liveOptionPriceData.setOffer_price_2(new Float(offerPrice2));
-			liveOptionPriceData.setOffer_quantity_2(new Float(offerQuantity2));
+			liveOptionPriceData.setOffer_quantity_2(new Integer(offerQuantity2));
 
 			return liveOptionPriceData;
 
