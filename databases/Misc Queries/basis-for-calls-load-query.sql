@@ -59,6 +59,26 @@ expiry_factor_quotient,
 url FROM selected_instrument_archive 
 where curr_date = '2018-01-30');
 
+
+delete from basis_for_calls where symbol not in 
+(
+'AXISBANK',
+'HDFC',
+'HDFCBANK',
+'HDIL',
+'ICICIBANK');
+
+delete from selected_instrument where symbol not in 
+(
+'AXISBANK',
+'HDFC',
+'HDFCBANK',
+'HDIL',
+'ICICIBANK');
+
+
+
+
 delete from basis_for_calls
 where symbol not in
 ('IDFCBANK',
@@ -74,3 +94,20 @@ where symbol not in
 'ITC',
 'JINDALSTEL',
 'KOTAKBANK');
+
+
+delete from basis_for_calls
+where symbol not in
+('LT',
+'MARUTI',
+'RELIANCE',
+'SBIN',
+'TATASTEEL');
+
+delete from selected_instrument
+where symbol not in
+('LT',
+'MARUTI',
+'RELIANCE',
+'SBIN',
+'TATASTEEL');
