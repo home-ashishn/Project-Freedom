@@ -232,7 +232,7 @@ public class MultithreadingExtractor {
 		
 		if ((new Long(volume).compareTo(mapGlobalVolumes.get(instrument)) > 0) || isNewTimeStampReading) {
 
-			sop("update for symbol = " + symbol + ", optionType = " + optionType + ", strikePrice = " + strikePrice);
+			// sop("update for symbol = " + symbol + ", optionType = " + optionType + ", strikePrice = " + strikePrice);
 
 			long globalVolume = new Long(volume);
 
@@ -520,7 +520,17 @@ public class MultithreadingExtractor {
 
 		try {
 			synchronized (liveDataObjs) {
-				LiveOptionPriceDataRepository.save(liveDataObjs);
+				
+				try {
+					LiveOptionPriceDataRepository.save(liveDataObjs);
+					
+					sop("^^^^^^^ &&&&&&& SUCCESSFULY SAVED");
+
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					sop("^^^^^^^ &&&&&&& ERROR WHILE SAVING ^^^^^^^ &&&&&&&"+e.getMessage());
+				}
+				
 				liveDataObjs = new ArrayList<LiveOptionPriceData>();
 			}
 		} catch (Exception e) {
