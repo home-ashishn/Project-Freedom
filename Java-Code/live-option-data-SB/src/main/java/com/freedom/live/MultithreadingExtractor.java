@@ -156,9 +156,10 @@ public class MultithreadingExtractor {
 			startTime = new Date();
 		}
 
-		String symbol = instrument.getSymbol();
-		String optionType = instrument.getOption_type();
-		float strikePrice = instrument.getOption_strike_price();
+		// String symbol = instrument.getSymbol();
+		
+		// String optionType = instrument.getOption_type();
+		// float strikePrice = instrument.getOption_strike_price();
 		
 		Document document = null;
 
@@ -285,7 +286,7 @@ public class MultithreadingExtractor {
 
 
 			liveOptionPriceData.setCurr_time(newTimeStamp);
-			liveOptionPriceData.setSymbol(symbol);
+			liveOptionPriceData.setSymbol(instrument.getSymbol());
 			liveOptionPriceData.setOption_type(instrument.getOption_type());
 			liveOptionPriceData.setOption_strike_price(instrument.getOption_strike_price());
 			liveOptionPriceData.setVolume(globalVolume);
