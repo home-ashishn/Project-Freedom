@@ -2,6 +2,7 @@ package com.freedom.live;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -174,6 +175,12 @@ public class MultithreadingExtractor {
 
 		// // sop("lastPrice = " + lastPrice);
 		// // sop("volume = " + volume);
+		
+		Calendar cal = Calendar.getInstance();
+		
+		cal.add(Calendar.SECOND, -7);
+		
+		DateTime quoteCurrentTime = new DateTime(cal.getTime());
 
 		if (new Long(volume).compareTo(mapGlobalVolumes.get(symbol)) != 0) {
 
@@ -186,7 +193,7 @@ public class MultithreadingExtractor {
 			LiveStockData liveStockData = new LiveStockData();
 
 			// liveStockData.setId(0);
-			liveStockData.setCurr_time(new DateTime());
+			liveStockData.setCurr_time(quoteCurrentTime);
 			liveStockData.setSymbol(symbol);
 			liveStockData.setVolume(globalVolume);
 			liveStockData.setPrice(new Float(lastPrice));
