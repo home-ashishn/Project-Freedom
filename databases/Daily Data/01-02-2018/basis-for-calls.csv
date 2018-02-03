@@ -1,0 +1,16 @@
+symbol,volume_prev_day,prev_close,curr_signal,url,confidence_level
+AXISBANK,21790400,0,-1,http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/axisbank/AB16,70
+HDFC,0,0,-1,http://www.moneycontrol.com/india/stockpricequote/finance-housing/housingdevelopmentfinancecorporation/HDF,75
+HDFCBANK,0,0,-1,http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/hdfcbank/HDF01,65
+HDIL,0,0,0,http://www.moneycontrol.com/india/stockpricequote/construction-contracting-real-estate/housingdevelopmentinfrastructure/HDI,70
+ICICIBANK,0,0,1,http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/icicibank/ICI02,70
+IDFCBANK,0,0,0,http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/idfcbank/IDF01,70
+INFY,0,0,-1,http://www.moneycontrol.com/india/stockpricequote/computers-software/infosys/IT,70
+ITC,0,0,0,http://www.moneycontrol.com/india/stockpricequote/cigarettes/itc/ITC,70
+JINDALSTEL,0,0,0,http://www.moneycontrol.com/india/stockpricequote/steel-sponge-iron/jindalsteelpower/JSP,70
+KOTAKBANK,0,0,-1,http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/kotakmahindrabank/KMB,70
+LT,0,0,0,http://www.moneycontrol.com/india/stockpricequote/infrastructure-general/larsentoubro/LT,0
+MARUTI,0,0,1,http://www.moneycontrol.com/india/stockpricequote/auto-cars-jeeps/marutisuzukiindia/MS24,75
+RELIANCE,0,0,-1,http://www.moneycontrol.com/india/stockpricequote/refineries/relianceindustries/RI,70
+SBIN,0,0,0,http://www.moneycontrol.com/india/stockpricequote/banks-public-sector/statebankindia/SBI,70
+TATASTEEL,0,0,0,http://www.moneycontrol.com/india/stockpricequote/steel-large/tatasteel/TIS,70
