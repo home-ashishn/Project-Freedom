@@ -189,7 +189,7 @@ public class MultithreadingExtractor {
 		
 		volume = getValueFromNode(instrument,first, "numberOfContractsTraded", "underlyingValue",2);
 
-
+/*
 		String openPrice = "0";
 		
 		openPrice = getValueFromNode(instrument,first, "openPrice", "closePrice",2);
@@ -204,11 +204,13 @@ public class MultithreadingExtractor {
 		
 		lowPrice = getValueFromNode(instrument,first, "lowPrice", "strikePrice",2);
 		
-
+*/
 		String currTime = "0";
 		
 		currTime = getValueFromNode(instrument,first, "lastUpdateTime", "ocLink",2);
+		
 		DateTime newTimeStamp = null;
+		
 		try {
 			newTimeStamp = new DateTime(simpleDateFormat.parse(currTime));
 		} catch (ParseException e1) {
@@ -489,13 +491,18 @@ public class MultithreadingExtractor {
 		String finalBit = "";
 		try {
 			String input = first.toString().trim();
-			int indexOfLowPrice = input.lastIndexOf(strNext);
-			String lastPriceBit = input.substring(input.lastIndexOf(strTarget) - 1, indexOfLowPrice - noCharsFromNext);
+			int indexOfTarget = input.lastIndexOf(strTarget);
+			int indexOfNext = input.lastIndexOf(strNext);
+			String lastPriceBit = "0";
+
+			if(indexOfTarget > 0 && indexOfNext > 0 )
+			{
+				lastPriceBit = input.substring(indexOfTarget - 1, indexOfNext - noCharsFromNext);
+
+			}
 
 			 finalBit = "{" + lastPriceBit + "}";
 			 finalBit = finalBit.replaceAll("," , "");
-			// input = input.replace("\"","");
-			// input = "{\"bar\" : \"true\",\"baz\" : \"1\"}";
 			output = parser.parseMap(finalBit);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
