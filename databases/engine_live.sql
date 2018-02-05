@@ -775,8 +775,6 @@ BEGIN
 
 DECLARE VAR_OPTION_TYPE varchar(2);
 DECLARE VAR_OPTION_STRIKE_PRICE FLOAT;
-DECLARE VAR_NO_OF_LOTS INT;
-DECLARE VAR_QUANTITY INT;
 
 DECLARE VAR_INITIAL_ORDER_PRICE FLOAT;
 
@@ -792,7 +790,7 @@ DECLARE VAR_CALCULATED_ORDER_PRICE FLOAT;
 
 
 DECLARE cursor_OPTION_BUY_ORDERS CURSOR FOR
-SELECT option_type,option_strike_price,no_of_lots,quantity,buy_price FROM engine_live.option_buy_order
+SELECT option_type,option_strike_price,buy_price FROM engine_live.option_buy_order
 where symbol = SYMBOL_IN and isExecuted = 0;
 
   OPEN cursor_OPTION_BUY_ORDERS;
@@ -807,7 +805,6 @@ where symbol = SYMBOL_IN and isExecuted = 0;
     DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN CLOSE cursor_OPTION_BUY_ORDERS; RESIGNAL; END;
     LOOP
       FETCH cursor_OPTION_BUY_ORDERS INTO VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE,
-VAR_NO_OF_LOTS,VAR_QUANTITY,
 VAR_INITIAL_ORDER_PRICE;
 
 SELECT  param_value FROM trading_parameters WHERE param_id = 'STRENGTH_TO_BUY_ORDER_FACTOR'
@@ -871,8 +868,8 @@ END IF;
 SET VAR_CALCULATED_ORDER_PRICE = round_price_value(VAR_CALCULATED_ORDER_PRICE);
 
 
-call PUT_MODIFY_OPTION_BUY_ORDER_EVENT(SYMBOL_IN,VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE,VAR_NO_OF_LOTS,
-VAR_QUANTITY,VAR_CALCULATED_ORDER_PRICE,time_in);
+call PUT_MODIFY_OPTION_BUY_ORDER_EVENT(SYMBOL_IN,VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE,
+VAR_CALCULATED_ORDER_PRICE,time_in);
 
 
 
@@ -1034,8 +1031,6 @@ BEGIN
 
 DECLARE VAR_OPTION_TYPE varchar(2);
 DECLARE VAR_OPTION_STRIKE_PRICE FLOAT;
-DECLARE VAR_NO_OF_LOTS INT;
-DECLARE VAR_QUANTITY INT;
 
 DECLARE VAR_INITIAL_ORDER_PRICE FLOAT;
 
@@ -1051,7 +1046,7 @@ DECLARE VAR_CALCULATED_ORDER_PRICE FLOAT;
 
 
 DECLARE cursor_OPTION_BUY_ORDERS CURSOR FOR
-SELECT option_type,option_strike_price,no_of_lots,quantity,buy_price FROM engine_live.option_buy_order
+SELECT option_type,option_strike_price,buy_price FROM engine_live.option_buy_order
 where symbol = SYMBOL_IN and isExecuted = 0;
 
   OPEN cursor_OPTION_BUY_ORDERS;
@@ -1070,7 +1065,6 @@ where symbol = SYMBOL_IN and isExecuted = 0;
     DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN CLOSE cursor_OPTION_BUY_ORDERS; RESIGNAL; END;
     LOOP
       FETCH cursor_OPTION_BUY_ORDERS INTO VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE,
-VAR_NO_OF_LOTS,VAR_QUANTITY,
 VAR_INITIAL_ORDER_PRICE;
 
 SELECT  param_value FROM trading_parameters WHERE param_id = 'STRENGTH_TO_BUY_ORDER_FACTOR'
@@ -1132,8 +1126,8 @@ END IF;
 SET VAR_CALCULATED_ORDER_PRICE = round_price_value(VAR_CALCULATED_ORDER_PRICE);
 
 
-call PUT_MODIFY_OPTION_BUY_ORDER_EVENT(SYMBOL_IN,VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE,VAR_NO_OF_LOTS,
-VAR_QUANTITY,VAR_CALCULATED_ORDER_PRICE,time_in);
+call PUT_MODIFY_OPTION_BUY_ORDER_EVENT(SYMBOL_IN,VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE,
+VAR_CALCULATED_ORDER_PRICE,time_in);
 
 
 
@@ -4473,6 +4467,27 @@ ALTER TABLE live_option_price_data AUTO_INCREMENT =1;
 END IF;
 
 
+SELECT MAX(id) from option_buy_order into MAX_ID;
+
+delete from option_buy_order;
+
+IF(MAX_ID > 9999999999) THEN
+
+ALTER TABLE option_buy_order AUTO_INCREMENT =1;
+
+END IF;
+
+
+SELECT MAX(id) from option_sell_order into MAX_ID;
+
+delete from option_sell_order;
+
+IF(MAX_ID > 9999999999) THEN
+
+ALTER TABLE option_sell_order AUTO_INCREMENT =1;
+
+END IF;
+
 
 END ;;
 DELIMITER ;
@@ -5351,8 +5366,6 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `PUT_MODIFY_OPTION_BUY_ORDER_EVENT`(
 SYMBOL_IN VARCHAR(45),
 OPTION_TYPE_IN varchar(2),
 OPTION_STRIKE_PRICE_IN FLOAT,
-NO_OF_LOTS_IN INT,
-QUANTITY_IN INT,
 MODIFIED_PRICE FLOAT,
 time_in datetime
 )
@@ -5443,6 +5456,10 @@ SET VAR_EFFICIENT_ORDER_PRICE = round_price_value(VAR_EFFICIENT_ORDER_PRICE);
 
 
 IF(VAR_EFFICIENT_ORDER_PRICE != VAR_INITIAL_ORDER_PRICE ) THEN
+
+CALL CALCULATE_QUANTITY_FROM_MARGIN(VAR_MARGIN_FOR_STOCK,VAR_EFFICIENT_ORDER_PRICE,VAR_LOT_SIZE,VAR_NO_OF_LOTS);
+
+SET VAR_QUANTITY = VAR_LOT_SIZE * VAR_NO_OF_LOTS;
 
 
 update option_buy_order
@@ -6167,6 +6184,130 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `RETRY_PUT_MODIFY_OPTION_BUY_ORDER_EVENT` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `RETRY_PUT_MODIFY_OPTION_BUY_ORDER_EVENT`(
+time_in datetime
+)
+BEGIN
+
+
+DECLARE cursor_OPTION_BUY_ERROR_EVENTS CURSOR FOR
+SELECT symbol,option_type,option_strike_price,buy_price
+FROM option_buy_order_event
+where event_type = 'ERMOD'
+and curr_time = time_in
+and is_event_handled = 0;
+
+
+  OPEN cursor_OPTION_BUY_ERROR_EVENTS;
+  BEGIN
+    DECLARE VAR_SYMBOL varchar(20);
+    DECLARE VAR_OPTION_TYPE varchar(2);
+    DECLARE VAR_OPTION_STRIKE_PRICE FLOAT;
+
+    DECLARE VAR_BUY_PRICE FLOAT(6,2);
+
+    DECLARE EXIT HANDLER FOR NOT FOUND BEGIN CLOSE cursor_OPTION_BUY_ERROR_EVENTS; END;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN CLOSE cursor_OPTION_BUY_ERROR_EVENTS; RESIGNAL; END;
+    LOOP
+      FETCH cursor_OPTION_BUY_ERROR_EVENTS INTO VAR_SYMBOL,VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE,
+                                VAR_BUY_PRICE;
+
+
+
+
+      CALL PUT_MODIFY_OPTION_BUY_ORDER_EVENT
+                        (VAR_SYMBOL,VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE,
+                                           VAR_BUY_PRICE,
+                                           now());
+
+    END LOOP;
+  END;
+
+update option_buy_order_event set is_event_handled = 1
+where event_type = 'ERMOD'
+and curr_time = time_in;
+
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `RETRY_PUT_MODIFY_OPTION_SELL_ORDER_EVENT` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `RETRY_PUT_MODIFY_OPTION_SELL_ORDER_EVENT`(
+time_in datetime
+)
+BEGIN
+
+
+DECLARE cursor_OPTION_SELL_ERROR_EVENTS CURSOR FOR
+SELECT symbol,option_type,option_strike_price,
+no_of_lots,quantity,sell_price
+FROM option_sell_order_event
+where event_type = 'ERMOD'
+and curr_time = time_in
+and is_event_handled = 0;
+
+
+  OPEN cursor_OPTION_SELL_ERROR_EVENTS;
+  BEGIN
+    DECLARE VAR_SYMBOL varchar(20);
+    DECLARE VAR_OPTION_TYPE varchar(2);
+    DECLARE VAR_OPTION_STRIKE_PRICE FLOAT;
+
+    DECLARE VAR_NO_OF_LOTS INT DEFAULT 0;
+    DECLARE VAR_QUANTITY INT DEFAULT 0;
+    DECLARE VAR_SELL_PRICE FLOAT(6,2);
+
+    DECLARE EXIT HANDLER FOR NOT FOUND BEGIN CLOSE cursor_OPTION_SELL_ERROR_EVENTS; END;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN CLOSE cursor_OPTION_SELL_ERROR_EVENTS; RESIGNAL; END;
+    LOOP
+      FETCH cursor_OPTION_SELL_ERROR_EVENTS INTO VAR_SYMBOL,VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE,
+                                VAR_NO_OF_LOTS,VAR_QUANTITY,VAR_SELL_PRICE;
+
+
+
+
+      CALL PUT_MODIFY_OPTION_SELL_ORDER_EVENT
+                        (VAR_SYMBOL,VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE,
+                                           VAR_NO_OF_LOTS,VAR_QUANTITY,
+                                           NULL,VAR_SELL_PRICE,
+                                           now(),FALSE);
+
+    END LOOP;
+  END;
+
+update option_sell_order_event set is_event_handled = 1
+where event_type = 'ERMOD'
+and curr_time = time_in;
+
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `SLOW_STOP_LOSS_TRIGGER` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -6437,4 +6578,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-05 10:17:48
+-- Dump completed on 2018-02-05 23:13:04
