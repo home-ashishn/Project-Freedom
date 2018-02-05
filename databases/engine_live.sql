@@ -66,7 +66,7 @@ CREATE TABLE `live_data` (
   `volume` int(11) DEFAULT NULL,
   `price` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=209314 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=217601 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -110,7 +110,7 @@ CREATE TABLE `live_option_price_data` (
   `bid_quantity_2` int(11) DEFAULT NULL,
   `offer_quantity_2` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=402194 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1473666 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -141,6 +141,20 @@ CREATE TABLE `live_option_price_data_archive` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `live_process_status_record`
+--
+
+DROP TABLE IF EXISTS `live_process_status_record`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `live_process_status_record` (
+  `curr_time` datetime NOT NULL,
+  `status` varchar(7) NOT NULL,
+  PRIMARY KEY (`curr_time`,`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `log_messages`
 --
 
@@ -152,6 +166,21 @@ CREATE TABLE `log_messages` (
   `source` varchar(100) NOT NULL,
   `message` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`curr_time`,`source`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `market_day_events_status`
+--
+
+DROP TABLE IF EXISTS `market_day_events_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `market_day_events_status` (
+  `curr_date` date NOT NULL,
+  `is_day_init_done` tinyint(4) DEFAULT NULL,
+  `is_market_opening_done` tinyint(4) DEFAULT NULL,
+  PRIMARY KEY (`curr_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -177,7 +206,7 @@ CREATE TABLE `negative_price_trend_data` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2015 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2207 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -202,7 +231,7 @@ CREATE TABLE `negative_price_trend_data_for_sell_order` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1935 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2193 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -248,7 +277,7 @@ CREATE TABLE `option_buy_order` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14312911 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14313029 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -271,7 +300,7 @@ CREATE TABLE `option_buy_order_cancelled` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14312911 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14313025 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -342,7 +371,7 @@ CREATE TABLE `option_position` (
   `buy_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `sell_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`order_id`,`buy_time`,`sell_time`)
-) ENGINE=InnoDB AUTO_INCREMENT=14312908 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14313029 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -365,7 +394,7 @@ CREATE TABLE `option_sell_order` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9899144 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9899188 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -427,7 +456,7 @@ CREATE TABLE `option_stop_loss_order_price` (
   `buy_price` float DEFAULT NULL,
   `sl_price` float NOT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1053 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1097 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -452,7 +481,7 @@ CREATE TABLE `positive_price_trend_data` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2699 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2870 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -477,7 +506,7 @@ CREATE TABLE `positive_price_trend_data_for_sell_order` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2648 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2851 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -918,6 +947,7 @@ INTO VAR_STRENGTH_TO_SELL_ORDER_FACTOR;
 
 
 IF(VAR_OPTION_TYPE = 'PE' ) THEN
+
 IF(ENCLOSED_RECORD_ID_IN IS NULL OR ENCLOSED_RECORD_ID_IN = 0) THEN
 
 SET VAR_CALCULATED_ORDER_PRICE = VAR_INITIAL_ORDER_PRICE * (1+
@@ -949,7 +979,8 @@ REPLACE INTO negative_price_trend_data_for_sell_order
 where symbol = SYMBOL_IN
 and curr_time = time_in
 and max_strength = STRENGTH_TO_BE_APPLIED_IN
-and is_strength_applied = 1);
+-- and is_strength_applied = 1
+);
 
 update negative_price_trend_data_for_sell_order
 set is_strength_applied = 0
@@ -1220,7 +1251,8 @@ REPLACE INTO positive_price_trend_data_for_sell_order
 where symbol = SYMBOL_IN
 and curr_time = time_in
 and max_strength = STRENGTH_TO_BE_APPLIED_IN
-and is_strength_applied = 1);
+-- and is_strength_applied = 1
+);
 
 update positive_price_trend_data_for_sell_order
 set is_strength_applied = 0
@@ -2828,7 +2860,8 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `COMPLETE_ORDER_CYCLE`(
 DUMMY_CURRENT_TIME datetime,
-INTERVAL_SECONDS_IN INT)
+INTERVAL_SECONDS_IN INT,
+IS_DUMMY_CYCLE BOOLEAN)
 BEGIN
 
 DECLARE TEXT_NEW_BUY_ORDER_TIME VARCHAR(100) DEFAULT '2018-01-21 09:30:00';
@@ -2840,7 +2873,7 @@ INTO TEXT_NEW_BUY_ORDER_TIME;
 
        CALL CHECK_PRICE_TREND_CYCLE(DUMMY_CURRENT_TIME);
 
-       CALL SLOW_STOP_LOSS_TRIGGER_CYCLE(DUMMY_CURRENT_TIME,INTERVAL_SECONDS_IN);
+       CALL SLOW_STOP_LOSS_TRIGGER_CYCLE(DUMMY_CURRENT_TIME,INTERVAL_SECONDS_IN,IS_DUMMY_CYCLE);
 
        CALL CHECK_ORDER_CYCLE(DUMMY_CURRENT_TIME);
 
@@ -2853,8 +2886,10 @@ INTO TEXT_NEW_BUY_ORDER_TIME;
 
        END IF;
 
-       -- CALL DUMMY_HANDLE_BUY_ORDER_EVENTS();
+IF(IS_DUMMY_CYCLE) THEN
 
+       CALL DUMMY_HANDLE_BUY_ORDER_EVENTS();
+END IF;
 
 
 END ;;
@@ -3023,16 +3058,16 @@ into LOT_SIZE_IN;
 
 
 
-SET PROJECTED_PRICE =  OPTION_CURRENT_PRICE_IN * (0.95 + (0.05 * RAND()) +(0.05 * RAND()));
+SET PROJECTED_PRICE =  OPTION_CURRENT_PRICE_IN * (0.97 + (0.03 * RAND()) +(0.03 * RAND()));
 
 
 SET RANDOM_FACTOR = RAND();
 
 IF( RANDOM_FACTOR <= 0.5) THEN
 
-SET CALCULATED_BID1_PRICE =  PROJECTED_PRICE  * (0.95 + (0.05 * RAND()));
+SET CALCULATED_BID1_PRICE =  PROJECTED_PRICE  * (0.97 + (0.03 * RAND()));
 
-SET CALCULATED_OFFER1_PRICE =  CALCULATED_BID1_PRICE  * (1 + (0.025 * RAND()));
+SET CALCULATED_OFFER1_PRICE =  CALCULATED_BID1_PRICE  * (1 + (0.015 * RAND()));
 
 SET CALCULATED_BID1_PRICE = round_price_value(CALCULATED_BID1_PRICE);
 
@@ -3097,9 +3132,9 @@ END IF;
 
 IF( RANDOM_FACTOR > 0.5) THEN
 
-SET CALCULATED_OFFER1_PRICE =  PROJECTED_PRICE  * (1 + (0.05 * RAND()));
+SET CALCULATED_OFFER1_PRICE =  PROJECTED_PRICE  * (1 + (0.03 * RAND()));
 
-SET CALCULATED_BID1_PRICE =  CALCULATED_OFFER1_PRICE  * (1 - (0.025 * RAND()));
+SET CALCULATED_BID1_PRICE =  CALCULATED_OFFER1_PRICE  * (1 - (0.015 * RAND()));
 
 SET CALCULATED_BID1_PRICE = round_price_value(CALCULATED_BID1_PRICE);
 
@@ -3298,12 +3333,9 @@ REPLACE INTO `engine_live`.`live_option_price_data`
 `option_type`,
 `option_strike_price`,
 `volume`,
-`last_price`,
-`open_price`,
-`high_price`,
-`low_price`)
+`last_price`)
 VALUES
-(null,time_in,SYMBOL_IN,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,rand()*500,VAR_CALCULATED_OPTION_PRICE,0,0,0);
+(null,time_in,SYMBOL_IN,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,rand()*500,VAR_CALCULATED_OPTION_PRICE);
 
 
 
@@ -3339,6 +3371,7 @@ select price,curr_time from live_data
 where symbol = SYMBOL_IN
 and TIMESTAMPDIFF(SECOND,curr_time,time_in) > 0
 and TIMESTAMPDIFF(SECOND,curr_time,time_in) <= 60
+order by curr_time desc limit 3
 ;
 
   OPEN LIVE_DATA_CN;
@@ -4392,6 +4425,9 @@ DATE_REFERENCE_IN DATE)
 BEGIN
 
 
+DECLARE MAX_ID INT;
+
+
 replace into basis_for_calls_archive(
 SELECT date(START_TIME_IN),a.* FROM basis_for_calls a);
 
@@ -4399,14 +4435,43 @@ SELECT date(START_TIME_IN),a.* FROM basis_for_calls a);
 replace into selected_instrument_archive(
 SELECT date(START_TIME_IN),a.* FROM selected_instrument a);
 
-
 replace into live_data_archive( SELECT * FROM live_data);
 
 replace into live_option_price_data_archive( SELECT * FROM live_option_price_data);
 
-delete from  live_data_archive where date(curr_time) < date_sub(DATE_REFERENCE_IN,interval 6 day);
+replace into live_process_status_record_archive( SELECT * FROM live_process_status_record);
 
-delete from  live_option_price_data_archive where date(curr_time) < date_sub(DATE_REFERENCE_IN,interval 6 day);
+
+delete from  live_data_archive
+where date(curr_time) < date_sub(DATE_REFERENCE_IN,interval 6 day);
+
+delete from  live_option_price_data_archive
+where date(curr_time) < date_sub(DATE_REFERENCE_IN,interval 6 day);
+
+delete from  live_process_status_record_archive
+where date(curr_time) < date_sub(DATE_REFERENCE_IN,interval 6 day);
+
+SELECT MAX(id) from live_data into MAX_ID;
+
+delete from live_data;
+
+
+IF(MAX_ID > 9999999999) THEN
+
+ALTER TABLE live_data AUTO_INCREMENT =1;
+
+END IF;
+
+SELECT MAX(id) from live_option_price_data into MAX_ID;
+
+delete from live_option_price_data;
+
+IF(MAX_ID > 9999999999) THEN
+
+ALTER TABLE live_option_price_data AUTO_INCREMENT =1;
+
+END IF;
+
 
 
 END ;;
@@ -4867,7 +4932,9 @@ DECLARE VAR_CURRENT_REFERENCE_TIME DATETIME;
 
 DECLARE VAR_NOW_TIME DATETIME;
 
-DECLARE IS_MARKET_OPENING_DONE BOOLEAN DEFAULT FALSE;
+DECLARE VAR_IS_DAY_INIT_DONE BOOLEAN DEFAULT FALSE;
+
+DECLARE VAR_IS_MARKET_OPENING_DONE BOOLEAN DEFAULT FALSE;
 
 
 DECLARE VAR_LOOP_START_TIME DATETIME;
@@ -4878,16 +4945,23 @@ DECLARE VAR_SLEEP_TIME INT DEFAULT 0;
 
 DECLARE VAR_TARGET_NEXT_START_TIME DATETIME;
 
+DECLARE TEXT_NEW_BUY_ORDER_TIME VARCHAR(100) DEFAULT '2018-01-21 09:30:00';
 
 
+DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN CALL RECORD_LOOP_OUTPUT(VAR_CURRENT_REFERENCE_TIME,true);
+RESIGNAL; END;
 
 
 
 -- SET DATE_REFERENCE = CURDATE();
 
-REPLACE INTO log_messages VALUES(DAY_START_REFERENCE,
+REPLACE INTO log_messages VALUES(NOW(),
                           concat('LIVE_DATA_EXECUTION_MASTER - ', DAY_START_REFERENCE)
                           , 'START');
+
+SELECT  text_param_value FROM trading_parameters WHERE param_id = 'NEW_BUY_ORDER_TIME'
+INTO TEXT_NEW_BUY_ORDER_TIME;
+
 
 SET DAY_START_REFERENCE = CONCAT(DATE(DATE_REFERENCE),' 09:15:00');
 
@@ -4901,12 +4975,26 @@ INTO VAR_STOP_LOSS_TRIGER_CYCLE_FREQUENCY;
 
 SET VAR_NOW_TIME = NOW();
 
-call INIT_DB_DAY_START(VAR_NOW_TIME);
+IF((VAR_NOW_TIME >= time('2018-01-21 09:15:00')) AND (VAR_NOW_TIME < time(TEXT_NEW_BUY_ORDER_TIME)) ) THEN
 
+select is_day_init_done from market_day_events_status where
+curr_date = DATE_REFERENCE into VAR_IS_DAY_INIT_DONE;
 
-REPLACE INTO `engine_live`.`live_data`
+IF(VAR_IS_DAY_INIT_DONE IS NULL OR !VAR_IS_DAY_INIT_DONE) THEN
+  call INIT_DB_DAY_START(VAR_NOW_TIME);
 
-(select null,CONCAT(DATE(DATE_REFERENCE),' 09:14:55'),a.symbol,0,a.prev_close from engine_live.basis_for_calls a);
+  REPLACE INTO `engine_live`.`live_data`
+
+  (select null,CONCAT(DATE(DATE_REFERENCE),' 09:14:55'),a.symbol,0,a.prev_close
+  from engine_live.basis_for_calls a);
+
+  SET VAR_IS_DAY_INIT_DONE = 1;
+
+  REPLACE INTO market_day_events_status VALUES(DATE_REFERENCE,1,0);
+
+END IF;
+
+END IF;
 
 
 SELECT TIMESTAMPDIFF(SECOND,VAR_NOW_TIME,DAY_END_REFERENCE) INTO INITIAL_FILL_TIME;
@@ -4926,17 +5014,29 @@ loop0: loop
           leave loop0;
        end if;
 
-       IF(time(VAR_CURRENT_REFERENCE_TIME) >= time('2018-01-21 09:15:00')) THEN
+       IF(time(VAR_CURRENT_REFERENCE_TIME) >= time('2018-01-21 09:15:00')
+       AND time(VAR_CURRENT_REFERENCE_TIME) < time('2018-01-21 09:30:00')) THEN
 
-          IF( ! IS_MARKET_OPENING_DONE) THEN
+       IF(VAR_IS_MARKET_OPENING_DONE IS NULL OR !VAR_IS_MARKET_OPENING_DONE) THEN
 
-            CALL MARKET_OPENING_MASTER(DAY_START_REFERENCE);
+         select is_market_opening_done from market_day_events_status where
+         curr_date = DATE_REFERENCE into VAR_IS_MARKET_OPENING_DONE;
 
-            SET IS_MARKET_OPENING_DONE = TRUE;
 
-          END IF;
+         IF(VAR_IS_MARKET_OPENING_DONE IS NULL OR !VAR_IS_MARKET_OPENING_DONE) THEN
 
-          -- CALL DUMMY_HANDLE_BUY_ORDER_EVENTS();
+          CALL MARKET_OPENING_MASTER(DAY_START_REFERENCE);
+
+          SET VAR_IS_MARKET_OPENING_DONE = 1;
+
+          update market_day_events_status set is_market_opening_done = 1
+          where curr_date =  DATE_REFERENCE;
+
+         END IF;
+
+       END IF;
+
+           -- CALL DUMMY_HANDLE_BUY_ORDER_EVENTS();
 
        END IF;
 
@@ -4950,20 +5050,22 @@ loop0: loop
        IF((l_loop % VAR_ORDER_CYCLE_FREQUENCY) = 0 ) then
 
 
-       CALL COMPLETE_ORDER_CYCLE(VAR_CURRENT_REFERENCE_TIME,60);
+       CALL COMPLETE_ORDER_CYCLE(VAR_CURRENT_REFERENCE_TIME,60,FALSE);
 
        -- ITERATE loop0;
 
 
        ELSE IF((l_loop % VAR_STOP_LOSS_TRIGER_CYCLE_FREQUENCY) = 0 ) then
 
-           call SLOW_STOP_LOSS_TRIGGER_CYCLE(VAR_CURRENT_REFERENCE_TIME,60);
+           call SLOW_STOP_LOSS_TRIGGER_CYCLE(VAR_CURRENT_REFERENCE_TIME,60,FALSE);
 
 
        END IF;
 
 
        END IF;
+
+       CALL RECORD_LOOP_OUTPUT(VAR_CURRENT_REFERENCE_TIME,FALSE);
 
        SET VAR_LOOP_END_TIME = NOW();
 
@@ -5489,7 +5591,7 @@ IF(IS_SL_ORDER_TRIGGER = 1) THEN
 
     SET VAR_CONVENTIONAL_SL_PRICE = VAR_BUY_PRICE * 0.9;
 
-    SET VAR_FINAL_SL_PRICE = GREATER(VAR_CONVENTIONAL_SL_PRICE, (VAR_EFFICIENT_ORDER_PRICE * 0.9));
+    SET VAR_FINAL_SL_PRICE = GREATEST(VAR_CONVENTIONAL_SL_PRICE, (VAR_EFFICIENT_ORDER_PRICE * 0.9));
 
     update option_stop_loss_order_price set sl_price = round_price_value(VAR_FINAL_SL_PRICE)
     where symbol = SYMBOL_IN
@@ -5824,7 +5926,7 @@ DECLARE IS_DUMMY_OPTION_DATA BOOLEAN DEFAULT FALSE;
 
 
 
-SET DATE_REFERENCE = '2018-01-30';
+SET DATE_REFERENCE = '2018-02-01';
 
 SET DAY_START_REFERENCE = CONCAT(DATE(DATE_REFERENCE),' 09:15:00');
 
@@ -5901,7 +6003,7 @@ loop0: loop
 
        end if;
 
-       IF(IS_DUMMY_OPTION_DATA_REQUIRED = 1) THEN
+       IF(IS_DUMMY_OPTION_DATA_REQUIRED) THEN
 
                    if(time(DUMMY_CURRENT_TIME) > time('2018-01-21 09:28:00')) then
 
@@ -5915,14 +6017,14 @@ loop0: loop
        IF((l_loop % VAR_ORDER_CYCLE_FREQUENCY) = 0 ) then
 
 
-       CALL COMPLETE_ORDER_CYCLE(DUMMY_CURRENT_TIME,60);
+       CALL COMPLETE_ORDER_CYCLE(DUMMY_CURRENT_TIME,60, TRUE);
 
        -- ITERATE loop0;
 
 
        ELSE IF((l_loop % VAR_STOP_LOSS_TRIGER_CYCLE_FREQUENCY) = 0 ) then
 
-           call SLOW_STOP_LOSS_TRIGGER_CYCLE(DUMMY_CURRENT_TIME,60);
+           call SLOW_STOP_LOSS_TRIGGER_CYCLE(DUMMY_CURRENT_TIME,60,TRUE);
 
 
        END IF;
@@ -5970,6 +6072,94 @@ END loop loop1;
 
 */
 
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `RECORD_LOOP_OUTPUT` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `RECORD_LOOP_OUTPUT`(
+CURRENT_REFERENCE_TIME_IN DATETIME,
+is_failed_flag boolean
+)
+proc_rlo : BEGIN
+
+DECLARE ORDER_ERR_RECORD_COUNT INT;
+
+IF(is_failed_flag) THEN
+
+REPLACE INTO live_process_status_record
+
+VALUES(CURRENT_REFERENCE_TIME_IN, 'FAILED');
+
+-- LEAVE proc_rlo;
+
+END IF;
+
+
+SELECT COUNT(*) FROM option_buy_order_event
+
+WHERE curr_time = CURRENT_REFERENCE_TIME_IN
+
+AND event_type like 'ER%'
+
+INTO ORDER_ERR_RECORD_COUNT;
+
+IF(ORDER_ERR_RECORD_COUNT > 0) THEN
+
+REPLACE INTO live_process_status_record
+
+VALUES(CURRENT_REFERENCE_TIME_IN, 'ERRBUY');
+
+END IF;
+
+
+
+SET ORDER_ERR_RECORD_COUNT = 0;
+
+SELECT COUNT(*) FROM option_sell_order_event
+
+WHERE curr_time = CURRENT_REFERENCE_TIME_IN
+
+AND event_type like 'ER%'
+
+INTO ORDER_ERR_RECORD_COUNT;
+
+IF(ORDER_ERR_RECORD_COUNT > 0) THEN
+
+REPLACE INTO live_process_status_record
+
+VALUES(CURRENT_REFERENCE_TIME_IN, 'ERRSELL');
+
+END IF;
+
+
+SET ORDER_ERR_RECORD_COUNT = 0;
+
+SELECT COUNT(*) FROM live_process_status_record
+
+WHERE curr_time = CURRENT_REFERENCE_TIME_IN
+
+INTO ORDER_ERR_RECORD_COUNT;
+
+IF (ORDER_ERR_RECORD_COUNT IS NULL OR ORDER_ERR_RECORD_COUNT = 0) THEN
+
+REPLACE INTO live_process_status_record
+
+VALUES(CURRENT_REFERENCE_TIME_IN, 'SUCCESS');
+
+END IF;
 
 END ;;
 DELIMITER ;
@@ -6055,11 +6245,16 @@ DELIMITER ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `SLOW_STOP_LOSS_TRIGGER_CYCLE`(
 CURRENT_TIME_IN DATETIME,
-INTERVAL_SECONDS_IN INT)
+INTERVAL_SECONDS_IN INT,
+IS_DUMMY_CYCLE BOOLEAN)
 BEGIN
 
 
--- CALL DUMMY_CHECK_POSITIONS(CURRENT_TIME_IN,INTERVAL_SECONDS_IN);
+IF(IS_DUMMY_CYCLE) THEN
+
+  CALL DUMMY_CHECK_POSITIONS(CURRENT_TIME_IN,INTERVAL_SECONDS_IN);
+
+END IF;
 
 CALL SLOW_STOP_LOSS_TRIGGER(CURRENT_TIME_IN,INTERVAL_SECONDS_IN);
 
@@ -6115,7 +6310,6 @@ DECLARE EXPIRY_DAYS_REMAINING INT DEFAULT 5;
 
 SET DATE_REFERENCE = '2018-01-29';
 
-SET DUMMY_NOW_TIME = CONCAT(DATE(DATE_REFERENCE),' 15:30:00');
 
 IF (DUMMY_NOW_TIME = NULL) THEN
 SET DUMMY_NOW_TIME = NOW();
@@ -6124,6 +6318,9 @@ END IF;
 
 
 SET DAY_START_REFERENCE = CONCAT(DATE(DATE_REFERENCE),' 09:28:00');
+
+SET DUMMY_NOW_TIME = CONCAT(DATE(DATE_REFERENCE),' 15:30:00');
+
 
 
 
@@ -6171,70 +6368,34 @@ BEGIN
 
 declare l_loop int default 0;
 
-
-declare NO_OF_ENTRIES int default 0; -- consider loop time to be 2 mins
-
 declare NO_OF_LOOPS_BEFORE_CURRENT_TIME int default 0; -- consider loop time to be 2 mins
 
 DECLARE DAY_START_REFERENCE DATETIME;
 
-DECLARE DAY_END_REFERENCE DATETIME;
-
 DECLARE DUMMY_NOW_TIME DATETIME;
-
 
 DECLARE INITIAL_FILL_TIME INT;
 
 DECLARE DUMMY_CURRENT_TIME DATETIME;
-
--- DECLARE DUMMY_START_TIME DATETIME;
-
-
-DECLARE VAR_ORDER_CYCLE_FREQUENCY FLOAT;
-
-DECLARE VAR_STOP_LOSS_TRIGER_CYCLE_FREQUENCY FLOAT;
 
 DECLARE DATE_REFERENCE DATE DEFAULT CURDATE();
 
 DECLARE EXPIRY_DAYS_REMAINING INT DEFAULT 5;
 
 
-SET DATE_REFERENCE = '2018-01-19';
+SET DATE_REFERENCE = '2018-02-01';
 
-SET DUMMY_NOW_TIME = CONCAT(DATE(DATE_REFERENCE),' 15:30:00');
 
-IF (DUMMY_NOW_TIME = NULL) THEN
-SET DUMMY_NOW_TIME = NOW();
-END IF;
-
-SET EXPIRY_DAYS_REMAINING = 5;
+SET EXPIRY_DAYS_REMAINING = 14;
 
 IF(DATE_REFERENCE = NULL) THEN
 SET DATE_REFERENCE =  curdate();
  END IF;
 
-SELECT  param_value FROM trading_parameters WHERE param_id = 'ORDER_CYCLE_FREQUENCY'
-INTO VAR_ORDER_CYCLE_FREQUENCY;
+SET DAY_START_REFERENCE = CONCAT(DATE(DATE_REFERENCE),' 14:06:38');
 
-SELECT  param_value FROM trading_parameters WHERE param_id = 'STOP_LOSS_TRIGER_CYCLE_FREQUENCY'
-INTO VAR_STOP_LOSS_TRIGER_CYCLE_FREQUENCY;
+SET DUMMY_NOW_TIME = CONCAT(DATE(DATE_REFERENCE),' 14:09:58');
 
-
-
-call INIT_DB_WITHOUT_LIVE_DATA(DATE_REFERENCE,1);
-
-REPLACE INTO `engine_live`.`live_data`
-
-(select null,CONCAT(DATE(DATE_REFERENCE),' 09:14:55'),a.symbol,0,a.prev_close from engine_live.basis_for_calls a);
-
-
-SET DAY_START_REFERENCE = CONCAT(DATE(DATE_REFERENCE),' 09:15:00');
-
-call MARKET_OPENING_MASTER(DAY_START_REFERENCE);
-
-CALL DUMMY_HANDLE_BUY_ORDER_EVENTS();
-
--- SET DUMMY_START_TIME = DAY_START_REFERENCE;
 
 SELECT TIMESTAMPDIFF(SECOND,DAY_START_REFERENCE,DUMMY_NOW_TIME) INTO INITIAL_FILL_TIME;
 
@@ -6253,45 +6414,11 @@ loop0: loop
 
        CALL DUMMY_CALCULATE_OPTION_PRICE_LIVE_MASTER(DUMMY_CURRENT_TIME, EXPIRY_DAYS_REMAINING);
 
+       CALL DUMMY_CALCULATE_OPTION_BID_OFFER_LIVE_MASTER(DUMMY_CURRENT_TIME);
+
+
 END loop loop0;
 
-
-
-/*
-
-set l_loop := 0;
-
-SET DAY_END_REFERENCE = CONCAT(DATE(DATE_REFERENCE),' 15:30:00');
-
-SELECT TIMESTAMPDIFF(SECOND,NOW(),DAY_END_REFERENCE) INTO INITIAL_FILL_TIME;
-
-
-
-SET NO_OF_ENTRIES  = INITIAL_FILL_TIME/ (VAR_STOP_LOSS_TRIGER_CYCLE_FREQUENCY * 60);
-
-
-loop1: loop
-
-       set l_loop := l_loop + 1;
-
-       IF l_loop > NO_OF_ENTRIES THEN
-          leave loop1;
-       end if;
-
-
-       CALL CHECK_PRICE_TREND_CYCLE(NULL);
-
-
-       CALL CHECK_BUY_ORDER_CYCLE(NULL);
-
-
-       CALL DUMMY_HANDLE_BUY_ORDER_EVENTS();
-
-        SELECT SLEEP((VAR_ORDER_CYCLE_FREQUENCY * 60) - 2);
-
-END loop loop1;
-
-*/
 
 
 END ;;
@@ -6310,4 +6437,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-04 11:01:12
+-- Dump completed on 2018-02-05 10:17:48
