@@ -4774,6 +4774,9 @@ DELETE FROM option_stop_loss_order_price where date(curr_time) < curdate();
 DELETE FROM negative_price_trend_data_for_sell_order where date(curr_time) < curdate();
 DELETE FROM positive_price_trend_data_for_sell_order where date(curr_time) < curdate();
 
+DELETE FROM live_process_status_record where date(curr_time) < curdate();
+
+
 
 
 END ;;
@@ -4963,6 +4966,13 @@ DECLARE VAR_TARGET_NEXT_START_TIME DATETIME;
 DECLARE TEXT_NEW_BUY_ORDER_TIME VARCHAR(100) DEFAULT '2018-01-21 09:30:00';
 
 
+DECLARE IS_DUMMY_EXECUTION BOOLEAN DEFAULT FALSE;
+
+
+
+
+
+
 DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN CALL RECORD_LOOP_OUTPUT(VAR_CURRENT_REFERENCE_TIME,true);
 RESIGNAL; END;
 
@@ -4970,8 +4980,10 @@ RESIGNAL; END;
 
 -- SET DATE_REFERENCE = CURDATE();
 
+-- SET IS_DUMMY_EXECUTION = TRUE;
+
 REPLACE INTO log_messages VALUES(NOW(),
-                          concat('LIVE_DATA_EXECUTION_MASTER - ', DAY_START_REFERENCE)
+                          concat('LIVE_DATA_EXECUTION_MASTER - ', now())
                           , 'START');
 
 SELECT  text_param_value FROM trading_parameters WHERE param_id = 'NEW_BUY_ORDER_TIME'
@@ -4990,6 +5002,20 @@ INTO VAR_STOP_LOSS_TRIGER_CYCLE_FREQUENCY;
 
 SET VAR_NOW_TIME = NOW();
 
+
+WHILE ( VAR_NOW_TIME < time('2018-01-21 09:15:00'))
+DO
+
+DO SLEEP(5);
+
+SET VAR_NOW_TIME = NOW();
+
+END WHILE;
+
+
+
+WHILE (!VAR_IS_DAY_INIT_DONE) DO
+
 IF((VAR_NOW_TIME >= time('2018-01-21 09:15:00')) AND (VAR_NOW_TIME < time(TEXT_NEW_BUY_ORDER_TIME)) ) THEN
 
 select is_day_init_done from market_day_events_status where
@@ -5000,7 +5026,7 @@ IF(VAR_IS_DAY_INIT_DONE IS NULL OR !VAR_IS_DAY_INIT_DONE) THEN
 
   REPLACE INTO `engine_live`.`live_data`
 
-  (select null,CONCAT(DATE(DATE_REFERENCE),' 09:14:55'),a.symbol,0,a.prev_close
+  (select null,CONCAT(DATE(DATE_REFERENCE),' 09:14:59'),a.symbol,0,a.prev_close
   from engine_live.basis_for_calls a);
 
   SET VAR_IS_DAY_INIT_DONE = 1;
@@ -5010,6 +5036,9 @@ IF(VAR_IS_DAY_INIT_DONE IS NULL OR !VAR_IS_DAY_INIT_DONE) THEN
 END IF;
 
 END IF;
+
+END WHILE;
+
 
 
 SELECT TIMESTAMPDIFF(SECOND,VAR_NOW_TIME,DAY_END_REFERENCE) INTO INITIAL_FILL_TIME;
@@ -5072,7 +5101,7 @@ loop0: loop
 
        ELSE IF((l_loop % VAR_STOP_LOSS_TRIGER_CYCLE_FREQUENCY) = 0 ) then
 
-           call SLOW_STOP_LOSS_TRIGGER_CYCLE(VAR_CURRENT_REFERENCE_TIME,60,FALSE);
+           call SLOW_STOP_LOSS_TRIGGER_CYCLE(VAR_CURRENT_REFERENCE_TIME,60,IS_DUMMY_EXECUTION);
 
 
        END IF;
@@ -5080,7 +5109,7 @@ loop0: loop
 
        END IF;
 
-       CALL RECORD_LOOP_OUTPUT(VAR_CURRENT_REFERENCE_TIME,FALSE);
+       CALL RECORD_LOOP_OUTPUT(VAR_CURRENT_REFERENCE_TIME,IS_DUMMY_EXECUTION);
 
        SET VAR_LOOP_END_TIME = NOW();
 
@@ -5826,7 +5855,7 @@ DECLARE CALCULATED_SELL_PRICE FLOAT DEFAULT 0;
 
 DECLARE VAR_INITIAL_TARGET_PROFIT_FACTOR FLOAT DEFAULT 1.15;
 
-DECLARE VAR_EFFICIENT_ORDER_PRICE FLOAT;
+-- DECLARE VAR_EFFICIENT_ORDER_PRICE FLOAT;
 
 
 
@@ -5836,6 +5865,7 @@ INTO VAR_INITIAL_TARGET_PROFIT_FACTOR;
 SET CALCULATED_SELL_PRICE = round_price_value(BUY_PRICE_IN * VAR_INITIAL_TARGET_PROFIT_FACTOR);
 
 
+/*
 
 CALL CALCULATE_EFFICIENT_SELL_ORDER_PRICE(SYMBOL_IN,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,
 CALCULATED_SELL_PRICE,QUANTITY_IN,time_in,VAR_EFFICIENT_ORDER_PRICE);
@@ -5858,11 +5888,11 @@ LEAVE proc_pnosoe;
 
 END IF;
 
-
+*/
 
 INSERT INTO option_sell_order
 VALUES
-(NULL,SYMBOL_IN,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,VAR_EFFICIENT_ORDER_PRICE,NO_OF_LOTS_IN,QUANTITY_IN,0,
+(NULL,SYMBOL_IN,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,CALCULATED_SELL_PRICE,NO_OF_LOTS_IN,QUANTITY_IN,0,
 0,0,QUANTITY_IN);
 
 
@@ -5870,12 +5900,12 @@ SET GENERATED_ORDER_ID =  LAST_INSERT_ID();
 
 INSERT INTO option_sell_order_log
 VALUES
-(GENERATED_ORDER_ID,SYMBOL_IN,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,VAR_EFFICIENT_ORDER_PRICE,
+(GENERATED_ORDER_ID,SYMBOL_IN,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,CALCULATED_SELL_PRICE,
 NO_OF_LOTS_IN,QUANTITY_IN,0,time_in,0,QUANTITY_IN);
 
 REPLACE INTO option_sell_order_event
 VALUES
-(GENERATED_ORDER_ID,SYMBOL_IN,time_in,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,VAR_EFFICIENT_ORDER_PRICE,
+(GENERATED_ORDER_ID,SYMBOL_IN,time_in,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,CALCULATED_SELL_PRICE,
                         NO_OF_LOTS_IN,QUANTITY_IN,'NEW',0);
 
 
@@ -6137,7 +6167,7 @@ IF(ORDER_ERR_RECORD_COUNT > 0) THEN
 
 REPLACE INTO live_process_status_record
 
-VALUES(CURRENT_REFERENCE_TIME_IN, 'ERRBUY');
+VALUES(CURRENT_REFERENCE_TIME_IN, 'ERRORD');
 
 END IF;
 
@@ -6157,7 +6187,7 @@ IF(ORDER_ERR_RECORD_COUNT > 0) THEN
 
 REPLACE INTO live_process_status_record
 
-VALUES(CURRENT_REFERENCE_TIME_IN, 'ERRSELL');
+VALUES(CURRENT_REFERENCE_TIME_IN, 'ERRORD');
 
 END IF;
 
@@ -6184,6 +6214,40 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `RETRY_ERROR_ORDERS` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `RETRY_ERROR_ORDERS`(
+time_in datetime,
+target_time_in datetime)
+BEGIN
+
+
+IF(target_time_in IS NULL) THEN
+
+SET target_time_in = now();
+
+END IF;
+
+CALL RETRY_PUT_MODIFY_OPTION_SELL_ORDER_EVENT(time_in,target_time_in);
+
+CALL RETRY_PUT_NEW_OPTION_BUY_ORDER_EVENT(target_time_in);
+
+CALL RETRY_PUT_MODIFY_OPTION_BUY_ORDER_EVENT(time_in,target_time_in);
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `RETRY_PUT_MODIFY_OPTION_BUY_ORDER_EVENT` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -6195,7 +6259,8 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `RETRY_PUT_MODIFY_OPTION_BUY_ORDER_EVENT`(
-time_in datetime
+time_in datetime,
+target_time_in datetime
 )
 BEGIN
 
@@ -6228,7 +6293,7 @@ and is_event_handled = 0;
       CALL PUT_MODIFY_OPTION_BUY_ORDER_EVENT
                         (VAR_SYMBOL,VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE,
                                            VAR_BUY_PRICE,
-                                           now());
+                                           target_time_in);
 
     END LOOP;
   END;
@@ -6255,7 +6320,8 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `RETRY_PUT_MODIFY_OPTION_SELL_ORDER_EVENT`(
-time_in datetime
+time_in datetime,
+target_time_in datetime
 )
 BEGIN
 
@@ -6292,7 +6358,7 @@ and is_event_handled = 0;
                         (VAR_SYMBOL,VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE,
                                            VAR_NO_OF_LOTS,VAR_QUANTITY,
                                            NULL,VAR_SELL_PRICE,
-                                           now(),FALSE);
+                                           target_time_in,FALSE);
 
     END LOOP;
   END;
@@ -6300,6 +6366,63 @@ and is_event_handled = 0;
 update option_sell_order_event set is_event_handled = 1
 where event_type = 'ERMOD'
 and curr_time = time_in;
+
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `RETRY_PUT_NEW_OPTION_BUY_ORDER_EVENT` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `RETRY_PUT_NEW_OPTION_BUY_ORDER_EVENT`(
+target_time_in datetime
+)
+BEGIN
+
+
+DECLARE cursor_OPTION_BUY_ERROR_EVENTS CURSOR FOR
+SELECT symbol,option_type,option_strike_price,buy_price
+FROM option_buy_order_event
+where event_type = 'ERNEW'
+-- and curr_time = time_in
+and is_event_handled = 0;
+
+
+  OPEN cursor_OPTION_BUY_ERROR_EVENTS;
+  BEGIN
+    DECLARE VAR_SYMBOL varchar(20);
+    DECLARE VAR_OPTION_TYPE varchar(2);
+    DECLARE VAR_OPTION_STRIKE_PRICE FLOAT;
+
+    DECLARE EXIT HANDLER FOR NOT FOUND BEGIN CLOSE cursor_OPTION_BUY_ERROR_EVENTS; END;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN CLOSE cursor_OPTION_BUY_ERROR_EVENTS; RESIGNAL; END;
+    LOOP
+      FETCH cursor_OPTION_BUY_ERROR_EVENTS INTO VAR_SYMBOL,VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE;
+
+
+
+
+      CALL PUT_NEW_OPTION_BUY_ORDER_EVENT
+                        (VAR_SYMBOL,VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE,
+                                           target_time_in);
+
+    END LOOP;
+  END;
+
+update option_buy_order_event set is_event_handled = 1
+where event_type = 'ERNEW'
+-- and curr_time = time_in
+;
 
 
 END ;;
@@ -6578,4 +6701,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-05 23:13:04
+-- Dump completed on 2018-02-06 15:40:34

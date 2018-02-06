@@ -18,18 +18,18 @@ import com.freedom.live.models.BasisForCallsRepository;
 
 @Component
 @Service
-public class MultithreadingManager {
+public class LiveExecutionManager {
 	
 	
 	@Autowired
-	private MultithreadingExtractor multithreadingExtractor;
+	private LiveExecutionCycle liveExecutionCycle;
 	
 	@Autowired
 	private BasisForCallsRepository basisForCallsRepository;
 	
-	private String startExtraction() throws Exception {
+	private String startExecution() throws Exception {
 		
-		multithreadingExtractor.scrapeURLs();
+		liveExecutionCycle.startExecutionMaster();
 		
 		return "";
 
@@ -37,12 +37,13 @@ public class MultithreadingManager {
 	}
 	
 	private void init() {
-		String[] symbols = new String[10];
-		String[] urls = new String[10];
+
 		
-		Iterable<BasisForCalls> basisList = basisForCallsRepository.findAll();
 
 		/*
+		
+		String[] symbols = new String[10];
+		String[] urls = new String[10];
 		
 		String[] symbols = { "HPC","COAL","TM","BATAINDIA","WIPRO","ADANIPORT","ONGC","IOC","ZEE","BOSCH"
 
@@ -60,35 +61,38 @@ public class MultithreadingManager {
 				"http://www.moneycontrol.com/india/stockpricequote/auto-ancillaries/bosch/B05"
 				};
 */
-		
+
+		Iterable<BasisForCalls> basisList = basisForCallsRepository.findAll();
+
 		for (BasisForCalls basisForCalls : basisList) {		
 		 
 
 			String symbol = basisForCalls.getSymbol();//"BATAINDIA" + i;
-
+/*
 			multithreadingExtractor.symbols.add(symbol);
 
 			multithreadingExtractor.mapUrls.put(symbol, basisForCalls.getUrl());
 
 			long globalVolume = new Long(0);
 			multithreadingExtractor.mapGlobalVolumes.put(symbol, globalVolume);
+*/		
 		}
 
 	}
 	
-	public void manageExtraction() throws Exception {
+	public void manageExecution() throws Exception {
 		// TODO Auto-generated method stub
 
 		init();
 
 
-		boolean isValidRange = checkTimeRange(); // true; 
+		boolean isValidRange = true; // checkTimeRange(); // true; 
 		
 		if(isValidRange) {
 			
 			// loopCheckTimeValidity();
 			
-			startExtraction();
+			startExecution();
 			
 			
 			
@@ -98,7 +102,7 @@ public class MultithreadingManager {
 		// else ()
 
 	}
-	
+/*	
 	private void loopCheckTimeValidity() {
 		ExecutorService executorService = Executors.newFixedThreadPool(2);
 		
@@ -113,7 +117,7 @@ public class MultithreadingManager {
 		
 		Callable<?> callableMain = new Callable<Object>() {
 			public String call() throws Exception {
-				return startExtraction();
+				return startExecution();
 
 			}
 
@@ -209,7 +213,7 @@ public class MultithreadingManager {
 		return true;
 	}
 
-	
+*/	
 	private void sop(String text) {
 		
 		System.out.println(text);

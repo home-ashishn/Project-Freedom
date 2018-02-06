@@ -25,7 +25,7 @@ public class Application{
 	@Bean
 	public String startApp(ApplicationContext ctx) throws BeansException, Exception {
 		
-		ctx.getBean(MultithreadingManager.class).manageExtraction();
+		ctx.getBean(LiveExecutionManager.class).manageExecution();
 		
 		return "";
 	}
