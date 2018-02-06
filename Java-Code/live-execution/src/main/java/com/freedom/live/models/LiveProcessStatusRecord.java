@@ -1,8 +1,7 @@
 package com.freedom.live.models;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -15,26 +14,28 @@ public class LiveProcessStatusRecord {
 
 
 	@Id
-	private DateTime curr_time;
+	@Column(name="curr_time")
+	private DateTime currTime;
 	
-	private String status;
+	private String process_status;
 	
 
 	public DateTime getCurr_time() {
-		return curr_time;
+		return currTime;
 	}
 
 	public void setCurr_time(DateTime curr_time) {
-		this.curr_time = curr_time;
+		this.currTime = curr_time;
 	}
 
-	public String getStatus() {
-		return status;
+	public String getProcess_status() {
+		return process_status;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setProcess_status(String process_status) {
+		this.process_status = process_status;
 	}
+
 
 	
 

@@ -29,7 +29,7 @@ public class LiveExecutionCycle {
 
 	public void startExecutionMaster() {
 
-		ThreadPoolExecutor executor = new ThreadPoolExecutor(7, 14, 0L, TimeUnit.MILLISECONDS,
+		ThreadPoolExecutor executor = new ThreadPoolExecutor(3, 6, 0L, TimeUnit.MILLISECONDS,
 				new LinkedBlockingQueue<Runnable>());
 
 		while (true) {
@@ -45,18 +45,18 @@ public class LiveExecutionCycle {
 
 			}
 
-			if (executor.getQueue().size() > 3) {
+			if (executor.getQueue().size() > 0) {
 				continue;
 			}
 
-			Callable<?> callableLEM = new Callable<Object>() {
+			Callable<?> callableLSC = new Callable<Object>() {
 				public String call() throws Exception {
 					liveStatusCheck();
 					return "";
 				}
 			};
 
-			executor.submit(callableLEM);
+			executor.submit(callableLSC);
 
 		}
 
@@ -84,13 +84,12 @@ public class LiveExecutionCycle {
 
 		// DateTime oneMinuteBack = new DateTime(cal.getTimeInMillis());
 
-		if (lastStatusCheck.isBefore(cal.getTimeInMillis())) {
+		// if (lastStatusCheck.isBefore(cal.getTimeInMillis())) 
+		{
 			// Write here logic to get Last\ loop record time and get data for
 			// one minute
 
 			getLastLoopStatus();
-
-			basisForCallsRepository.callRetryErrorOrders(null, new DateTime());
 
 			lastStatusCheck = new DateTime();
 
@@ -99,9 +98,9 @@ public class LiveExecutionCycle {
 
 	private void getLastLoopStatus() {
 
-		LiveProcessStatusRecord record = liveProcessStatusRecordRepository.findTopByCurr_time();
+		LiveProcessStatusRecord record = liveProcessStatusRecordRepository.findMaxRecord();
 
-		String status = record.getStatus();
+		String status = record.getProcess_status();
 
 		if (status == null) {
 			return;
@@ -126,6 +125,7 @@ public class LiveExecutionCycle {
 
 		{
 			isLiveExecutionMasterON = false;
+			callLiveDataExecutionMaster();
 		}
 
 		}

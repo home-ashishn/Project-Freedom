@@ -14,8 +14,8 @@ import org.joda.time.DateTime;
 @Table(name = "basis_for_calls")
 
 @NamedStoredProcedureQueries({
-		@NamedStoredProcedureQuery(name = "call_live_data_execution_master", procedureName = "LIVE_DATA_EXECUTION_MASTER"),
-		@NamedStoredProcedureQuery(name = "call_retry_error_orders", procedureName = "RETRY_ERROR_ORDERS", parameters = {
+		@NamedStoredProcedureQuery(name = "call_live_data_execution_master", procedureName = "engine_live.LIVE_DATA_EXECUTION_MASTER"),
+		@NamedStoredProcedureQuery(name = "call_retry_error_orders", procedureName = "engine_live.RETRY_ERROR_ORDERS", parameters = {
 				@StoredProcedureParameter(mode = ParameterMode.IN, name = "time_in", type = DateTime.class),
 				@StoredProcedureParameter(mode = ParameterMode.IN, name = "target_time_in", type = DateTime.class) }) })
 public class BasisForCalls {

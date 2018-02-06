@@ -149,7 +149,7 @@ public class IndicatorsLearningDBHelper {
 
 		connection.setAutoCommit(true);
 
-		CallableStatement callSt = connection.prepareCall("call engine_indicators_learning.INIT_DB_FOR_DATE(?)");
+		CallableStatement callSt = connection.prepareCall("{call engine_indicators_learning.INIT_DB_FOR_DATE(?)}");
 
 		
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -159,7 +159,7 @@ public class IndicatorsLearningDBHelper {
 		callSt.setString(3, getDateRange(new Date(),365,false));
 */
 		try {
-			callSt.execute();
+			callSt.executeUpdate();
 			callSt.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -187,7 +187,7 @@ public class IndicatorsLearningDBHelper {
 
 		connection.setAutoCommit(true);
 
-		CallableStatement callSt = connection.prepareCall("call engine_indicators_learning.RESET_DB_FOR_DATE(?)");
+		CallableStatement callSt = connection.prepareCall("{call engine_indicators_learning.RESET_DB_FOR_DATE(?)}");
 
 		
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -197,7 +197,7 @@ public class IndicatorsLearningDBHelper {
 		callSt.setString(3, getDateRange(new Date(),365,false));
 */
 		try {
-			callSt.execute();
+			callSt.executeUpdate();
 			callSt.close();
 		} catch (Exception e) {
 			e.printStackTrace();

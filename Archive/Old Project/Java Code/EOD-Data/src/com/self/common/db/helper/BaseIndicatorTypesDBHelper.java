@@ -54,7 +54,7 @@ public class BaseIndicatorTypesDBHelper extends BaseDBHelper{
 
 	connection.setAutoCommit(true);
 
-	CallableStatement callSt = connection.prepareCall("call data_accumulation(?,?,?)");
+	CallableStatement callSt = connection.prepareCall("{call data_accumulation(?,?,?)}");
 
 	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 	
@@ -64,7 +64,7 @@ public class BaseIndicatorTypesDBHelper extends BaseDBHelper{
 
 	
 	try {
-		callSt.execute();
+		callSt.executeUpdate();
 		callSt.close();
 	} catch (Exception e) {
 		e.printStackTrace();
@@ -91,11 +91,11 @@ public void initDB(int retryCount) throws Exception {
 
 	connection.setAutoCommit(true);
 
-	CallableStatement callSt = connection.prepareCall("call INIT_DB()");
+	CallableStatement callSt = connection.prepareCall("{call INIT_DB()}");
 
 	
 	try {
-		callSt.execute();
+		callSt.executeUpdate();
 		callSt.close();
 	} catch (Exception e) {
 		e.printStackTrace();
