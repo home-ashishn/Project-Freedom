@@ -65,7 +65,7 @@ public class LiveExecutionCycle {
 	private void callLiveDataExecutionMaster() {
 
 		isLiveExecutionMasterON = true;
-		basisForCallsRepository.callLiveDataExecutionMaster();
+		// basisForCallsRepository.callLiveDataExecutionMaster();
 
 	}
 	
@@ -84,7 +84,7 @@ public class LiveExecutionCycle {
 
 		// DateTime oneMinuteBack = new DateTime(cal.getTimeInMillis());
 
-		// if (lastStatusCheck.isBefore(cal.getTimeInMillis())) 
+		if (lastStatusCheck.isBefore(cal.getTimeInMillis())) 
 		{
 			// Write here logic to get Last\ loop record time and get data for
 			// one minute
@@ -102,11 +102,14 @@ public class LiveExecutionCycle {
 
 		String status = record.getProcess_status();
 
-		if (status == null) {
+		if (status == null || "".equals(status)) {
 			return;
 		}
+		
+		getLatestOptionData();
+		callRetryErrorOrders(record.getCurr_time());
 
-		switch (status) {
+/*		switch (status) {
 
 		case "SUCCESS":
 
@@ -129,6 +132,8 @@ public class LiveExecutionCycle {
 		}
 
 		}
+*/	
+		
 	}
 
 	private void getLatestOptionData() {

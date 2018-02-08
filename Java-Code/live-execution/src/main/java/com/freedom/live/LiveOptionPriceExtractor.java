@@ -1,6 +1,8 @@
 package com.freedom.live;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -9,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -19,13 +19,17 @@ import java.util.concurrent.TimeoutException;
 import org.joda.time.DateTime;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.json.BasicJsonParser;
+import org.springframework.boot.json.JsonParser;
 import org.springframework.stereotype.Component;
 
-import com.freedom.live.models.LiveStockData;
-import com.freedom.live.models.LiveStockDataRepository;
-
-import us.codecraft.xsoup.Xsoup;
+import com.freedom.live.models.LiveOptionPriceData;
+import com.freedom.live.models.LiveOptionPriceDataRepository;
+import com.freedom.live.models.SelectedInstrument;
 
 @Component
 public class LiveOptionPriceExtractor {
@@ -41,27 +45,33 @@ public class LiveOptionPriceExtractor {
 	 */
 
 	@Autowired
-	private LiveStockDataRepository liveStockDataRepository;
+	private LiveOptionPriceDataRepository LiveOptionPriceDataRepository;
 
-	List<String> symbols = new ArrayList<>();
+	List<SelectedInstrument> instrumentList = new ArrayList<>();
 
-	Map<String, String> mapUrls = new HashMap<String, String>();
+	Map<SelectedInstrument, String> mapUrls = new HashMap<SelectedInstrument, String>();
 
 	Date startTime;
 
 	int scrapeCount = 0;
 
-	Map<String, Long> mapGlobalVolumes;
+	Map<SelectedInstrument, Long> mapGlobalVolumes;
+	
+	 Map<SelectedInstrument, DateTime> mapGlobalTimeStamps;
 
-	List<LiveStockData> liveDataObjs = new ArrayList<>();
+
+	List<LiveOptionPriceData> liveDataObjs = new ArrayList<>();
+	
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
 
 	public LiveOptionPriceExtractor() {
 
 		try {
-			this.symbols = new ArrayList<>();
-			this.mapUrls = new HashMap<String, String>();
+			this.instrumentList = new ArrayList<SelectedInstrument>();
+			this.mapUrls = new HashMap<SelectedInstrument, String>();
 			// this.mapUrlDocuments = new HashMap<String, Document>();
-			this.mapGlobalVolumes = new HashMap<String, Long>();
+			this.mapGlobalVolumes = new HashMap<SelectedInstrument, Long>();
+			this.mapGlobalTimeStamps = new HashMap<SelectedInstrument, DateTime>();
 			this.liveDataObjs = new ArrayList<>();
 		} catch (Exception e) {
 			
@@ -71,7 +81,7 @@ public class LiveOptionPriceExtractor {
 	}
 
 	public void scrapeURLs() throws InterruptedException, ExecutionException, TimeoutException {
-			ThreadPoolExecutor executor = new ThreadPoolExecutor(7, 14,
+			ThreadPoolExecutor executor = new ThreadPoolExecutor(8, 16,
                 0L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<Runnable>());
 //		ExecutorService executorService = Executors.newFixedThreadPool(20);
@@ -80,21 +90,21 @@ public class LiveOptionPriceExtractor {
 			int count = 0;
 
 		while (true/* count < 500 */) {
-			for (String symbol : symbols)
+			for (SelectedInstrument instrument : instrumentList)
 
 			{
 				if(executor.getQueue().size() > 3)
 				{
 					continue;
 				}
-				String urlstr = "" + mapUrls.get(symbol);
+				String urlstr = "" + mapUrls.get(instrument);
 				//
 				// Create a callable instance which calls the function that invokes the scraping
 				// for each URL
 				//
 				Callable<?> callable = new Callable<Object>() {
 					public String call() throws Exception {
-						LiveStockData data = scrapeIndividualURls(symbol, urlstr);
+						LiveOptionPriceData data = scrapeIndividualURls(instrument, urlstr);
 
 						if (data == null) {
 							return "";
@@ -136,83 +146,380 @@ public class LiveOptionPriceExtractor {
 	 * @return
 	 * @throws IOException
 	 */
+	
+	// Below commented method with code for periodic updates greater than 20 seconds
 
-	// @Transactional
-	public LiveStockData scrapeIndividualURls(String symbol, String urlstr) throws IOException {
+	
+	public LiveOptionPriceData scrapeIndividualURls(SelectedInstrument instrument, String urlstr) throws IOException {
 
 		if (startTime == null) {
 			startTime = new Date();
 		}
 
-		Document document = null;
+		// String symbol = instrument.getSymbol();
 		
+		// String optionType = instrument.getOption_type();
+		// float strikePrice = instrument.getOption_strike_price();
+		
+		Document document = null;
+
 		// synchronized (MultithreadingExtractor.this)
 		{
-		document = Jsoup.connect(urlstr)
-				// .header("Cache-control", "no-cache").header("Cache-store",
-				// "no-store").timeout(4000)
-				.post();
+			document = Jsoup.connect(urlstr)
+					// .header("Cache-control",
+					// "no-cache").header("Cache-store",
+					// "no-store").timeout(4000)
+					.post();
+
+			// sop(""+document);
 		}
 		scrapeCount++;
 
-		Date endTime = new Date();
+		// Date endTime = new Date();
 
-		// sop("scrapeCount = " + scrapeCount);
+		Elements descs = document.select("div#responseDiv");
+		Element desc;
+		desc = descs.first();
+		List<Node> childNodes = desc.childNodes();
 
-		String xpathExpPrice = "//*[@id=\"Nse_Prc_tick\"]/strong";
+		Node first = childNodes.get(0);
 
-		String lastPrice = "0";
-
-		lastPrice = Xsoup.compile(xpathExpPrice).evaluate(document).get();
-		lastPrice = cleanData(lastPrice);
-
-		String xpathExpVolume = "//*[@id=\"nse_volume\"]/strong";
-
+		
 		String volume = "0";
-
-		volume = Xsoup.compile(xpathExpVolume).evaluate(document).get();
-		volume = cleanData(volume);
-
-		// // sop("lastPrice = " + lastPrice);
-		// // sop("volume = " + volume);
 		
-		Calendar cal = Calendar.getInstance();
-		
-		cal.add(Calendar.SECOND, -7);
-		
-		DateTime quoteCurrentTime = new DateTime(cal.getTime());
+		volume = getValueFromNode(instrument,first, "numberOfContractsTraded", "underlyingValue",2);
 
-		if (new Long(volume).compareTo(mapGlobalVolumes.get(symbol)) != 0) {
+/*
+		String openPrice = "0";
+		
+		openPrice = getValueFromNode(instrument,first, "openPrice", "closePrice",2);
 
-			sop("update for symbol = " + symbol);
+
+		String highPrice = "0";
+		
+		highPrice = getValueFromNode(instrument,first, "highPrice", "companyName",4);
+
+
+		String lowPrice = "0";
+		
+		lowPrice = getValueFromNode(instrument,first, "lowPrice", "strikePrice",2);
+		
+*/
+		String currTime = "0";
+		
+		currTime = getValueFromNode(instrument,first, "lastUpdateTime", "ocLink",2);
+		
+		DateTime newTimeStamp = null;
+		
+		try {
+			newTimeStamp = new DateTime(simpleDateFormat.parse(currTime));
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		DateTime oldTimeStamp = mapGlobalTimeStamps.get(instrument);
+		
+		boolean isNewTimeStampReading = false;
+
+		if(newTimeStamp != null){
+			
+			long difference = newTimeStamp.getMillis() - oldTimeStamp.getMillis();
+			
+			if(difference > 15000){
+				isNewTimeStampReading = true;
+			}
+			oldTimeStamp = null;
+		}
+		
+		
+		if ((new Long(volume).compareTo(mapGlobalVolumes.get(instrument)) > 0) || isNewTimeStampReading) {
+
+			// sop("update for symbol = " + symbol + ", optionType = " + optionType + ", strikePrice = " + strikePrice);
 
 			long globalVolume = new Long(volume);
 
-			mapGlobalVolumes.put(symbol, globalVolume);
+			mapGlobalVolumes.put(instrument, globalVolume);
+			mapGlobalTimeStamps.put(instrument, newTimeStamp);
 
-			LiveStockData liveStockData = new LiveStockData();
+			String lastPrice = "0";
 
-			// liveStockData.setId(0);
-			liveStockData.setCurr_time(quoteCurrentTime);
-			liveStockData.setSymbol(symbol);
-			liveStockData.setVolume(globalVolume);
-			liveStockData.setPrice(new Float(lastPrice));
+			lastPrice = getValueFromNode(instrument,first, "lastPrice", "lowPrice",2);
 
-			return liveStockData;
+			
+			String bidPrice1 = "0";
 
+			bidPrice1 = getValueFromNode(instrument,first, "buyPrice1", "sellQuantity4",2);
+			
+			String bidQuantity1 = "0";
+
+			bidQuantity1 = getValueFromNode(instrument,first, "buyQuantity1", "ltp",2);
+			
+			String bidPrice2 = "0";
+
+			bidPrice2 = getValueFromNode(instrument,first, "buyPrice2", "sellQuantity3",2);
+			
+			String bidQuantity2 = "0";
+
+			bidQuantity2 = getValueFromNode(instrument,first, "buyQuantity2", "sellPrice5",2);
+			
+			String offerPrice1 = "0";
+
+			offerPrice1 = getValueFromNode(instrument,first, "sellPrice1", "buyQuantity3",2);
+			
+			String offerQuantity1 = "0";
+
+			offerQuantity1 = getValueFromNode(instrument,first, "sellQuantity1", "buyPrice1",2);
+			
+			String offerPrice2 = "0";
+
+			offerPrice2 = getValueFromNode(instrument,first, "sellPrice2", "buyQuantity4",2);
+			
+			String offerQuantity2 = "0";
+
+			offerQuantity2 = getValueFromNode(instrument,first, "sellQuantity2", "sellQuantity1",2);
+			
+			
+
+			LiveOptionPriceData liveOptionPriceData = new LiveOptionPriceData();
+
+			// LiveOptionPriceData.setId(0);
+			
+
+
+			liveOptionPriceData.setCurr_time(newTimeStamp);
+			liveOptionPriceData.setSymbol(instrument.getSymbol());
+			liveOptionPriceData.setOption_type(instrument.getOption_type());
+			liveOptionPriceData.setOption_strike_price(instrument.getOption_strike_price());
+			liveOptionPriceData.setVolume(globalVolume);
+			liveOptionPriceData.setLast_price(new Float(lastPrice));
+			liveOptionPriceData.setBid_price_1(new Float(bidPrice1));
+			liveOptionPriceData.setBid_quantity_1(new Integer(bidQuantity1));
+			liveOptionPriceData.setBid_price_2(new Float(bidPrice2));
+			liveOptionPriceData.setBid_quantity_2(new Integer(bidQuantity2));
+			liveOptionPriceData.setOffer_price_1(new Float(offerPrice1));
+			liveOptionPriceData.setOffer_quantity_1(new Integer(offerQuantity1));
+			liveOptionPriceData.setOffer_price_2(new Float(offerPrice2));
+			liveOptionPriceData.setOffer_quantity_2(new Integer(offerQuantity2));
+
+			return liveOptionPriceData;
 
 		}
 
-		// sop("Time Taken = " + (endTime.getTime() - startTime.getTime()) + " ms for symbol = " + symbol + " and " + "scrapeCount = " + scrapeCount);
+		// sop("Time Taken = " + (endTime.getTime() - startTime.getTime()) + "
+		// ms for symbol = " + symbol + " and " + "scrapeCount = " +
+		// scrapeCount);
 
 		return null;
 
 	}
 
-	private void putDatainList(LiveStockData liveStockData) {
+	
+	
+/*	
+	public LiveOptionPriceData scrapeIndividualURls(SelectedInstrument instrument, String urlstr) throws IOException {
+
+		if (startTime == null) {
+			startTime = new Date();
+		}
+
+		String symbol = instrument.getSymbol();
+		String optionType = instrument.getOption_type();
+		float strikePrice = instrument.getOption_strike_price();
+		
+		Document document = null;
+
+		// synchronized (MultithreadingExtractor.this)
+		{
+			document = Jsoup.connect(urlstr)
+					// .header("Cache-control",
+					// "no-cache").header("Cache-store",
+					// "no-store").timeout(4000)
+					.post();
+
+			// sop(""+document);
+		}
+		scrapeCount++;
+
+		// Date endTime = new Date();
+
+		Elements descs = document.select("div#responseDiv");
+		Element desc;
+		desc = descs.first();
+		List<Node> childNodes = desc.childNodes();
+
+		Node first = childNodes.get(0);
+
+		
+		String volume = "0";
+		
+		volume = getValueFromNode(instrument,first, "numberOfContractsTraded", "underlyingValue",2);
+
+
+		String openPrice = "0";
+		
+		openPrice = getValueFromNode(instrument,first, "openPrice", "closePrice",2);
+
+
+		String highPrice = "0";
+		
+		highPrice = getValueFromNode(instrument,first, "highPrice", "companyName",4);
+
+
+		String lowPrice = "0";
+		
+		lowPrice = getValueFromNode(instrument,first, "lowPrice", "strikePrice",2);
+		
+
+		
+		// if ((new Long(volume).compareTo(mapGlobalVolumes.get(instrument)) > 0) || isNewTimeStampReading) 
+		 // {
+
+			sop("update for symbol = " + symbol + ", optionType = " + optionType + ", strikePrice = " + strikePrice);
+
+			long globalVolume = new Long(volume);
+
+			mapGlobalVolumes.put(instrument, globalVolume);
+			
+			// mapGlobalTimeStamps.put(instrument, newTimeStamp);
+			
+			String currTime = "0";
+			
+			currTime = getValueFromNode(instrument,first, "lastUpdateTime", "ocLink",2);
+			
+			
+			DateTime newTimeStamp = null;
+			try {
+				newTimeStamp = new DateTime(simpleDateFormat.parse(currTime));
+			} catch (ParseException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+
+
+
+			String lastPrice = "0";
+
+			lastPrice = getValueFromNode(instrument,first, "lastPrice", "lowPrice",2);
+
+			
+			String bidPrice1 = "0";
+
+			bidPrice1 = getValueFromNode(instrument,first, "buyPrice1", "sellQuantity4",2);
+			
+			String bidQuantity1 = "0";
+
+			bidQuantity1 = getValueFromNode(instrument,first, "buyQuantity1", "ltp",2);
+			
+			String bidPrice2 = "0";
+
+			bidPrice2 = getValueFromNode(instrument,first, "buyPrice2", "sellQuantity3",2);
+			
+			String bidQuantity2 = "0";
+
+			bidQuantity2 = getValueFromNode(instrument,first, "buyQuantity2", "sellPrice5",2);
+			
+			String offerPrice1 = "0";
+
+			offerPrice1 = getValueFromNode(instrument,first, "sellPrice1", "buyQuantity3",2);
+			
+			String offerQuantity1 = "0";
+
+			offerQuantity1 = getValueFromNode(instrument,first, "sellQuantity1", "buyPrice1",2);
+			
+			String offerPrice2 = "0";
+
+			offerPrice2 = getValueFromNode(instrument,first, "sellPrice2", "buyQuantity4",2);
+			
+			String offerQuantity2 = "0";
+
+			offerQuantity2 = getValueFromNode(instrument,first, "sellQuantity2", "sellQuantity1",2);
+			
+			
+
+			LiveOptionPriceData liveOptionPriceData = new LiveOptionPriceData();
+
+			// LiveOptionPriceData.setId(0);
+			
+
+
+			try {
+				liveOptionPriceData.setCurr_time(new DateTime(simpleDateFormat.parse(currTime)));
+			} catch (ParseException e) {
+				e.printStackTrace();
+				Calendar cal = Calendar.getInstance();
+				cal.add(Calendar.MINUTE, -2);
+				liveOptionPriceData.setCurr_time(new DateTime(cal.getTime()));
+			}
+			liveOptionPriceData.setSymbol(symbol);
+			liveOptionPriceData.setOption_type(instrument.getOption_type());
+			liveOptionPriceData.setOption_strike_price(instrument.getOption_strike_price());
+			liveOptionPriceData.setVolume(globalVolume);
+			liveOptionPriceData.setLast_price(new Float(lastPrice));
+			liveOptionPriceData.setOpen_price(new Float(openPrice));
+			liveOptionPriceData.setHigh_price(new Float(highPrice));
+			liveOptionPriceData.setLow_price(new Float(lowPrice));
+			
+			liveOptionPriceData.setBid_price_1(new Float(bidPrice1));
+			liveOptionPriceData.setBid_quantity_1(new Float(bidQuantity1));
+			liveOptionPriceData.setBid_price_2(new Float(bidPrice2));
+			liveOptionPriceData.setBid_quantity_2(new Float(bidQuantity2));
+			liveOptionPriceData.setOffer_price_1(new Float(offerPrice1));
+			liveOptionPriceData.setOffer_quantity_1(new Float(offerQuantity1));
+			liveOptionPriceData.setOffer_price_2(new Float(offerPrice2));
+			liveOptionPriceData.setOffer_quantity_2(new Float(offerQuantity2));
+
+			return liveOptionPriceData;
+
+		// }
+
+		// sop("Time Taken = " + (endTime.getTime() - startTime.getTime()) + "
+		// ms for symbol = " + symbol + " and " + "scrapeCount = " +
+		// scrapeCount);
+
+		// return null;
+
+	}
+
+
+*/	
+	private String getValueFromNode(SelectedInstrument instrument, Node first, String strTarget, String strNext, int noCharsFromNext) {
+
+		JsonParser parser = new BasicJsonParser();
+		Map<String, Object> output = null;
+		String finalBit = "";
+		try {
+			String input = first.toString().trim();
+			int indexOfTarget = input.lastIndexOf(strTarget);
+			int indexOfNext = input.lastIndexOf(strNext);
+			String lastPriceBit = "0";
+
+			if(indexOfTarget > 0 && indexOfNext > 0 )
+			{
+				lastPriceBit = input.substring(indexOfTarget - 1, indexOfNext - noCharsFromNext);
+
+			}
+
+			 finalBit = "{" + lastPriceBit + "}";
+			 finalBit = finalBit.replaceAll("," , "");
+			output = parser.parseMap(finalBit);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			//return getValueFromNode(instrument,first,strTarget,strNext,noCharsFromNext);
+			sop("error for field " + strTarget + " for symbol-" + instrument.getSymbol() + " for optionType-"
+					+ instrument.getOption_type() + " for strikePrice-" + instrument.getOption_strike_price());
+		}
+
+		return "" + output.get(strTarget);
+	}
+
+	
+	private void putDatainList(LiveOptionPriceData LiveOptionPriceData) {
 
 		synchronized (liveDataObjs) {
-			liveDataObjs.add(liveStockData);
+			liveDataObjs.add(LiveOptionPriceData);
 		}
 
 	}
@@ -221,8 +528,18 @@ public class LiveOptionPriceExtractor {
 
 		try {
 			synchronized (liveDataObjs) {
-				liveStockDataRepository.save(liveDataObjs);
-				liveDataObjs = new ArrayList<LiveStockData>();
+				
+				try {
+					LiveOptionPriceDataRepository.save(liveDataObjs);
+					
+					sop("^^^^^^^ &&&&&&& SUCCESSFULY SAVED");
+
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					sop("^^^^^^^ &&&&&&& ERROR WHILE SAVING ^^^^^^^ &&&&&&&"+e.getMessage());
+				}
+				
+				liveDataObjs = new ArrayList<LiveOptionPriceData>();
 			}
 		} catch (Exception e) {
 			
@@ -231,11 +548,11 @@ public class LiveOptionPriceExtractor {
 
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws Exception {/*
 
 		// JsoupTest jt = new JsoupTest();
 
-		LiveOptionPriceExtractor mt = new LiveOptionPriceExtractor();
+		MultithreadingExtractor mt = new MultithreadingExtractor();
 
 		String[] symbols = { "HPC", "COAL", "TM", "BATA", "WIPRO", "ADANIPORT", "ONGC", "IOC", "ZEE", "BOSCH"
 
@@ -257,9 +574,9 @@ public class LiveOptionPriceExtractor {
 
 			String symbol = symbols[i];// "BATAINDIA" + i;
 
-			mt.symbols.add(symbol);
+			mt.instrumentList.add(symbol);
 
-			mt.mapUrls.put(symbol, urls[i]);
+			mt.mapUrls.put(SelectedInstrument, urls[i]);
 
 			long globalVolume = new Long(0);
 			mt.mapGlobalVolumes.put(symbol, globalVolume);
@@ -267,7 +584,7 @@ public class LiveOptionPriceExtractor {
 
 		mt.scrapeURLs();
 		// currTime.downloadData();
-	}
+	*/}
 
 	private String cleanData(String input) {
 		input = input.replaceAll(",", "");
@@ -279,7 +596,7 @@ public class LiveOptionPriceExtractor {
 
 	private void sop(String text) {
 
-		// System.out.println(text);
+		System.out.println(text);
 	}
 
 }
