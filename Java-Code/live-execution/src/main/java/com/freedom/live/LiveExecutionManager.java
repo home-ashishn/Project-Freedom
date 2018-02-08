@@ -7,12 +7,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.freedom.live.models.BasisForCalls;
 import com.freedom.live.models.BasisForCallsRepository;
+import com.freedom.live.models.SelectedInstrument;
+import com.freedom.live.models.SelectedInstrumentRepository;
 
 
 
@@ -20,16 +23,27 @@ import com.freedom.live.models.BasisForCallsRepository;
 @Service
 public class LiveExecutionManager {
 	
-	
+/*	
 	@Autowired
 	private LiveExecutionCycle liveExecutionCycle;
+	
+*/	
 	
 	@Autowired
 	private BasisForCallsRepository basisForCallsRepository;
 	
+	@Autowired
+	private SelectedInstrumentRepository selectedInstrumentRepository;
+	
+	@Autowired
+	LiveOptionPriceExtractor liveOptionPriceExtractor;
+	
+	@Autowired
+	LiveStockPriceExtractor liveStockPriceExtractor;
+	
 	private String startExecution() throws Exception {
 		
-		liveExecutionCycle.startExecutionMaster();
+		// liveExecutionCycle.startExecutionMaster();
 		
 		return "";
 
@@ -40,27 +54,6 @@ public class LiveExecutionManager {
 
 		
 
-		/*
-		
-		String[] symbols = new String[10];
-		String[] urls = new String[10];
-		
-		String[] symbols = { "HPC","COAL","TM","BATAINDIA","WIPRO","ADANIPORT","ONGC","IOC","ZEE","BOSCH"
-
-		};
-
-		String[] urls = { "http://www.moneycontrol.com/india/stockpricequote/refineries/hindustanpetroleumcorporation/HPC",
-				"http://www.moneycontrol.com/india/stockpricequote/mining-minerals/coalindia/CI11",
-				"http://www.moneycontrol.com/india/stockpricequote/computers-software/techmahindra/TM4",
-				"http://www.moneycontrol.com/india/stockpricequote/leather-products/bataindia/BI01",
-				"http://www.moneycontrol.com/india/stockpricequote/computers-software/wipro/W",
-				"http://www.moneycontrol.com/india/stockpricequote/infrastructure-general/adaniportsspecialeconomiczone/MPS",
-				"http://www.moneycontrol.com/india/stockpricequote/oil-drilling-and-exploration/oilnaturalgascorporation/ONG",
-				"http://www.moneycontrol.com/india/stockpricequote/refineries/indianoilcorporation/IOC",
-				"http://www.moneycontrol.com/india/stockpricequote/media-entertainment/zeeentertainmententerprises/ZEE",
-				"http://www.moneycontrol.com/india/stockpricequote/auto-ancillaries/bosch/B05"
-				};
-*/
 
 		Iterable<BasisForCalls> basisList = basisForCallsRepository.findAll();
 
@@ -68,20 +61,41 @@ public class LiveExecutionManager {
 		 
 
 			String symbol = basisForCalls.getSymbol();//"BATAINDIA" + i;
-/*
-			multithreadingExtractor.symbols.add(symbol);
 
-			multithreadingExtractor.mapUrls.put(symbol, basisForCalls.getUrl());
+			liveStockPriceExtractor.symbols.add(symbol);
+
+			liveStockPriceExtractor.mapUrls.put(symbol, basisForCalls.getUrl());
 
 			long globalVolume = new Long(0);
-			multithreadingExtractor.mapGlobalVolumes.put(symbol, globalVolume);
-*/		
+			liveStockPriceExtractor.mapGlobalVolumes.put(symbol, globalVolume);
+		
 		}
+		
+		Iterable<SelectedInstrument> instrumentList = selectedInstrumentRepository.findAll();
+
+			for (SelectedInstrument selectedInstrument : instrumentList) {
+
+
+				liveOptionPriceExtractor.instrumentList.add(selectedInstrument);
+
+				liveOptionPriceExtractor.mapUrls.put(selectedInstrument, selectedInstrument.getUrl());
+
+				long globalVolume = new Long(0);
+				liveOptionPriceExtractor.mapGlobalVolumes.put(selectedInstrument, globalVolume);
+				
+				
+				DateTime currentTime = new DateTime();
+				
+				liveOptionPriceExtractor.mapGlobalTimeStamps.put(selectedInstrument, currentTime);
+
+
+			}
+
+		
 
 	}
 	
 	public void manageExecution() throws Exception {
-		// TODO Auto-generated method stub
 
 		init();
 
@@ -90,7 +104,6 @@ public class LiveExecutionManager {
 		
 		if(isValidRange) {
 			
-			// loopCheckTimeValidity();
 			
 			startExecution();
 			
@@ -99,121 +112,8 @@ public class LiveExecutionManager {
 
 		}
 		
-		// else ()
 
 	}
-/*	
-	private void loopCheckTimeValidity() {
-		ExecutorService executorService = Executors.newFixedThreadPool(2);
-		
-		Callable<?> callableValidityCheck = new Callable<Object>() {
-			public String call() throws Exception {
-				return checkTimeValidity();
-
-			}
-
-
-		};
-		
-		Callable<?> callableMain = new Callable<Object>() {
-			public String call() throws Exception {
-				return startExecution();
-
-			}
-
-
-		};
-
-		 executorService.submit(callableValidityCheck);
-		
-		executorService.submit(callableMain);
-
-		
-	}
-
-	public String checkTimeValidity() throws Exception {
-		
-		// sop("###$$$$$%%%%%%%%%%%% inside checkTimeValidity %%%%%%^^^^^^^^^^$$$$$$$$$$$$$");
-
-		Calendar calEnd = Calendar.getInstance();
-		
-		calEnd.set(Calendar.HOUR_OF_DAY, 15);
-		
-		calEnd.set(Calendar.MINUTE, 35);
-
-		Calendar calBegin = Calendar.getInstance();
-		
-		calEnd.set(Calendar.HOUR_OF_DAY, 9);
-		
-		calEnd.set(Calendar.MINUTE, 14);
-
-		Calendar cal1 = Calendar.getInstance();
-		
-		long timeDifference = cal1.getTimeInMillis() - calBegin.getTimeInMillis();
-
-		if(timeDifference > 0)
-		try {
-			
-			Thread.sleep(timeDifference);
-			checkTimeValidity();
-			return "";
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			
-		}
-		
-		
-		 timeDifference = calEnd.getTimeInMillis() - cal1.getTimeInMillis();
-		
-		if(timeDifference < 0)
-		{
-			System.exit(0);
-			return "";
-		}
-		try {
-			
-			Thread.sleep(timeDifference);
-			checkTimeValidity();
-			return "";
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			
-		}
-		
-		return "";
-
-	}
-	
-	private boolean checkTimeRange() {
-		
-		// sop("###$$$$$%%%%%%%%%%%% inside checkTimeRange %%%%%%^^^^^^^^^^$$$$$$$$$$$$$");
-
-
-		Calendar cal = Calendar.getInstance();
-
-		int hour = cal.get(Calendar.HOUR_OF_DAY);
-
-		int minute = cal.get(Calendar.MINUTE);
-
-		if (hour < 9 || hour > 16)
-			return false;
-
-		if (hour == 9) {
-			if (minute < 10)
-				return false;
-		}
-
-		if (hour == 15) {
-			if (minute >= 30)
-				return false;
-		}
-
-		return true;
-	}
-
-*/	
 	private void sop(String text) {
 		
 		System.out.println(text);

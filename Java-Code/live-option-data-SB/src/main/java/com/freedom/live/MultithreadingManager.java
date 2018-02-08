@@ -21,7 +21,7 @@ public class MultithreadingManager {
 	private MultithreadingExtractor multithreadingExtractor;
 
 	@Autowired
-	private SelectedInstrumentRepository basisForCallsRepository;
+	private SelectedInstrumentRepository selectedInstrumentRepository;
 
 	private String startExtraction() throws Exception {
 
@@ -35,7 +35,7 @@ public class MultithreadingManager {
 		String[] symbols = new String[10];
 		String[] urls = new String[10];
 
-		Iterable<SelectedInstrument> instrumentList = basisForCallsRepository.findAll();
+		Iterable<SelectedInstrument> instrumentList = selectedInstrumentRepository.findAll();
 
 		/*
 		 * 

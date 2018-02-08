@@ -66,7 +66,7 @@ CREATE TABLE `live_data` (
   `volume` int(11) DEFAULT NULL,
   `price` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=217601 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=217629 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -141,6 +141,20 @@ CREATE TABLE `live_option_price_data_archive` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `live_procedure_status`
+--
+
+DROP TABLE IF EXISTS `live_procedure_status`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `live_procedure_status` (
+  `curr_date` date NOT NULL,
+  `process_status` tinyint(4) NOT NULL,
+  PRIMARY KEY (`curr_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `live_process_status_record`
 --
 
@@ -149,8 +163,9 @@ DROP TABLE IF EXISTS `live_process_status_record`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `live_process_status_record` (
   `curr_time` datetime NOT NULL,
-  `status` varchar(7) NOT NULL,
-  PRIMARY KEY (`curr_time`,`status`)
+  `process_status` varchar(7) NOT NULL,
+  `is_error_handled` tinyint(4) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`curr_time`,`process_status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -162,11 +177,12 @@ DROP TABLE IF EXISTS `log_messages`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `log_messages` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `curr_time` datetime NOT NULL,
-  `source` varchar(100) NOT NULL,
+  `source` varchar(100) DEFAULT NULL,
   `message` varchar(500) DEFAULT NULL,
-  PRIMARY KEY (`curr_time`,`source`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -206,7 +222,7 @@ CREATE TABLE `negative_price_trend_data` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2207 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2215 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -277,7 +293,7 @@ CREATE TABLE `option_buy_order` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14313029 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14313061 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -371,7 +387,7 @@ CREATE TABLE `option_position` (
   `buy_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `sell_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`order_id`,`buy_time`,`sell_time`)
-) ENGINE=InnoDB AUTO_INCREMENT=14313029 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14313060 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -394,7 +410,7 @@ CREATE TABLE `option_sell_order` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9899188 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9899192 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -456,7 +472,7 @@ CREATE TABLE `option_stop_loss_order_price` (
   `buy_price` float DEFAULT NULL,
   `sl_price` float NOT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1097 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1101 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -481,7 +497,7 @@ CREATE TABLE `positive_price_trend_data` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2870 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2877 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4282,7 +4298,7 @@ ELSE  IF(TARGET_STRENGTH > 1.25) THEN
 
   ELSE
 
-    SET  TARGET_SELL_PRICE = BUY_PRICE_IN * 0.9;
+    SET  TARGET_SELL_PRICE = BUY_PRICE_IN * 0.95;
 
   END IF;
 
@@ -4295,7 +4311,7 @@ ELSE  IF(TARGET_STRENGTH <= 1.25 AND TARGET_STRENGTH > 0) THEN
 
   ELSE
 
-    SET  TARGET_SELL_PRICE = BUY_PRICE_IN * 0.95;
+    SET  TARGET_SELL_PRICE = BUY_PRICE_IN;
 
   END IF;
 
@@ -4743,7 +4759,6 @@ BEGIN
 
 
 
-DELETE FROM log_messages;
 
 /*
 replace into basis_for_calls_archive(
@@ -4754,27 +4769,37 @@ SELECT date(START_TIME_IN),a.* FROM selected_instrument a);
 */
 
 
-DELETE FROM live_data where date(curr_time) < curdate();
+DELETE FROM live_data where date(curr_time) < date(START_TIME_IN);
 
-DELETE FROM live_option_price_data where date(curr_time) < curdate();
+DELETE FROM live_option_price_data where date(curr_time) < date(START_TIME_IN);
+
+IF ( time(START_TIME_IN) <= time('2018-01-21 09:15:00')) THEN
 
 
-DELETE FROM  option_buy_order where date(curr_time) < curdate();
-DELETE FROM  option_buy_order_event where date(curr_time) < curdate();
-DELETE FROM  option_buy_order_log where date(update_time) < curdate();
-DELETE FROM  positive_price_trend_data where date(curr_time) < curdate();
-DELETE FROM  positive_price_trend_data_log where date(curr_time) < curdate();
-DELETE FROM  negative_price_trend_data where date(curr_time) < curdate();
-DELETE FROM  negative_price_trend_data_log where date(curr_time) < curdate();
-DELETE FROM  option_sell_order where date(curr_time) < curdate();
-DELETE FROM  option_sell_order_event where date(curr_time) < curdate();
-DELETE FROM  option_sell_order_log where date(update_time) < curdate();
-DELETE FROM option_position where date(curr_time) < curdate();
-DELETE FROM option_stop_loss_order_price where date(curr_time) < curdate();
-DELETE FROM negative_price_trend_data_for_sell_order where date(curr_time) < curdate();
-DELETE FROM positive_price_trend_data_for_sell_order where date(curr_time) < curdate();
+ DELETE FROM  option_buy_order;
 
-DELETE FROM live_process_status_record where date(curr_time) < curdate();
+ DELETE FROM  option_sell_order;
+
+ DELETE FROM option_stop_loss_order_price;
+
+
+
+END IF;
+
+
+DELETE FROM  option_buy_order_event where date(curr_time) < date(START_TIME_IN);
+DELETE FROM  option_buy_order_log where date(update_time) < date(START_TIME_IN);
+DELETE FROM  positive_price_trend_data where date(curr_time) < date(START_TIME_IN);
+DELETE FROM  positive_price_trend_data_log where date(curr_time) < date(START_TIME_IN);
+DELETE FROM  negative_price_trend_data where date(curr_time) < date(START_TIME_IN);
+DELETE FROM  negative_price_trend_data_log where date(curr_time) < date(START_TIME_IN);
+DELETE FROM  option_sell_order_event where date(curr_time) < date(START_TIME_IN);
+DELETE FROM  option_sell_order_log where date(update_time) < date(START_TIME_IN);
+DELETE FROM option_position where date(buy_time) < date(START_TIME_IN);
+DELETE FROM negative_price_trend_data_for_sell_order where date(curr_time) < date(START_TIME_IN);
+DELETE FROM positive_price_trend_data_for_sell_order where date(curr_time) < date(START_TIME_IN);
+
+DELETE FROM live_process_status_record where date(curr_time) < date(START_TIME_IN);
 
 
 
@@ -4928,7 +4953,7 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `LIVE_DATA_EXECUTION_MASTER`()
-BEGIN
+proc_ldem : BEGIN
 
 DECLARE DATE_REFERENCE DATE DEFAULT CURDATE();
 
@@ -4941,7 +4966,7 @@ DECLARE VAR_ORDER_CYCLE_FREQUENCY FLOAT;
 DECLARE VAR_STOP_LOSS_TRIGER_CYCLE_FREQUENCY FLOAT;
 
 declare l_loop int default 0;
-
+                         
 declare NO_OF_LOOPS_BEFORE_CURRENT_TIME int default 0; -- consider loop time to be 2 mins
 
 DECLARE INITIAL_FILL_TIME INT;
@@ -4969,6 +4994,10 @@ DECLARE TEXT_NEW_BUY_ORDER_TIME VARCHAR(100) DEFAULT '2018-01-21 09:30:00';
 DECLARE IS_DUMMY_EXECUTION BOOLEAN DEFAULT FALSE;
 
 
+DECLARE IS_PROCESS_ALREADY_RUNNING BOOLEAN DEFAULT NULL;
+
+
+
 
 
 
@@ -4977,22 +5006,98 @@ DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN CALL RECORD_LOOP_OUTPUT(VAR_CURRENT_
 RESIGNAL; END;
 
 
-
--- SET DATE_REFERENCE = CURDATE();
-
--- SET IS_DUMMY_EXECUTION = TRUE;
-
-REPLACE INTO log_messages VALUES(NOW(),
-                          concat('LIVE_DATA_EXECUTION_MASTER - ', now())
+INSERT INTO engine_live.log_messages VALUES(null,NOW(),
+                          concat('LIVE_DATA_EXECUTION_MASTER - STARTING - ', NOW())
                           , 'START');
 
-SELECT  text_param_value FROM trading_parameters WHERE param_id = 'NEW_BUY_ORDER_TIME'
-INTO TEXT_NEW_BUY_ORDER_TIME;
+
+-- HARDCODING BELOW ------ TO BE REMOVED ------ START
+
+SET DATE_REFERENCE = '2018-02-01';
+
+SET IS_DUMMY_EXECUTION = TRUE;
+
+-- HARDCODING BELOW ------ TO BE REMOVED ------ END
+
+
 
 
 SET DAY_START_REFERENCE = CONCAT(DATE(DATE_REFERENCE),' 09:15:00');
 
 SET DAY_END_REFERENCE = CONCAT(DATE(DATE_REFERENCE),' 15:30:00');
+
+
+
+-- HARDCODING BELOW ------ TO BE REMOVED ------ START
+
+-- SET VAR_NOW_TIME = CONCAT(DATE(DATE_REFERENCE),concat(' ',time(now())));
+SET VAR_NOW_TIME = CONCAT(DATE(DATE_REFERENCE),' 09:25:00');
+
+-- HARDCODING BELOW ------ TO BE REMOVED ------ START
+
+
+
+-- REAL VALUE TO BE SET  ------- START
+
+-- SET VAR_NOW_TIME = NOW();
+
+-- REAL VALUE TO BE SET  ------- END
+
+
+SELECT process_status FROM live_procedure_status
+WHERE curr_date = date(VAR_NOW_TIME)
+INTO IS_PROCESS_ALREADY_RUNNING;
+
+
+IF(IS_PROCESS_ALREADY_RUNNING IS NULL) THEN
+
+REPLACE INTO live_procedure_status
+VALUES( date(VAR_NOW_TIME),true);
+
+END IF;
+
+
+IF(IS_PROCESS_ALREADY_RUNNING) THEN
+
+REPLACE INTO log_messages VALUES(null,NOW(),
+                          concat('LIVE_DATA_EXECUTION_MASTER - ENDING 1 - ', now())
+                          , 'END - DUPLICATE PROCESS');
+
+/*
+update live_procedure_status set process_status = false
+WHERE curr_date = date(VAR_NOW_TIME);
+*/
+
+
+LEAVE proc_ldem;
+
+END IF;
+
+IF(VAR_NOW_TIME > DAY_END_REFERENCE) THEN
+
+REPLACE INTO log_messages VALUES(null,NOW(),
+                          concat('LIVE_DATA_EXECUTION_MASTER - ENDING 2 - ', now())
+                          , 'END - INVALID TIME');
+
+
+update live_procedure_status set process_status = false
+WHERE curr_date = date(VAR_NOW_TIME);
+
+LEAVE proc_ldem;
+
+END IF;
+
+
+update live_procedure_status set process_status = true
+WHERE curr_date = date(VAR_NOW_TIME);
+
+
+
+
+SELECT  text_param_value FROM trading_parameters WHERE param_id = 'NEW_BUY_ORDER_TIME'
+INTO TEXT_NEW_BUY_ORDER_TIME;
+
+
 
 SELECT  param_value FROM trading_parameters WHERE param_id = 'ORDER_CYCLE_FREQUENCY'
 INTO VAR_ORDER_CYCLE_FREQUENCY;
@@ -5000,29 +5105,22 @@ INTO VAR_ORDER_CYCLE_FREQUENCY;
 SELECT  param_value FROM trading_parameters WHERE param_id = 'STOP_LOSS_TRIGER_CYCLE_FREQUENCY'
 INTO VAR_STOP_LOSS_TRIGER_CYCLE_FREQUENCY;
 
-SET VAR_NOW_TIME = NOW();
 
 
-WHILE ( VAR_NOW_TIME < time('2018-01-21 09:15:00'))
-DO
 
-DO SLEEP(5);
 
-SET VAR_NOW_TIME = NOW();
 
-END WHILE;
-
+call INIT_DB_DAY_START(VAR_NOW_TIME);
 
 
 WHILE (!VAR_IS_DAY_INIT_DONE) DO
 
-IF((VAR_NOW_TIME >= time('2018-01-21 09:15:00')) AND (VAR_NOW_TIME < time(TEXT_NEW_BUY_ORDER_TIME)) ) THEN
 
 select is_day_init_done from market_day_events_status where
 curr_date = DATE_REFERENCE into VAR_IS_DAY_INIT_DONE;
 
 IF(VAR_IS_DAY_INIT_DONE IS NULL OR !VAR_IS_DAY_INIT_DONE) THEN
-  call INIT_DB_DAY_START(VAR_NOW_TIME);
+
 
   REPLACE INTO `engine_live`.`live_data`
 
@@ -5035,7 +5133,17 @@ IF(VAR_IS_DAY_INIT_DONE IS NULL OR !VAR_IS_DAY_INIT_DONE) THEN
 
 END IF;
 
-END IF;
+
+END WHILE;
+
+
+
+WHILE ( time(VAR_NOW_TIME) < time('2018-01-21 09:15:00'))
+DO
+
+DO SLEEP(5);
+
+SET VAR_NOW_TIME = NOW();
 
 END WHILE;
 
@@ -5048,15 +5156,43 @@ SET NO_OF_LOOPS_BEFORE_CURRENT_TIME  = (INITIAL_FILL_TIME/ 60) + 5;
 
 loop0: loop
 
-       SET VAR_LOOP_START_TIME = NOW();
+       -- SET VAR_LOOP_START_TIME = NOW();
+
+       SET VAR_LOOP_START_TIME = CONCAT(DATE(DATE_REFERENCE),concat(' ',time(now())));
 
        set l_loop := l_loop + 1;
 
-       SET VAR_CURRENT_REFERENCE_TIME = NOW();
+
+        -- SET VAR_CURRENT_REFERENCE_TIME = NOW();
+
+
+
+        IF(VAR_IS_MARKET_OPENING_DONE IS NULL OR !VAR_IS_MARKET_OPENING_DONE) THEN
+
+          SET VAR_CURRENT_REFERENCE_TIME = CONCAT(DATE(DATE_REFERENCE),concat(' ',time('2018-01-21 09:15:00')));
+
+       ELSE
+
+       SET VAR_CURRENT_REFERENCE_TIME = CONCAT(DATE(DATE_REFERENCE),concat(' ',time(now())));
+
+       END IF;
+
+
 
        IF l_loop > NO_OF_LOOPS_BEFORE_CURRENT_TIME THEN
           leave loop0;
        end if;
+
+       IF(time(VAR_CURRENT_REFERENCE_TIME) >= time('2018-01-21 14:45:00')
+       AND time(VAR_CURRENT_REFERENCE_TIME) <= time('2018-01-21 14:50:00')) THEN
+
+       CALL PUT_CANCEL_OPTION_BUY_ORDER_EVENT(VAR_CURRENT_REFERENCE_TIME);
+
+       end if;
+
+
+       CALL RETRY_ERROR_ORDERS(VAR_CURRENT_REFERENCE_TIME);
+
 
        IF(time(VAR_CURRENT_REFERENCE_TIME) >= time('2018-01-21 09:15:00')
        AND time(VAR_CURRENT_REFERENCE_TIME) < time('2018-01-21 09:30:00')) THEN
@@ -5069,7 +5205,7 @@ loop0: loop
 
          IF(VAR_IS_MARKET_OPENING_DONE IS NULL OR !VAR_IS_MARKET_OPENING_DONE) THEN
 
-          CALL MARKET_OPENING_MASTER(DAY_START_REFERENCE);
+          CALL MARKET_OPENING_MASTER(VAR_CURRENT_REFERENCE_TIME);
 
           SET VAR_IS_MARKET_OPENING_DONE = 1;
 
@@ -5084,17 +5220,13 @@ loop0: loop
 
        END IF;
 
-       IF(time(VAR_CURRENT_REFERENCE_TIME) >= time('2018-01-21 14:45:00')
-       AND time(VAR_CURRENT_REFERENCE_TIME) <= time('2018-01-21 14:50:00')) THEN
 
-       CALL PUT_CANCEL_OPTION_BUY_ORDER_EVENT(VAR_CURRENT_REFERENCE_TIME);
 
-       end if;
 
        IF((l_loop % VAR_ORDER_CYCLE_FREQUENCY) = 0 ) then
 
 
-       CALL COMPLETE_ORDER_CYCLE(VAR_CURRENT_REFERENCE_TIME,60,FALSE);
+       CALL COMPLETE_ORDER_CYCLE(VAR_CURRENT_REFERENCE_TIME,60,IS_DUMMY_EXECUTION);
 
        -- ITERATE loop0;
 
@@ -5109,9 +5241,16 @@ loop0: loop
 
        END IF;
 
-       CALL RECORD_LOOP_OUTPUT(VAR_CURRENT_REFERENCE_TIME,IS_DUMMY_EXECUTION);
+       CALL RECORD_LOOP_OUTPUT(VAR_CURRENT_REFERENCE_TIME,0);
 
-       SET VAR_LOOP_END_TIME = NOW();
+
+
+       -- SET VAR_LOOP_END_TIME = NOW();
+
+       SET VAR_LOOP_END_TIME = CONCAT(DATE(DATE_REFERENCE),concat(' ',time(now())));
+
+
+
 
        SET VAR_TARGET_NEXT_START_TIME = DATE_ADD( VAR_LOOP_START_TIME , INTERVAL 60 SECOND);
 
@@ -5129,6 +5268,14 @@ END loop loop0;
 
 
 CALL FINALIZE_DB_DAY_END(DATE_REFERENCE);
+
+
+update live_procedure_status set process_status = false
+WHERE curr_date = date(VAR_NOW_TIME);
+
+REPLACE INTO log_messages VALUES(null,NOW(),
+                          concat('LIVE_DATA_EXECUTION_MASTER - ENDING - ', now())
+                          , 'END');
 
 
 END ;;
@@ -6148,7 +6295,10 @@ IF(is_failed_flag) THEN
 
 REPLACE INTO live_process_status_record
 
-VALUES(CURRENT_REFERENCE_TIME_IN, 'FAILED');
+VALUES(CURRENT_REFERENCE_TIME_IN, 'FAILED',1);
+
+update live_procedure_status set  process_status = false
+WHERE curr_date = date(CURRENT_REFERENCE_TIME_IN);
 
 -- LEAVE proc_rlo;
 
@@ -6167,7 +6317,7 @@ IF(ORDER_ERR_RECORD_COUNT > 0) THEN
 
 REPLACE INTO live_process_status_record
 
-VALUES(CURRENT_REFERENCE_TIME_IN, 'ERRORD');
+VALUES(CURRENT_REFERENCE_TIME_IN, 'ERRORD',0);
 
 END IF;
 
@@ -6187,7 +6337,7 @@ IF(ORDER_ERR_RECORD_COUNT > 0) THEN
 
 REPLACE INTO live_process_status_record
 
-VALUES(CURRENT_REFERENCE_TIME_IN, 'ERRORD');
+VALUES(CURRENT_REFERENCE_TIME_IN, 'ERRORD',0);
 
 END IF;
 
@@ -6204,7 +6354,7 @@ IF (ORDER_ERR_RECORD_COUNT IS NULL OR ORDER_ERR_RECORD_COUNT = 0) THEN
 
 REPLACE INTO live_process_status_record
 
-VALUES(CURRENT_REFERENCE_TIME_IN, 'SUCCESS');
+VALUES(CURRENT_REFERENCE_TIME_IN, 'SUCCESS',1);
 
 END IF;
 
@@ -6225,9 +6375,22 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `RETRY_ERROR_ORDERS`(
-time_in datetime,
 target_time_in datetime)
-BEGIN
+proc_reo : BEGIN
+
+
+DECLARE VAR_MAX_ERROR_TIME DATETIME DEFAULT NULL;
+
+SELECT max(curr_time) FROM live_process_status_record
+where is_error_handled = 0
+into  VAR_MAX_ERROR_TIME;
+
+IF(VAR_MAX_ERROR_TIME IS NULL) THEN
+
+LEAVE proc_reo;
+
+END IF;
+
 
 
 IF(target_time_in IS NULL) THEN
@@ -6236,11 +6399,16 @@ SET target_time_in = now();
 
 END IF;
 
-CALL RETRY_PUT_MODIFY_OPTION_SELL_ORDER_EVENT(time_in,target_time_in);
+CALL RETRY_PUT_MODIFY_OPTION_SELL_ORDER_EVENT(VAR_MAX_ERROR_TIME,target_time_in);
 
 CALL RETRY_PUT_NEW_OPTION_BUY_ORDER_EVENT(target_time_in);
 
-CALL RETRY_PUT_MODIFY_OPTION_BUY_ORDER_EVENT(time_in,target_time_in);
+CALL RETRY_PUT_MODIFY_OPTION_BUY_ORDER_EVENT(VAR_MAX_ERROR_TIME,target_time_in);
+
+
+update live_process_status_record
+set is_error_handled = 1 where
+curr_time = VAR_MAX_ERROR_TIME;
 
 END ;;
 DELIMITER ;
@@ -6701,4 +6869,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-06 15:40:34
+-- Dump completed on 2018-02-08 12:27:39
