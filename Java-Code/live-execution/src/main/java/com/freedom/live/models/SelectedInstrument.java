@@ -22,6 +22,11 @@ public class SelectedInstrument {
 	
 	private String url;
 	
+	private String expiry_date_full;
+
+	private String expiry_date_prefix;
+
+	
 	public String getOption_type() {
 		return option_type;
 	}
@@ -54,6 +59,22 @@ public class SelectedInstrument {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public String getExpiry_date_full() {
+		return expiry_date_full;
+	}
+
+	public void setExpiry_date_full(String expiry_date_full) {
+		this.expiry_date_full = expiry_date_full;
+	}
+
+	public String getExpiry_date_prefix() {
+		return expiry_date_prefix;
+	}
+
+	public void setExpiry_date_prefix(String expiry_date_prefix) {
+		this.expiry_date_prefix = expiry_date_prefix;
 	}
 
 

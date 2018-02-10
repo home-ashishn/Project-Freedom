@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import com.rainmatter.kitehttp.exceptions.KiteException;
+
 @SpringBootApplication
 @Configuration
 @EnableAutoConfiguration
@@ -23,7 +25,7 @@ public class Application{
 	}
 	
 	@Bean
-	public String startApp(ApplicationContext ctx) throws BeansException, Exception {
+	public String startApp(ApplicationContext ctx) throws BeansException, Exception, KiteException {
 		
 		ctx.getBean(LiveExecutionManager.class).manageExecution();
 		

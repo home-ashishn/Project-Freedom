@@ -4,32 +4,27 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.joda.time.DateTime;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.nodes.Node;
-import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.BasicJsonParser;
-import org.springframework.boot.json.JsonParser;
 import org.springframework.stereotype.Component;
 
 import com.freedom.live.models.LiveOptionPriceData;
 import com.freedom.live.models.LiveOptionPriceDataRepository;
 import com.freedom.live.models.SelectedInstrument;
+import com.neovisionaries.ws.client.WebSocketException;
+import com.rainmatter.kiteconnect.KiteConnect;
+import com.rainmatter.kitehttp.exceptions.KiteException;
+import com.rainmatter.models.Depth;
+import com.rainmatter.models.Tick;
+import com.rainmatter.ticker.KiteTicker;
+import com.rainmatter.ticker.OnConnect;
+import com.rainmatter.ticker.OnDisconnect;
+import com.rainmatter.ticker.OnTick;
 
 @Component
 public class LiveOptionPriceExtractor {
@@ -55,14 +50,19 @@ public class LiveOptionPriceExtractor {
 
 	int scrapeCount = 0;
 
-	Map<SelectedInstrument, Long> mapGlobalVolumes;
-	
-	 Map<SelectedInstrument, DateTime> mapGlobalTimeStamps;
-
+	Map<Long, Long> mapGlobalVolumes;
 
 	List<LiveOptionPriceData> liveDataObjs = new ArrayList<>();
-	
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
+
+	SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
+
+	private KiteConnect kiteConnect;
+
+	private List<Long> tokens = new ArrayList<Long>();
+
+	private Map<Long, SelectedInstrument> mapTokensToInstrument = new HashMap<Long, SelectedInstrument>();
+
+	Map<Long, DateTime> mapGlobalTimeStamps;
 
 	public LiveOptionPriceExtractor() {
 
@@ -70,456 +70,185 @@ public class LiveOptionPriceExtractor {
 			this.instrumentList = new ArrayList<SelectedInstrument>();
 			this.mapUrls = new HashMap<SelectedInstrument, String>();
 			// this.mapUrlDocuments = new HashMap<String, Document>();
-			this.mapGlobalVolumes = new HashMap<SelectedInstrument, Long>();
-			this.mapGlobalTimeStamps = new HashMap<SelectedInstrument, DateTime>();
+			this.mapGlobalVolumes = new HashMap<Long, Long>();
 			this.liveDataObjs = new ArrayList<>();
+			this.mapGlobalTimeStamps = new HashMap<Long, DateTime>();
 		} catch (Exception e) {
-			
+
 			e.printStackTrace();
 		}
-
-	}
-
-	public void scrapeURLs() throws InterruptedException, ExecutionException, TimeoutException {
-			ThreadPoolExecutor executor = new ThreadPoolExecutor(8, 16,
-                0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>());
-//		ExecutorService executorService = Executors.newFixedThreadPool(20);
-		// ExecutorService executorServiceSave = Executors.newFixedThreadPool();
-
-			int count = 0;
-
-		while (true/* count < 500 */) {
-			for (SelectedInstrument instrument : instrumentList)
-
-			{
-				if(executor.getQueue().size() > 3)
-				{
-					continue;
-				}
-				String urlstr = "" + mapUrls.get(instrument);
-				//
-				// Create a callable instance which calls the function that invokes the scraping
-				// for each URL
-				//
-				Callable<?> callable = new Callable<Object>() {
-					public String call() throws Exception {
-						LiveOptionPriceData data = scrapeIndividualURls(instrument, urlstr);
-
-						if (data == null) {
-							return "";
-						}
-						putDatainList(data);
-						return "";
-
-					}
-				};
-				//
-				// Submit the task to executorService; At this point the scraping starts
-				//
-				
-				executor.submit(callable);
-				// executorService.submit(callable);
-
-			}
-
-			try {
-				if (liveDataObjs.size() >= 5) {
-					updateDB();
-				}
-			} catch (Exception e) {
-				
-				e.printStackTrace();
-			}
-
-
-			count++;
-		}
-
 
 	}
 
 	/**
-	 * Scrape the URL
-	 * 
-	 * @param urlstr
-	 * @return
-	 * @throws IOException
+	 * Demonstrates com.rainmatter.ticker connection, subcribing for
+	 * instruments, unsubscribing for instruments, set mode of tick data,
+	 * com.rainmatter.ticker disconnection
 	 */
-	
-	// Below commented method with code for periodic updates greater than 20 seconds
+	public void tickerUsage(KiteConnect kiteConnect, ArrayList<Long> tokens)
+			throws IOException, WebSocketException, KiteException {
+		/**
+		 * To get live price use com.rainmatter.com.rainmatter.ticker websocket
+		 * connection. It is recommended to use only one websocket connection at
+		 * any point of time and make sure you stop connection, once user goes
+		 * out of app.
+		 */
+		KiteTicker tickerProvider = new KiteTicker(kiteConnect);
+		tickerProvider.setOnConnectedListener(new OnConnect() {
+			@Override
+			public void onConnected() {/*
+										 * try {
+										 */
+				/**
+				 * Subscribe ticks for token. By default, all tokens are
+				 * subscribed for modeQuote.
+				 */
+				/*
+				 * tickerProvider.subscribe(tokens);
+				 * tickerProvider.setMode(tokens, KiteTicker.modeLTP);
+				 * 
+				 * } catch (IOException e) { e.printStackTrace(); } catch
+				 * (WebSocketException e) { e.printStackTrace(); }catch
+				 * (KiteException ke){ ke.printStackTrace(); }
+				 */}
+		});
 
-	
-	public LiveOptionPriceData scrapeIndividualURls(SelectedInstrument instrument, String urlstr) throws IOException {
+		tickerProvider.setOnDisconnectedListener(new OnDisconnect() {
+			@Override
+			public void onDisconnected() {
+				// your code goes here
+			}
+		});
 
-		if (startTime == null) {
-			startTime = new Date();
-		}
+		tickerProvider.setOnTickerArrivalListener(new OnTick() {
+			@Override
+			public void onTick(ArrayList<Tick> ticks) {
+				System.out.println("ticks size = " + ticks.size() + " at current time = " + new DateTime());
 
-		// String symbol = instrument.getSymbol();
-		
-		// String optionType = instrument.getOption_type();
-		// float strikePrice = instrument.getOption_strike_price();
-		
-		Document document = null;
+				if (ticks.size() > 0) 
+				{
+					extractTicksData(ticks);
+				}
+			}
 
-		// synchronized (MultithreadingExtractor.this)
-		{
-			document = Jsoup.connect(urlstr)
-					// .header("Cache-control",
-					// "no-cache").header("Cache-store",
-					// "no-store").timeout(4000)
-					.post();
+		});
 
-			// sop(""+document);
-		}
-		scrapeCount++;
+		tickerProvider.setTryReconnection(true);
+		// minimum value must be 5 for time interval for reconnection
+		tickerProvider.setTimeIntervalForReconnection(5);
+		// set number to times com.rainmatter.ticker can try reconnection, for
+		// infinite retries use -1
+		tickerProvider.setMaxRetries(10);
 
-		// Date endTime = new Date();
+		/**
+		 * connects to com.rainmatter.com.rainmatter.ticker server for getting
+		 * live quotes
+		 */
+		tickerProvider.connect();
 
-		Elements descs = document.select("div#responseDiv");
-		Element desc;
-		desc = descs.first();
-		List<Node> childNodes = desc.childNodes();
+		/**
+		 * You can check, if websocket connection is open or not using the
+		 * following method.
+		 */
+		boolean isConnected = tickerProvider.isConnectionOpen();
 
-		Node first = childNodes.get(0);
+		System.out.println(isConnected);
 
-		
-		String volume = "0";
-		
-		volume = getValueFromNode(instrument,first, "numberOfContractsTraded", "underlyingValue",2);
+		tickerProvider.subscribe(tokens);
 
-/*
-		String openPrice = "0";
-		
-		openPrice = getValueFromNode(instrument,first, "openPrice", "closePrice",2);
+		/**
+		 * set mode is used to set mode in which you need tick for list of
+		 * tokens. Ticker allows three modes, modeFull, modeQuote, modeLTP. For
+		 * getting only last traded price, use modeLTP For getting last traded
+		 * price, last traded quantity, average price, volume traded today,
+		 * total sell quantity and total buy quantity, open, high, low, close,
+		 * change, use modeQuote For getting all data with depth, use modeFull
+		 */
+		tickerProvider.setMode(tokens, KiteTicker.modeFull);
 
+		// Unsubscribe for a token.
 
-		String highPrice = "0";
-		
-		highPrice = getValueFromNode(instrument,first, "highPrice", "companyName",4);
+		// tickerProvider.unsubscribe(tokens);
 
+		// After using com.rainmatter.com.rainmatter.ticker, close websocket
+		// connection.
 
-		String lowPrice = "0";
-		
-		lowPrice = getValueFromNode(instrument,first, "lowPrice", "strikePrice",2);
-		
-*/
-		String currTime = "0";
-		
-		currTime = getValueFromNode(instrument,first, "lastUpdateTime", "ocLink",2);
-		
-		DateTime newTimeStamp = null;
-		
-		try {
-			newTimeStamp = new DateTime(simpleDateFormat.parse(currTime));
-		} catch (ParseException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		// tickerProvider.disconnect();
+	}
 
-		DateTime oldTimeStamp = mapGlobalTimeStamps.get(instrument);
-		
-		boolean isNewTimeStampReading = false;
+	private void extractTicksData(ArrayList<Tick> ticks) {
 
-		if(newTimeStamp != null){
-			
+		for (Tick tick : ticks) {
+
+			Long tokenValue = tick.getToken();
+
+			Long currentVolume = (long) tick.getVolumeTradedToday();
+
+			SelectedInstrument selectedInstrument = mapTokensToInstrument.get(tokenValue);
+
+			Long lastVolume = mapGlobalVolumes.get(tokenValue);
+
+			/*
+			 * if(lastVolume == null){ lastVolume = 0L; }
+			 */
+
+			DateTime newTimeStamp = new DateTime();
+
+			DateTime oldTimeStamp = mapGlobalTimeStamps.get(tokenValue);
+
+			boolean isNewTimeStampReading = false;
+
 			long difference = newTimeStamp.getMillis() - oldTimeStamp.getMillis();
-			
-			if(difference > 15000){
+
+			if (difference >= 10000) {
 				isNewTimeStampReading = true;
 			}
 			oldTimeStamp = null;
-		}
-		
-		
-		if ((new Long(volume).compareTo(mapGlobalVolumes.get(instrument)) > 0) || isNewTimeStampReading) {
 
-			// sop("update for symbol = " + symbol + ", optionType = " + optionType + ", strikePrice = " + strikePrice);
+			if (currentVolume > lastVolume || isNewTimeStampReading) {
 
-			long globalVolume = new Long(volume);
-
-			mapGlobalVolumes.put(instrument, globalVolume);
-			mapGlobalTimeStamps.put(instrument, newTimeStamp);
-
-			String lastPrice = "0";
-
-			lastPrice = getValueFromNode(instrument,first, "lastPrice", "lowPrice",2);
-
-			
-			String bidPrice1 = "0";
-
-			bidPrice1 = getValueFromNode(instrument,first, "buyPrice1", "sellQuantity4",2);
-			
-			String bidQuantity1 = "0";
-
-			bidQuantity1 = getValueFromNode(instrument,first, "buyQuantity1", "ltp",2);
-			
-			String bidPrice2 = "0";
-
-			bidPrice2 = getValueFromNode(instrument,first, "buyPrice2", "sellQuantity3",2);
-			
-			String bidQuantity2 = "0";
-
-			bidQuantity2 = getValueFromNode(instrument,first, "buyQuantity2", "sellPrice5",2);
-			
-			String offerPrice1 = "0";
-
-			offerPrice1 = getValueFromNode(instrument,first, "sellPrice1", "buyQuantity3",2);
-			
-			String offerQuantity1 = "0";
-
-			offerQuantity1 = getValueFromNode(instrument,first, "sellQuantity1", "buyPrice1",2);
-			
-			String offerPrice2 = "0";
-
-			offerPrice2 = getValueFromNode(instrument,first, "sellPrice2", "buyQuantity4",2);
-			
-			String offerQuantity2 = "0";
-
-			offerQuantity2 = getValueFromNode(instrument,first, "sellQuantity2", "sellQuantity1",2);
-			
-			
-
-			LiveOptionPriceData liveOptionPriceData = new LiveOptionPriceData();
-
-			// LiveOptionPriceData.setId(0);
-			
+				mapGlobalVolumes.put(tokenValue, currentVolume);
+				
+				mapGlobalTimeStamps.put(tokenValue, newTimeStamp);
 
 
-			liveOptionPriceData.setCurr_time(newTimeStamp);
-			liveOptionPriceData.setSymbol(instrument.getSymbol());
-			liveOptionPriceData.setOption_type(instrument.getOption_type());
-			liveOptionPriceData.setOption_strike_price(instrument.getOption_strike_price());
-			liveOptionPriceData.setVolume(globalVolume);
-			liveOptionPriceData.setLast_price(new Float(lastPrice));
-			liveOptionPriceData.setBid_price_1(new Float(bidPrice1));
-			liveOptionPriceData.setBid_quantity_1(new Integer(bidQuantity1));
-			liveOptionPriceData.setBid_price_2(new Float(bidPrice2));
-			liveOptionPriceData.setBid_quantity_2(new Integer(bidQuantity2));
-			liveOptionPriceData.setOffer_price_1(new Float(offerPrice1));
-			liveOptionPriceData.setOffer_quantity_1(new Integer(offerQuantity1));
-			liveOptionPriceData.setOffer_price_2(new Float(offerPrice2));
-			liveOptionPriceData.setOffer_quantity_2(new Integer(offerQuantity2));
+				LiveOptionPriceData liveOptionPriceData = new LiveOptionPriceData();
 
-			return liveOptionPriceData;
+				liveOptionPriceData.setCurr_time(new DateTime());
+				liveOptionPriceData.setSymbol(selectedInstrument.getSymbol());
+				liveOptionPriceData.setOption_type(selectedInstrument.getOption_type());
+				liveOptionPriceData.setOption_strike_price(selectedInstrument.getOption_strike_price());
+				liveOptionPriceData.setVolume(currentVolume);
+				liveOptionPriceData.setLast_price((float) tick.getLastTradedPrice());
 
-		}
+				Map<String, ArrayList<Depth>> tickDepthMap = tick.getMarketDepth();
 
-		// sop("Time Taken = " + (endTime.getTime() - startTime.getTime()) + "
-		// ms for symbol = " + symbol + " and " + "scrapeCount = " +
-		// scrapeCount);
+				ArrayList<Depth> buyDepth = tickDepthMap.get("buy");
 
-		return null;
+				ArrayList<Depth> sellDepth = tickDepthMap.get("sell");
 
-	}
+				liveOptionPriceData.setBid_price_1((float) buyDepth.get(0).getPrice());
+				liveOptionPriceData.setBid_quantity_1(buyDepth.get(0).getQuantity());
+				liveOptionPriceData.setBid_price_2((float) buyDepth.get(1).getPrice());
+				liveOptionPriceData.setBid_quantity_2(buyDepth.get(1).getQuantity());
+				liveOptionPriceData.setOffer_price_1((float) sellDepth.get(0).getPrice());
+				liveOptionPriceData.setOffer_quantity_1(sellDepth.get(0).getQuantity());
+				liveOptionPriceData.setOffer_price_2((float) sellDepth.get(1).getPrice());
+				liveOptionPriceData.setOffer_quantity_2(sellDepth.get(1).getQuantity());
 
-	
-	
-/*	
-	public LiveOptionPriceData scrapeIndividualURls(SelectedInstrument instrument, String urlstr) throws IOException {
+				putDatainList(liveOptionPriceData);
 
-		if (startTime == null) {
-			startTime = new Date();
-		}
-
-		String symbol = instrument.getSymbol();
-		String optionType = instrument.getOption_type();
-		float strikePrice = instrument.getOption_strike_price();
-		
-		Document document = null;
-
-		// synchronized (MultithreadingExtractor.this)
-		{
-			document = Jsoup.connect(urlstr)
-					// .header("Cache-control",
-					// "no-cache").header("Cache-store",
-					// "no-store").timeout(4000)
-					.post();
-
-			// sop(""+document);
-		}
-		scrapeCount++;
-
-		// Date endTime = new Date();
-
-		Elements descs = document.select("div#responseDiv");
-		Element desc;
-		desc = descs.first();
-		List<Node> childNodes = desc.childNodes();
-
-		Node first = childNodes.get(0);
-
-		
-		String volume = "0";
-		
-		volume = getValueFromNode(instrument,first, "numberOfContractsTraded", "underlyingValue",2);
-
-
-		String openPrice = "0";
-		
-		openPrice = getValueFromNode(instrument,first, "openPrice", "closePrice",2);
-
-
-		String highPrice = "0";
-		
-		highPrice = getValueFromNode(instrument,first, "highPrice", "companyName",4);
-
-
-		String lowPrice = "0";
-		
-		lowPrice = getValueFromNode(instrument,first, "lowPrice", "strikePrice",2);
-		
-
-		
-		// if ((new Long(volume).compareTo(mapGlobalVolumes.get(instrument)) > 0) || isNewTimeStampReading) 
-		 // {
-
-			sop("update for symbol = " + symbol + ", optionType = " + optionType + ", strikePrice = " + strikePrice);
-
-			long globalVolume = new Long(volume);
-
-			mapGlobalVolumes.put(instrument, globalVolume);
-			
-			// mapGlobalTimeStamps.put(instrument, newTimeStamp);
-			
-			String currTime = "0";
-			
-			currTime = getValueFromNode(instrument,first, "lastUpdateTime", "ocLink",2);
-			
-			
-			DateTime newTimeStamp = null;
-			try {
-				newTimeStamp = new DateTime(simpleDateFormat.parse(currTime));
-			} catch (ParseException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
 			}
-			
 
+		}
 
-
-			String lastPrice = "0";
-
-			lastPrice = getValueFromNode(instrument,first, "lastPrice", "lowPrice",2);
-
-			
-			String bidPrice1 = "0";
-
-			bidPrice1 = getValueFromNode(instrument,first, "buyPrice1", "sellQuantity4",2);
-			
-			String bidQuantity1 = "0";
-
-			bidQuantity1 = getValueFromNode(instrument,first, "buyQuantity1", "ltp",2);
-			
-			String bidPrice2 = "0";
-
-			bidPrice2 = getValueFromNode(instrument,first, "buyPrice2", "sellQuantity3",2);
-			
-			String bidQuantity2 = "0";
-
-			bidQuantity2 = getValueFromNode(instrument,first, "buyQuantity2", "sellPrice5",2);
-			
-			String offerPrice1 = "0";
-
-			offerPrice1 = getValueFromNode(instrument,first, "sellPrice1", "buyQuantity3",2);
-			
-			String offerQuantity1 = "0";
-
-			offerQuantity1 = getValueFromNode(instrument,first, "sellQuantity1", "buyPrice1",2);
-			
-			String offerPrice2 = "0";
-
-			offerPrice2 = getValueFromNode(instrument,first, "sellPrice2", "buyQuantity4",2);
-			
-			String offerQuantity2 = "0";
-
-			offerQuantity2 = getValueFromNode(instrument,first, "sellQuantity2", "sellQuantity1",2);
-			
-			
-
-			LiveOptionPriceData liveOptionPriceData = new LiveOptionPriceData();
-
-			// LiveOptionPriceData.setId(0);
-			
-
-
-			try {
-				liveOptionPriceData.setCurr_time(new DateTime(simpleDateFormat.parse(currTime)));
-			} catch (ParseException e) {
-				e.printStackTrace();
-				Calendar cal = Calendar.getInstance();
-				cal.add(Calendar.MINUTE, -2);
-				liveOptionPriceData.setCurr_time(new DateTime(cal.getTime()));
-			}
-			liveOptionPriceData.setSymbol(symbol);
-			liveOptionPriceData.setOption_type(instrument.getOption_type());
-			liveOptionPriceData.setOption_strike_price(instrument.getOption_strike_price());
-			liveOptionPriceData.setVolume(globalVolume);
-			liveOptionPriceData.setLast_price(new Float(lastPrice));
-			liveOptionPriceData.setOpen_price(new Float(openPrice));
-			liveOptionPriceData.setHigh_price(new Float(highPrice));
-			liveOptionPriceData.setLow_price(new Float(lowPrice));
-			
-			liveOptionPriceData.setBid_price_1(new Float(bidPrice1));
-			liveOptionPriceData.setBid_quantity_1(new Float(bidQuantity1));
-			liveOptionPriceData.setBid_price_2(new Float(bidPrice2));
-			liveOptionPriceData.setBid_quantity_2(new Float(bidQuantity2));
-			liveOptionPriceData.setOffer_price_1(new Float(offerPrice1));
-			liveOptionPriceData.setOffer_quantity_1(new Float(offerQuantity1));
-			liveOptionPriceData.setOffer_price_2(new Float(offerPrice2));
-			liveOptionPriceData.setOffer_quantity_2(new Float(offerQuantity2));
-
-			return liveOptionPriceData;
-
-		// }
-
-		// sop("Time Taken = " + (endTime.getTime() - startTime.getTime()) + "
-		// ms for symbol = " + symbol + " and " + "scrapeCount = " +
-		// scrapeCount);
-
-		// return null;
-
-	}
-
-
-*/	
-	private String getValueFromNode(SelectedInstrument instrument, Node first, String strTarget, String strNext, int noCharsFromNext) {
-
-		JsonParser parser = new BasicJsonParser();
-		Map<String, Object> output = null;
-		String finalBit = "";
 		try {
-			String input = first.toString().trim();
-			int indexOfTarget = input.lastIndexOf(strTarget);
-			int indexOfNext = input.lastIndexOf(strNext);
-			String lastPriceBit = "0";
-
-			if(indexOfTarget > 0 && indexOfNext > 0 )
-			{
-				lastPriceBit = input.substring(indexOfTarget - 1, indexOfNext - noCharsFromNext);
-
+			if (liveDataObjs.size() >= 5) {
+				updateDB();
 			}
-
-			 finalBit = "{" + lastPriceBit + "}";
-			 finalBit = finalBit.replaceAll("," , "");
-			output = parser.parseMap(finalBit);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
-			//return getValueFromNode(instrument,first,strTarget,strNext,noCharsFromNext);
-			sop("error for field " + strTarget + " for symbol-" + instrument.getSymbol() + " for optionType-"
-					+ instrument.getOption_type() + " for strikePrice-" + instrument.getOption_strike_price());
-		}
-
-		return "" + output.get(strTarget);
-	}
-
-	
-	private void putDatainList(LiveOptionPriceData LiveOptionPriceData) {
-
-		synchronized (liveDataObjs) {
-			liveDataObjs.add(LiveOptionPriceData);
 		}
 
 	}
@@ -528,75 +257,61 @@ public class LiveOptionPriceExtractor {
 
 		try {
 			synchronized (liveDataObjs) {
-				
+
 				try {
 					LiveOptionPriceDataRepository.save(liveDataObjs);
-					
+
 					sop("^^^^^^^ &&&&&&& SUCCESSFULY SAVED");
 
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					sop("^^^^^^^ &&&&&&& ERROR WHILE SAVING ^^^^^^^ &&&&&&&"+e.getMessage());
+
+					sop("^^^^^^^ &&&&&&& ERROR WHILE SAVING ^^^^^^^ &&&&&&&" + e.getMessage());
 				}
-				
+
 				liveDataObjs = new ArrayList<LiveOptionPriceData>();
 			}
 		} catch (Exception e) {
-			
+
 			e.printStackTrace();
 		}
 
 	}
 
-	public static void main(String[] args) throws Exception {/*
+	private void putDatainList(LiveOptionPriceData LiveOptionPriceData) {
 
-		// JsoupTest jt = new JsoupTest();
-
-		MultithreadingExtractor mt = new MultithreadingExtractor();
-
-		String[] symbols = { "HPC", "COAL", "TM", "BATA", "WIPRO", "ADANIPORT", "ONGC", "IOC", "ZEE", "BOSCH"
-
-		};
-
-		String[] urls = {
-				"http://www.moneycontrol.com/india/stockpricequote/refineries/hindustanpetroleumcorporation/HPC",
-				"http://www.moneycontrol.com/india/stockpricequote/mining-minerals/coalindia/CI11",
-				"http://www.moneycontrol.com/india/stockpricequote/computers-software/techmahindra/TM4",
-				"http://www.moneycontrol.com/india/stockpricequote/leather-products/bataindia/BI01",
-				"http://www.moneycontrol.com/india/stockpricequote/computers-software/wipro/W",
-				"http://www.moneycontrol.com/india/stockpricequote/infrastructure-general/adaniportsspecialeconomiczone/MPS",
-				"http://www.moneycontrol.com/india/stockpricequote/oil-drilling-and-exploration/oilnaturalgascorporation/ONG",
-				"http://www.moneycontrol.com/india/stockpricequote/refineries/indianoilcorporation/IOC",
-				"http://www.moneycontrol.com/india/stockpricequote/media-entertainment/zeeentertainmententerprises/ZEE",
-				"http://www.moneycontrol.com/india/stockpricequote/auto-ancillaries/bosch/B05" };
-
-		for (int i = 0; i < symbols.length; i++) {
-
-			String symbol = symbols[i];// "BATAINDIA" + i;
-
-			mt.instrumentList.add(symbol);
-
-			mt.mapUrls.put(SelectedInstrument, urls[i]);
-
-			long globalVolume = new Long(0);
-			mt.mapGlobalVolumes.put(symbol, globalVolume);
+		synchronized (liveDataObjs) {
+			liveDataObjs.add(LiveOptionPriceData);
 		}
-
-		mt.scrapeURLs();
-		// currTime.downloadData();
-	*/}
-
-	private String cleanData(String input) {
-		input = input.replaceAll(",", "");
-		input = input.replaceAll("<strong>", "");
-		input = input.replaceAll("</strong>", "");
-		return input;
 
 	}
 
 	private void sop(String text) {
 
 		System.out.println(text);
+	}
+
+	public List<Long> getTokens() {
+		return tokens;
+	}
+
+	public void setTokens(List<Long> tokens) {
+		this.tokens = tokens;
+	}
+
+	public KiteConnect getKiteConnect() {
+		return kiteConnect;
+	}
+
+	public void setKiteConnect(KiteConnect kiteConnect) {
+		this.kiteConnect = kiteConnect;
+	}
+
+	public Map<Long, SelectedInstrument> getMapTokensToInstrument() {
+		return mapTokensToInstrument;
+	}
+
+	public void setMapTokensToInstrument(Map<Long, SelectedInstrument> mapTokensToInstrument) {
+		this.mapTokensToInstrument = mapTokensToInstrument;
 	}
 
 }
