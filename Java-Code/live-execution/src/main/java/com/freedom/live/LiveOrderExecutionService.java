@@ -20,5 +20,8 @@ import com.freedom.live.repos.LiveStockDataRepository;
 import com.rainmatter.kiteconnect.KiteConnect;
 
 @Component
-public class LiveStockPriceExtractor {
+public class LiveOrderExecutionService {
+	
+	
+	
 }

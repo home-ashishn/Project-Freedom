@@ -14,9 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import com.freedom.live.models.BasisForCallsRepository;
 import com.freedom.live.models.SelectedInstrument;
-import com.freedom.live.models.SelectedInstrumentRepository;
+import com.freedom.live.repos.BasisForCallsRepository;
+import com.freedom.live.repos.SelectedInstrumentRepository;
 import com.googlecode.cqengine.ConcurrentIndexedCollection;
 import com.googlecode.cqengine.IndexedCollection;
 import com.googlecode.cqengine.query.parser.sql.SQLParser;
@@ -36,18 +36,22 @@ public class LiveExecutionManager {
 	 * 
 	 */
 
+/*	
 	@Autowired
 	private BasisForCallsRepository basisForCallsRepository;
 
+*/	
 	@Autowired
 	private SelectedInstrumentRepository selectedInstrumentRepository;
 
 	@Autowired
 	private LiveOptionPriceExtractor liveOptionPriceExtractor;
 
+/*	
 	@Autowired
 	private LiveStockPriceExtractor liveStockPriceExtractor;
 
+*/	
 	private String requestToken = "mhlm9l1br2cjsujrbfl65c8hhotwwghg";
 
 	private KiteConnect kiteConnect;
@@ -132,7 +136,7 @@ public class LiveExecutionManager {
 		kiteConnect.setPublicToken("ed757b5063a3821e588a4483cd76a845");
 
 
-		liveStockPriceExtractor.kiteConnect = kiteConnect;
+		// liveStockPriceExtractor.kiteConnect = kiteConnect;
 
 		liveOptionPriceExtractor.setKiteConnect(kiteConnect);
 

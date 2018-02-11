@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.freedom.live.models.LiveOptionPriceData;
-import com.freedom.live.models.LiveOptionPriceDataRepository;
 import com.freedom.live.models.SelectedInstrument;
+import com.freedom.live.repos.LiveOptionPriceDataRepository;
 import com.neovisionaries.ws.client.WebSocketException;
 import com.rainmatter.kiteconnect.KiteConnect;
 import com.rainmatter.kitehttp.exceptions.KiteException;

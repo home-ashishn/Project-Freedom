@@ -1,10 +1,12 @@
-package com.freedom.live.models;
+package com.freedom.live.repos;
 
 
 import javax.transaction.Transactional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+
+import com.freedom.live.models.LiveProcessStatusRecord;
 
 @Transactional
 public interface LiveProcessStatusRecordRepository extends CrudRepository<LiveProcessStatusRecord, Long> { 

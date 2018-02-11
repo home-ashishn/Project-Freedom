@@ -10,9 +10,9 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.freedom.live.models.BasisForCallsRepository;
 import com.freedom.live.models.LiveProcessStatusRecord;
-import com.freedom.live.models.LiveProcessStatusRecordRepository;
+import com.freedom.live.repos.BasisForCallsRepository;
+import com.freedom.live.repos.LiveProcessStatusRecordRepository;
 
 @Component
 public class LiveExecutionCycle {
@@ -72,7 +72,7 @@ public class LiveExecutionCycle {
 	
 	private void callRetryErrorOrders(DateTime time_in) {
 
-		basisForCallsRepository.callRetryErrorOrders(time_in, new DateTime());
+		// basisForCallsRepository.callRetryErrorOrders(time_in, new DateTime());
 
 	}
 
