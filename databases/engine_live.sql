@@ -34,6 +34,16 @@ CREATE TABLE `basis_for_calls` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `basis_for_calls`
+--
+
+LOCK TABLES `basis_for_calls` WRITE;
+/*!40000 ALTER TABLE `basis_for_calls` DISABLE KEYS */;
+INSERT INTO `basis_for_calls` VALUES ('LT',2614515,1416.5,0,'http://www.moneycontrol.com/india/stockpricequote/infrastructure-general/larsentoubro/LT',76.9711),('MARUTI',462650,9509.7,1,'http://www.moneycontrol.com/india/stockpricequote/auto-cars-jeeps/marutisuzukiindia/MS24',68.0168),('RELIANCE',5738209,961.3,-1,'http://www.moneycontrol.com/india/stockpricequote/refineries/relianceindustries/RI',71.6706),('SBIN',16409938,313.25,0,'http://www.moneycontrol.com/india/stockpricequote/banks-public-sector/statebankindia/SBI',76.8028);
+/*!40000 ALTER TABLE `basis_for_calls` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `basis_for_calls_archive`
 --
 
@@ -53,6 +63,16 @@ CREATE TABLE `basis_for_calls_archive` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `basis_for_calls_archive`
+--
+
+LOCK TABLES `basis_for_calls_archive` WRITE;
+/*!40000 ALTER TABLE `basis_for_calls_archive` DISABLE KEYS */;
+INSERT INTO `basis_for_calls_archive` VALUES ('2018-01-19','AXISBANK',9466991,584.8,-1,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/axisbank/AB16',105),('2018-01-25','AXISBANK',6158610,607.95,-1,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/axisbank/AB16',95),('2018-01-29','AXISBANK',6749846,616.1,-1,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/axisbank/AB16',75),('2018-01-30','AXISBANK',7108060,593.6,-1,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/axisbank/AB16',77.5),('2018-02-01','AXISBANK',7108060,593.6,-1,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/axisbank/AB16',70.5717),('2018-02-02','AXISBANK',7108060,593.6,-1,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/axisbank/AB16',75),('2018-01-19','CAPF',2654393,755.2,-1,'http://www.moneycontrol.com/india/stockpricequote/finance-general/capitalfirst/FCH',100),('2018-01-19','HDFC',6605642,1896.8,-1,'http://www.moneycontrol.com/india/stockpricequote/finance-housing/housingdevelopmentfinancecorporation/HDF',110),('2018-01-25','HDFC',3401495,1911.2,-1,'http://www.moneycontrol.com/india/stockpricequote/finance-housing/housingdevelopmentfinancecorporation/HDF',100),('2018-01-29','HDFC',4622281,1908.3,-1,'http://www.moneycontrol.com/india/stockpricequote/finance-housing/housingdevelopmentfinancecorporation/HDF',75),('2018-01-30','HDFC',3665385,1956.3,-1,'http://www.moneycontrol.com/india/stockpricequote/finance-housing/housingdevelopmentfinancecorporation/HDF',77.5),('2018-02-01','HDFC',3665385,1956.3,-1,'http://www.moneycontrol.com/india/stockpricequote/finance-housing/housingdevelopmentfinancecorporation/HDF',77.1024),('2018-02-02','HDFC',3665385,1956.3,-1,'http://www.moneycontrol.com/india/stockpricequote/finance-housing/housingdevelopmentfinancecorporation/HDF',75),('2018-01-25','HDFCBANK',1197642,1957.65,-1,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/hdfcbank/HDF01',90),('2018-01-29','HDFCBANK',2180917,1974.95,-1,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/hdfcbank/HDF01',75),('2018-01-30','HDFCBANK',1735837,2005.7,-1,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/hdfcbank/HDF01',82.5),('2018-02-01','HDFCBANK',1735837,2005.7,-1,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/hdfcbank/HDF01',76.2967),('2018-02-02','HDFCBANK',1735837,2005.7,-1,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/hdfcbank/HDF01',80),('2018-01-29','HDIL',12306840,59.35,0,'http://www.moneycontrol.com/india/stockpricequote/construction-contracting-real-estate/housingdevelopmentinfrastructure/HDI',75),('2018-01-30','HDIL',10431969,57.85,0,'http://www.moneycontrol.com/india/stockpricequote/construction-contracting-real-estate/housingdevelopmentinfrastructure/HDI',77.5),('2018-02-01','HDIL',10431969,57.85,0,'http://www.moneycontrol.com/india/stockpricequote/construction-contracting-real-estate/housingdevelopmentinfrastructure/HDI',72.6764),('2018-02-02','HDIL',10431969,57.85,0,'http://www.moneycontrol.com/india/stockpricequote/construction-contracting-real-estate/housingdevelopmentinfrastructure/HDI',75),('2018-01-19','ICICIBANK',31504668,346.15,-1,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/icicibank/ICI02',105),('2018-01-25','ICICIBANK',12815095,352.75,1,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/icicibank/ICI02',95),('2018-01-29','ICICIBANK',30183656,360.8,1,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/icicibank/ICI02',75),('2018-01-30','ICICIBANK',22638320,352.95,1,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/icicibank/ICI02',82.5),('2018-02-01','ICICIBANK',22638320,352.95,1,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/icicibank/ICI02',76.9918),('2018-02-02','ICICIBANK',22638320,352.95,1,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/icicibank/ICI02',80),('2018-01-29','IDFCBANK',12008960,58.2,0,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/idfcbank/IDF01',75),('2018-01-30','IDFCBANK',7929504,57.95,0,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/idfcbank/IDF01',80),('2018-02-01','IDFCBANK',7085491,56.8,0,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/idfcbank/IDF01',67.6597),('2018-02-02','IDFCBANK',7085491,56.8,0,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/idfcbank/IDF01',80),('2018-01-25','INFY',10302359,1185.8,-1,'http://www.moneycontrol.com/india/stockpricequote/computers-software/infosys/IT',95),('2018-01-29','INFY',6774457,1175.4,-1,'http://www.moneycontrol.com/india/stockpricequote/computers-software/infosys/IT',75),('2018-01-30','INFY',5411501,1182.9,-1,'http://www.moneycontrol.com/india/stockpricequote/computers-software/infosys/IT',80),('2018-02-01','INFY',4606849,1150.25,-1,'http://www.moneycontrol.com/india/stockpricequote/computers-software/infosys/IT',71.7146),('2018-02-02','INFY',4606849,1150.25,-1,'http://www.moneycontrol.com/india/stockpricequote/computers-software/infosys/IT',80),('2018-01-29','ITC',13124518,281.25,0,'http://www.moneycontrol.com/india/stockpricequote/cigarettes/itc/ITC',75),('2018-01-30','ITC',9569723,275.65,0,'http://www.moneycontrol.com/india/stockpricequote/cigarettes/itc/ITC',80),('2018-02-01','ITC',18945944,271.4,0,'http://www.moneycontrol.com/india/stockpricequote/cigarettes/itc/ITC',68.0941),('2018-02-02','ITC',18945944,271.4,0,'http://www.moneycontrol.com/india/stockpricequote/cigarettes/itc/ITC',80),('2018-01-19','JINDALSTEL',12623614,264.35,-1,'http://www.moneycontrol.com/india/stockpricequote/steel-sponge-iron/jindalsteelpower/JSP',110),('2018-01-29','JINDALSTEL',19512588,280.2,0,'http://www.moneycontrol.com/india/stockpricequote/steel-sponge-iron/jindalsteelpower/JSP',75),('2018-01-30','JINDALSTEL',15891835,266.05,0,'http://www.moneycontrol.com/india/stockpricequote/steel-sponge-iron/jindalsteelpower/JSP',80),('2018-02-01','JINDALSTEL',11086304,266.45,0,'http://www.moneycontrol.com/india/stockpricequote/steel-sponge-iron/jindalsteelpower/JSP',67.8267),('2018-02-02','JINDALSTEL',11086304,266.45,0,'http://www.moneycontrol.com/india/stockpricequote/steel-sponge-iron/jindalsteelpower/JSP',80),('2018-01-25','KOTAKBANK',1168000,1080.1,-1,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/kotakmahindrabank/KMB',95),('2018-01-29','KOTAKBANK',4061319,1092.35,-1,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/kotakmahindrabank/KMB',75),('2018-01-30','KOTAKBANK',2215014,1115.1,-1,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/kotakmahindrabank/KMB',75),('2018-02-01','KOTAKBANK',3143011,1108.95,-1,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/kotakmahindrabank/KMB',77.3512),('2018-02-02','KOTAKBANK',3143011,1108.95,-1,'http://www.moneycontrol.com/india/stockpricequote/banks-private-sector/kotakmahindrabank/KMB',75),('2018-01-19','LT',4966982,1360.8,1,'http://www.moneycontrol.com/india/stockpricequote/infrastructure-general/larsentoubro/LT',110),('2018-01-25','LT',2147973,1401.2,-1,'http://www.moneycontrol.com/india/stockpricequote/infrastructure-general/larsentoubro/LT',95),('2018-01-29','LT',6113475,1416.5,0,'http://www.moneycontrol.com/india/stockpricequote/infrastructure-general/larsentoubro/LT',75),('2018-01-30','LT',2945415,1431.95,0,'http://www.moneycontrol.com/india/stockpricequote/infrastructure-general/larsentoubro/LT',80),('2018-02-01','LT',2614515,1416.5,0,'http://www.moneycontrol.com/india/stockpricequote/infrastructure-general/larsentoubro/LT',76.9711),('2018-02-02','LT',2614515,1416.5,0,'http://www.moneycontrol.com/india/stockpricequote/infrastructure-general/larsentoubro/LT',80),('2018-01-19','MARUTI',686971,9368.7,-1,'http://www.moneycontrol.com/india/stockpricequote/auto-cars-jeeps/marutisuzukiindia/MS24',100),('2018-01-25','MARUTI',568489,9434.95,1,'http://www.moneycontrol.com/india/stockpricequote/auto-cars-jeeps/marutisuzukiindia/MS24',100),('2018-01-29','MARUTI',705224,9278.2,1,'http://www.moneycontrol.com/india/stockpricequote/auto-cars-jeeps/marutisuzukiindia/MS24',75),('2018-01-30','MARUTI',1546624,9630.7,1,'http://www.moneycontrol.com/india/stockpricequote/auto-cars-jeeps/marutisuzukiindia/MS24',80),('2018-02-01','MARUTI',462650,9509.7,1,'http://www.moneycontrol.com/india/stockpricequote/auto-cars-jeeps/marutisuzukiindia/MS24',68.0168),('2018-02-02','MARUTI',462650,9509.7,1,'http://www.moneycontrol.com/india/stockpricequote/auto-cars-jeeps/marutisuzukiindia/MS24',80),('2018-01-19','PCJEWELLER',2782492,581.1,-1,'http://www.moneycontrol.com/india/stockpricequote/diamond-cutting-jewellery-precious-metals/pcjeweller/PJ',110),('2018-01-25','RELIANCE',6532672,966.35,1,'http://www.moneycontrol.com/india/stockpricequote/refineries/relianceindustries/RI',95),('2018-01-29','RELIANCE',6249419,965.9,-1,'http://www.moneycontrol.com/india/stockpricequote/refineries/relianceindustries/RI',75),('2018-01-30','RELIANCE',4524605,964.5,-1,'http://www.moneycontrol.com/india/stockpricequote/refineries/relianceindustries/RI',80),('2018-02-01','RELIANCE',5738209,961.3,-1,'http://www.moneycontrol.com/india/stockpricequote/refineries/relianceindustries/RI',71.6706),('2018-02-02','RELIANCE',5738209,961.3,-1,'http://www.moneycontrol.com/india/stockpricequote/refineries/relianceindustries/RI',80),('2018-01-29','SBIN',42466152,313.15,0,'http://www.moneycontrol.com/india/stockpricequote/banks-public-sector/statebankindia/SBI',75),('2018-01-30','SBIN',23600898,312.1,0,'http://www.moneycontrol.com/india/stockpricequote/banks-public-sector/statebankindia/SBI',80),('2018-02-01','SBIN',16409938,313.25,0,'http://www.moneycontrol.com/india/stockpricequote/banks-public-sector/statebankindia/SBI',76.8028),('2018-02-02','SBIN',16409938,313.25,0,'http://www.moneycontrol.com/india/stockpricequote/banks-public-sector/statebankindia/SBI',80),('2018-01-29','TATASTEEL',8397681,769.15,0,'http://www.moneycontrol.com/india/stockpricequote/steel-large/tatasteel/TIS',75),('2018-01-30','TATASTEEL',6508012,783.15,0,'http://www.moneycontrol.com/india/stockpricequote/steel-large/tatasteel/TIS',80);
+/*!40000 ALTER TABLE `basis_for_calls_archive` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `live_data`
 --
 
@@ -66,8 +86,17 @@ CREATE TABLE `live_data` (
   `volume` int(11) DEFAULT NULL,
   `price` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=217629 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=217626 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `live_data`
+--
+
+LOCK TABLES `live_data` WRITE;
+/*!40000 ALTER TABLE `live_data` DISABLE KEYS */;
+/*!40000 ALTER TABLE `live_data` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `live_data_archive`
@@ -85,6 +114,15 @@ CREATE TABLE `live_data_archive` (
   PRIMARY KEY (`curr_time`,`symbol`,`volume`,`price`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `live_data_archive`
+--
+
+LOCK TABLES `live_data_archive` WRITE;
+/*!40000 ALTER TABLE `live_data_archive` DISABLE KEYS */;
+/*!40000 ALTER TABLE `live_data_archive` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `live_option_price_data`
@@ -110,8 +148,17 @@ CREATE TABLE `live_option_price_data` (
   `bid_quantity_2` int(11) DEFAULT NULL,
   `offer_quantity_2` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1473666 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1473702 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `live_option_price_data`
+--
+
+LOCK TABLES `live_option_price_data` WRITE;
+/*!40000 ALTER TABLE `live_option_price_data` DISABLE KEYS */;
+/*!40000 ALTER TABLE `live_option_price_data` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `live_option_price_data_archive`
@@ -141,6 +188,15 @@ CREATE TABLE `live_option_price_data_archive` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `live_option_price_data_archive`
+--
+
+LOCK TABLES `live_option_price_data_archive` WRITE;
+/*!40000 ALTER TABLE `live_option_price_data_archive` DISABLE KEYS */;
+/*!40000 ALTER TABLE `live_option_price_data_archive` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `live_procedure_status`
 --
 
@@ -153,6 +209,16 @@ CREATE TABLE `live_procedure_status` (
   PRIMARY KEY (`curr_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `live_procedure_status`
+--
+
+LOCK TABLES `live_procedure_status` WRITE;
+/*!40000 ALTER TABLE `live_procedure_status` DISABLE KEYS */;
+INSERT INTO `live_procedure_status` VALUES ('2018-02-01',1),('2018-02-06',0);
+/*!40000 ALTER TABLE `live_procedure_status` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `live_process_status_record`
@@ -168,6 +234,16 @@ CREATE TABLE `live_process_status_record` (
   PRIMARY KEY (`curr_time`,`process_status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `live_process_status_record`
+--
+
+LOCK TABLES `live_process_status_record` WRITE;
+/*!40000 ALTER TABLE `live_process_status_record` DISABLE KEYS */;
+INSERT INTO `live_process_status_record` VALUES ('2018-02-01 09:15:00','SUCCESS',0),('2018-02-01 13:48:15','SUCCESS',0),('2018-02-01 13:49:15','SUCCESS',0),('2018-02-01 14:01:16','SUCCESS',1),('2018-02-01 14:02:16','SUCCESS',1),('2018-02-01 14:03:16','SUCCESS',1),('2018-02-01 14:04:16','SUCCESS',1),('2018-02-01 14:05:16','SUCCESS',1),('2018-02-01 14:06:16','SUCCESS',1),('2018-02-01 14:07:16','SUCCESS',1),('2018-02-01 14:08:16','SUCCESS',1),('2018-02-01 14:09:16','SUCCESS',1),('2018-02-01 14:10:16','SUCCESS',1),('2018-02-01 14:11:17','SUCCESS',1),('2018-02-01 14:12:17','SUCCESS',1),('2018-02-01 14:13:17','SUCCESS',1),('2018-02-01 14:14:17','SUCCESS',1),('2018-02-01 14:15:18','SUCCESS',1),('2018-02-01 14:16:18','SUCCESS',1),('2018-02-01 14:17:18','SUCCESS',1),('2018-02-01 14:18:18','SUCCESS',1),('2018-02-01 14:19:18','ERRORD',0),('2018-02-01 14:20:18','SUCCESS',1),('2018-02-01 14:21:18','SUCCESS',1),('2018-02-01 14:22:18','SUCCESS',1),('2018-02-01 14:23:19','SUCCESS',1),('2018-02-01 14:24:18','SUCCESS',1),('2018-02-01 14:25:18','SUCCESS',1),('2018-02-01 14:26:18','SUCCESS',1),('2018-02-01 14:27:18','SUCCESS',1),('2018-02-01 14:28:18','SUCCESS',1),('2018-02-01 14:29:18','SUCCESS',1),('2018-02-01 14:30:18','SUCCESS',1),('2018-02-01 14:31:18','SUCCESS',1),('2018-02-01 14:32:18','SUCCESS',1),('2018-02-01 14:33:18','SUCCESS',1),('2018-02-01 14:34:19','SUCCESS',1),('2018-02-01 14:35:18','SUCCESS',1),('2018-02-01 15:12:11','SUCCESS',1),('2018-02-01 15:13:11','SUCCESS',1),('2018-02-01 15:14:11','SUCCESS',1);
+/*!40000 ALTER TABLE `live_process_status_record` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `log_messages`
@@ -186,6 +262,16 @@ CREATE TABLE `log_messages` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `log_messages`
+--
+
+LOCK TABLES `log_messages` WRITE;
+/*!40000 ALTER TABLE `log_messages` DISABLE KEYS */;
+INSERT INTO `log_messages` VALUES (50,'2018-02-07 13:11:39','LIVE_DATA_EXECUTION_MASTER - STARTING - 2018-02-07 13:11:39','START'),(51,'2018-02-07 13:11:39','LIVE_DATA_EXECUTION_MASTER - ENDING 1 - 2018-02-07 13:11:39','END - DUPLICATE PROCESS'),(52,'2018-02-07 13:12:04','LIVE_DATA_EXECUTION_MASTER - STARTING - 2018-02-07 13:12:04','START'),(53,'2018-02-07 13:46:44','LIVE_DATA_EXECUTION_MASTER - STARTING - 2018-02-07 13:46:44','START'),(54,'2018-02-07 13:46:44','LIVE_DATA_EXECUTION_MASTER - ENDING 1 - 2018-02-07 13:46:44','END - DUPLICATE PROCESS'),(55,'2018-02-07 13:47:13','LIVE_DATA_EXECUTION_MASTER - STARTING - 2018-02-07 13:47:13','START'),(56,'2018-02-07 13:51:19','LIVE_DATA_EXECUTION_MASTER - STARTING - 2018-02-07 13:51:19','START'),(57,'2018-02-07 13:51:19','LIVE_DATA_EXECUTION_MASTER - ENDING 1 - 2018-02-07 13:51:19','END - DUPLICATE PROCESS'),(58,'2018-02-07 14:00:11','LIVE_DATA_EXECUTION_MASTER - STARTING - 2018-02-07 14:00:11','START');
+/*!40000 ALTER TABLE `log_messages` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `market_day_events_status`
 --
 
@@ -199,6 +285,16 @@ CREATE TABLE `market_day_events_status` (
   PRIMARY KEY (`curr_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `market_day_events_status`
+--
+
+LOCK TABLES `market_day_events_status` WRITE;
+/*!40000 ALTER TABLE `market_day_events_status` DISABLE KEYS */;
+INSERT INTO `market_day_events_status` VALUES ('2018-02-01',1,1);
+/*!40000 ALTER TABLE `market_day_events_status` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `negative_price_trend_data`
@@ -226,6 +322,16 @@ CREATE TABLE `negative_price_trend_data` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `negative_price_trend_data`
+--
+
+LOCK TABLES `negative_price_trend_data` WRITE;
+/*!40000 ALTER TABLE `negative_price_trend_data` DISABLE KEYS */;
+INSERT INTO `negative_price_trend_data` VALUES (2211,'RELIANCE','2018-02-01 12:26:06','2018-02-01 13:13:59','2018-02-01 13:16:07',3091437,4740962,959.25,949.65,2.24952,1,NULL,NULL),(2212,'LT','2018-02-01 13:31:29','2018-02-01 14:14:56','2018-02-01 14:19:18',6541229,7177046,1457.05,1442,2.03198,1,NULL,NULL),(2213,'RELIANCE','2018-02-01 13:35:42','2018-02-01 14:28:33','2018-02-01 14:29:18',5180476,6076286,952.8,943.25,1.10516,1,NULL,NULL),(2214,'SBIN','2018-02-01 14:20:48','2018-02-01 14:29:41','2018-02-01 14:34:19',14837305,15577272,310.2,307.05,1.87453,1,NULL,NULL);
+/*!40000 ALTER TABLE `negative_price_trend_data` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `negative_price_trend_data_for_sell_order`
 --
 
@@ -247,8 +353,17 @@ CREATE TABLE `negative_price_trend_data_for_sell_order` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2193 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `negative_price_trend_data_for_sell_order`
+--
+
+LOCK TABLES `negative_price_trend_data_for_sell_order` WRITE;
+/*!40000 ALTER TABLE `negative_price_trend_data_for_sell_order` DISABLE KEYS */;
+/*!40000 ALTER TABLE `negative_price_trend_data_for_sell_order` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `negative_price_trend_data_log`
@@ -274,6 +389,16 @@ CREATE TABLE `negative_price_trend_data_log` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `negative_price_trend_data_log`
+--
+
+LOCK TABLES `negative_price_trend_data_log` WRITE;
+/*!40000 ALTER TABLE `negative_price_trend_data_log` DISABLE KEYS */;
+INSERT INTO `negative_price_trend_data_log` VALUES ('LT','2018-02-01 13:31:29','2018-02-01 14:14:56','2018-02-01 14:19:18',6541229,7177046,1457.05,1442,2.03198,1,NULL),('LT','2018-02-01 13:31:59','2018-02-01 14:29:56','2018-02-01 14:34:19',6547784,7395732,1457.5,1442.9,2.09513,0,0),('LT','2018-02-01 13:32:45','2018-02-01 14:27:24','2018-02-01 14:29:18',6556800,7360441,1456.4,1441.8,2.10397,0,0),('RELIANCE','2018-02-01 12:26:06','2018-02-01 13:13:59','2018-02-01 13:16:07',3091437,4740962,959.25,949.65,2.24952,1,NULL),('RELIANCE','2018-02-01 12:26:30','2018-02-01 13:16:48','2018-02-01 13:21:07',3094277,4794391,959.9,950.3,2.20861,0,0),('RELIANCE','2018-02-01 12:26:30','2018-02-01 13:21:38','2018-02-01 13:26:07',3094277,4856355,959.9,950.3,2.08843,0,0),('RELIANCE','2018-02-01 12:32:02','2018-02-01 13:27:15','2018-02-01 13:31:09',3308156,4933983,959,949.3,1.90242,0,0),('RELIANCE','2018-02-01 12:32:02','2018-02-01 13:31:49','2018-02-01 13:36:10',3308156,5072522,959,949.4,1.92669,0,0),('RELIANCE','2018-02-01 13:35:42','2018-02-01 14:28:33','2018-02-01 14:29:18',5180476,6076286,952.8,943.25,1.10516,1,NULL),('RELIANCE','2018-02-01 14:23:59','2018-02-01 14:29:28','2018-02-01 14:34:19',5938466,6167719,947.5,937.4,2.5632,0,0),('SBIN','2018-02-01 14:20:48','2018-02-01 14:29:41','2018-02-01 14:34:19',14837305,15577272,310.2,307.05,1.87453,1,NULL);
+/*!40000 ALTER TABLE `negative_price_trend_data_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `option_buy_order`
 --
 
@@ -297,6 +422,16 @@ CREATE TABLE `option_buy_order` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `option_buy_order`
+--
+
+LOCK TABLES `option_buy_order` WRITE;
+/*!40000 ALTER TABLE `option_buy_order` DISABLE KEYS */;
+INSERT INTO `option_buy_order` VALUES (14313053,'LT','CE',1460,52.2,1,750,1,0,0,1500),(14313054,'LT','PE',1340,6.6,11,8250,0,0,0,3750),(14313055,'MARUTI','CE',9400,274.85,2,150,0,0,0,150),(14313056,'MARUTI','PE',9200,48.8,15,1125,0,0,0,825),(14313057,'RELIANCE','CE',1020,8.9,6,6000,1,0,0,6000),(14313058,'RELIANCE','PE',900,5.3,10,10000,1,0,0,13000),(14313059,'SBIN','CE',325,6.85,2,6000,1,0,0,6000),(14313060,'SBIN','PE',300,5.9,3,9000,0,0,0,9000);
+/*!40000 ALTER TABLE `option_buy_order` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `option_buy_order_cancelled`
 --
 
@@ -316,8 +451,17 @@ CREATE TABLE `option_buy_order_cancelled` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14313025 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `option_buy_order_cancelled`
+--
+
+LOCK TABLES `option_buy_order_cancelled` WRITE;
+/*!40000 ALTER TABLE `option_buy_order_cancelled` DISABLE KEYS */;
+/*!40000 ALTER TABLE `option_buy_order_cancelled` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `option_buy_order_event`
@@ -342,6 +486,16 @@ CREATE TABLE `option_buy_order_event` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `option_buy_order_event`
+--
+
+LOCK TABLES `option_buy_order_event` WRITE;
+/*!40000 ALTER TABLE `option_buy_order_event` DISABLE KEYS */;
+INSERT INTO `option_buy_order_event` VALUES (14313053,'LT','2018-02-01 09:15:00','CE',1460,28.05,2,1500,'CAL',1),(14313053,'LT','2018-02-01 13:16:07','CE',1460,52.2,1,750,'MOD',1),(14313054,'LT','2018-02-01 09:15:00','PE',1340,12.3,5,3750,'CAL',1),(14313054,'LT','2018-02-01 13:16:07','PE',1340,6.6,11,8250,'ERMOD',1),(14313054,'LT','2018-02-01 14:19:18','PE',1340,8.6,8,6000,'ERMOD',1),(14313054,'LT','2018-02-01 13:16:07','PE',1340,6.6,11,8250,'MOD',1),(14313055,'MARUTI','2018-02-01 09:15:00','CE',9400,274.85,2,150,'CAL',1),(14313055,'MARUTI','2018-02-01 13:16:07','CE',9400,375.15,2,150,'ERMOD',1),(14313056,'MARUTI','2018-02-01 09:15:00','PE',9200,66.6,11,825,'CAL',1),(14313056,'MARUTI','2018-02-01 13:16:07','PE',9200,48.8,15,1125,'ERMOD',1),(14313056,'MARUTI','2018-02-01 13:16:07','PE',9200,48.8,15,1125,'MOD',1),(14313057,'RELIANCE','2018-02-01 09:15:00','CE',1020,8.9,6,6000,'CAL',1),(14313058,'RELIANCE','2018-02-01 09:15:00','PE',900,3.95,13,13000,'CAL',1),(14313058,'RELIANCE','2018-02-01 13:16:07','PE',900,5.3,10,10000,'MOD',1),(14313059,'SBIN','2018-02-01 09:15:00','CE',325,6.75,2,6000,'CAL',1),(14313059,'SBIN','2018-02-01 13:16:07','CE',325,6.85,2,6000,'MOD',1),(14313060,'SBIN','2018-02-01 09:15:00','PE',300,6.15,3,9000,'CAL',1),(14313060,'SBIN','2018-02-01 13:16:07','PE',300,4.6,4,12000,'MOD',1),(14313060,'SBIN','2018-02-01 14:34:19','PE',300,5.9,3,9000,'MOD',1);
+/*!40000 ALTER TABLE `option_buy_order_event` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `option_buy_order_log`
 --
 
@@ -362,6 +516,16 @@ CREATE TABLE `option_buy_order_log` (
   `remaining_quantity` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `option_buy_order_log`
+--
+
+LOCK TABLES `option_buy_order_log` WRITE;
+/*!40000 ALTER TABLE `option_buy_order_log` DISABLE KEYS */;
+INSERT INTO `option_buy_order_log` VALUES (14313053,'LT','CE',1460,28.05,2,1500,0,'2018-02-01 09:15:00',0,1500),(14313054,'LT','PE',1340,12.3,5,3750,0,'2018-02-01 09:15:00',0,3750),(14313055,'MARUTI','CE',9400,274.85,2,150,0,'2018-02-01 09:15:00',0,150),(14313056,'MARUTI','PE',9200,66.6,11,825,0,'2018-02-01 09:15:00',0,825),(14313057,'RELIANCE','CE',1020,8.9,6,6000,0,'2018-02-01 09:15:00',0,6000),(14313058,'RELIANCE','PE',900,3.95,13,13000,0,'2018-02-01 09:15:00',0,13000),(14313059,'SBIN','CE',325,6.75,2,6000,0,'2018-02-01 09:15:00',0,6000),(14313060,'SBIN','PE',300,6.15,3,9000,0,'2018-02-01 09:15:00',0,9000),(14313053,'LT','CE',1460,52.2,1,750,0,'2018-02-01 13:16:07',0,750),(14313053,'LT','CE',1460,52.2,1,750,0,'2018-02-01 13:16:07',0,750),(14313054,'LT','PE',1340,6.6,11,8250,0,'2018-02-01 13:16:07',0,8250),(14313054,'LT','PE',1340,6.6,11,8250,0,'2018-02-01 13:16:07',0,8250),(14313055,'MARUTI','CE',9400,375.15,2,150,0,'2018-02-01 13:16:07',0,150),(14313056,'MARUTI','PE',9200,48.8,15,1125,0,'2018-02-01 13:16:07',0,1125),(14313056,'MARUTI','PE',9200,48.8,15,1125,0,'2018-02-01 13:16:07',0,1125),(14313058,'RELIANCE','PE',900,5.3,10,10000,0,'2018-02-01 13:16:07',0,10000),(14313058,'RELIANCE','PE',900,5.3,10,10000,0,'2018-02-01 13:16:07',0,10000),(14313059,'SBIN','CE',325,9.05,2,6000,0,'2018-02-01 13:16:07',0,6000),(14313059,'SBIN','CE',325,6.85,2,6000,0,'2018-02-01 13:16:07',0,6000),(14313060,'SBIN','PE',300,4.6,4,12000,0,'2018-02-01 13:16:07',0,12000),(14313060,'SBIN','PE',300,4.6,4,12000,0,'2018-02-01 13:16:07',0,12000),(14313054,'LT','PE',1340,8.6,8,6000,0,'2018-02-01 14:19:18',0,6000),(14313060,'SBIN','PE',300,5.9,3,9000,0,'2018-02-01 14:34:19',0,9000),(14313060,'SBIN','PE',300,5.9,3,9000,0,'2018-02-01 14:34:19',0,9000);
+/*!40000 ALTER TABLE `option_buy_order_log` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `option_position`
@@ -391,6 +555,16 @@ CREATE TABLE `option_position` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `option_position`
+--
+
+LOCK TABLES `option_position` WRITE;
+/*!40000 ALTER TABLE `option_position` DISABLE KEYS */;
+INSERT INTO `option_position` VALUES (14313053,'LT','CE',1460,52.2,1,750,0,750,0,39150,60.05,45037.5,'2018-02-01 13:23:07','2018-02-01 13:25:07'),(14313057,'RELIANCE','CE',1020,8.9,6,6000,0,6000,0,53400,0,0,'2018-02-01 13:13:07','2018-02-01 13:13:07'),(14313058,'RELIANCE','PE',900,5.3,10,10000,0,10000,0,53000,6.1,61000,'2018-02-01 13:40:10','2018-02-01 14:25:18'),(14313059,'SBIN','CE',325,6.85,2,6000,0,6000,0,41100,0,0,'2018-02-01 13:19:07','2018-02-01 13:19:07');
+/*!40000 ALTER TABLE `option_position` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `option_sell_order`
 --
 
@@ -412,6 +586,16 @@ CREATE TABLE `option_sell_order` (
   PRIMARY KEY (`order_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9899192 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `option_sell_order`
+--
+
+LOCK TABLES `option_sell_order` WRITE;
+/*!40000 ALTER TABLE `option_sell_order` DISABLE KEYS */;
+INSERT INTO `option_sell_order` VALUES (9899188,'RELIANCE','CE',1020,8,6,6000,0,0,0,6000),(9899189,'SBIN','CE',325,6.15,2,6000,0,0,0,6000),(9899190,'LT','CE',1460,60.05,1,750,1,0,0,750),(9899191,'RELIANCE','PE',900,6.1,10,10000,1,0,0,10000);
+/*!40000 ALTER TABLE `option_sell_order` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `option_sell_order_event`
@@ -436,6 +620,16 @@ CREATE TABLE `option_sell_order_event` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `option_sell_order_event`
+--
+
+LOCK TABLES `option_sell_order_event` WRITE;
+/*!40000 ALTER TABLE `option_sell_order_event` DISABLE KEYS */;
+INSERT INTO `option_sell_order_event` VALUES (9899188,'RELIANCE','2018-02-01 14:11:17','CE',1020,8,6,6000,'MOD',0),(9899188,'RELIANCE','2018-02-01 13:13:07','CE',1020,10.25,6,6000,'NEW',0),(9899189,'SBIN','2018-02-01 14:25:18','CE',325,6.5,2,6000,'MOD',0),(9899189,'SBIN','2018-02-01 14:29:18','CE',325,6.15,2,6000,'MOD',0),(9899189,'SBIN','2018-02-01 14:30:18','CE',325,6.15,2,6000,'MOD',0),(9899189,'SBIN','2018-02-01 14:31:18','CE',325,6.15,2,6000,'MOD',0),(9899189,'SBIN','2018-02-01 14:32:18','CE',325,6.5,2,6000,'MOD',0),(9899189,'SBIN','2018-02-01 14:34:19','CE',325,6.15,2,6000,'MOD',0),(9899189,'SBIN','2018-02-01 14:35:18','CE',325,6.15,2,6000,'MOD',0),(9899189,'SBIN','2018-02-01 15:12:11','CE',325,6.15,2,6000,'MOD',0),(9899189,'SBIN','2018-02-01 15:13:11','CE',325,6.15,2,6000,'MOD',0),(9899189,'SBIN','2018-02-01 15:14:11','CE',325,6.15,2,6000,'MOD',0),(9899189,'SBIN','2018-02-01 13:19:07','CE',325,7.9,2,6000,'NEW',0),(9899190,'LT','2018-02-01 13:23:07','CE',1460,60.05,1,750,'NEW',0),(9899191,'RELIANCE','2018-02-01 13:40:10','PE',900,6.1,10,10000,'NEW',0);
+/*!40000 ALTER TABLE `option_sell_order_event` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `option_sell_order_log`
 --
 
@@ -458,6 +652,16 @@ CREATE TABLE `option_sell_order_log` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `option_sell_order_log`
+--
+
+LOCK TABLES `option_sell_order_log` WRITE;
+/*!40000 ALTER TABLE `option_sell_order_log` DISABLE KEYS */;
+INSERT INTO `option_sell_order_log` VALUES (9899188,'RELIANCE','CE',1020,10.25,6,6000,0,'2018-02-01 13:13:07',0,6000),(9899189,'SBIN','CE',325,7.9,2,6000,0,'2018-02-01 13:19:07',0,6000),(9899190,'LT','CE',1460,60.05,1,750,0,'2018-02-01 13:23:07',0,750),(9899191,'RELIANCE','PE',900,6.1,10,10000,0,'2018-02-01 13:40:10',0,10000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:11:17',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:11:17',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:12:17',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:13:17',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:14:17',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:15:18',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:16:18',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:17:18',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:18:18',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:19:18',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:20:18',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:21:18',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:22:18',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:23:19',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:24:18',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:25:18',0,6000),(9899189,'SBIN','CE',325,6.5,2,6000,0,'2018-02-01 14:25:18',0,6000),(9899189,'SBIN','CE',325,6.5,2,6000,0,'2018-02-01 14:25:18',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:26:18',0,6000),(9899189,'SBIN','CE',325,6.5,2,6000,0,'2018-02-01 14:26:18',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:27:18',0,6000),(9899189,'SBIN','CE',325,6.5,2,6000,0,'2018-02-01 14:27:18',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:28:18',0,6000),(9899189,'SBIN','CE',325,6.5,2,6000,0,'2018-02-01 14:28:18',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:29:18',0,6000),(9899189,'SBIN','CE',325,6.15,2,6000,0,'2018-02-01 14:29:18',0,6000),(9899189,'SBIN','CE',325,6.15,2,6000,0,'2018-02-01 14:29:18',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:30:18',0,6000),(9899189,'SBIN','CE',325,6.15,2,6000,0,'2018-02-01 14:30:18',0,6000),(9899189,'SBIN','CE',325,6.15,2,6000,0,'2018-02-01 14:30:18',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:31:18',0,6000),(9899189,'SBIN','CE',325,6.15,2,6000,0,'2018-02-01 14:31:18',0,6000),(9899189,'SBIN','CE',325,6.15,2,6000,0,'2018-02-01 14:31:18',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:32:18',0,6000),(9899189,'SBIN','CE',325,6.5,2,6000,0,'2018-02-01 14:32:18',0,6000),(9899189,'SBIN','CE',325,6.5,2,6000,0,'2018-02-01 14:32:18',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:33:18',0,6000),(9899189,'SBIN','CE',325,6.5,2,6000,0,'2018-02-01 14:33:18',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:34:19',0,6000),(9899189,'SBIN','CE',325,6.15,2,6000,0,'2018-02-01 14:34:19',0,6000),(9899189,'SBIN','CE',325,6.15,2,6000,0,'2018-02-01 14:34:19',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 14:35:18',0,6000),(9899189,'SBIN','CE',325,6.15,2,6000,0,'2018-02-01 14:35:18',0,6000),(9899189,'SBIN','CE',325,6.15,2,6000,0,'2018-02-01 14:35:18',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 15:12:11',0,6000),(9899189,'SBIN','CE',325,6.15,2,6000,0,'2018-02-01 15:12:11',0,6000),(9899189,'SBIN','CE',325,6.15,2,6000,0,'2018-02-01 15:12:11',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 15:13:11',0,6000),(9899189,'SBIN','CE',325,6.15,2,6000,0,'2018-02-01 15:13:11',0,6000),(9899189,'SBIN','CE',325,6.15,2,6000,0,'2018-02-01 15:13:11',0,6000),(9899188,'RELIANCE','CE',1020,8,6,6000,0,'2018-02-01 15:14:11',0,6000),(9899189,'SBIN','CE',325,6.15,2,6000,0,'2018-02-01 15:14:11',0,6000),(9899189,'SBIN','CE',325,6.15,2,6000,0,'2018-02-01 15:14:11',0,6000);
+/*!40000 ALTER TABLE `option_sell_order_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `option_stop_loss_order_price`
 --
 
@@ -474,6 +678,16 @@ CREATE TABLE `option_stop_loss_order_price` (
   PRIMARY KEY (`order_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1101 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `option_stop_loss_order_price`
+--
+
+LOCK TABLES `option_stop_loss_order_price` WRITE;
+/*!40000 ALTER TABLE `option_stop_loss_order_price` DISABLE KEYS */;
+INSERT INTO `option_stop_loss_order_price` VALUES (1097,'RELIANCE','CE',1020,8.9,8),(1098,'SBIN','CE',325,6.85,6.15),(1099,'LT','CE',1460,52.2,47),(1100,'RELIANCE','PE',900,5.3,4.75);
+/*!40000 ALTER TABLE `option_stop_loss_order_price` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `positive_price_trend_data`
@@ -501,6 +715,16 @@ CREATE TABLE `positive_price_trend_data` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `positive_price_trend_data`
+--
+
+LOCK TABLES `positive_price_trend_data` WRITE;
+/*!40000 ALTER TABLE `positive_price_trend_data` DISABLE KEYS */;
+INSERT INTO `positive_price_trend_data` VALUES (2873,'LT','2018-02-01 12:40:21','2018-02-01 13:12:12','2018-02-01 13:16:07',5010713,6293710,1443.95,1458.5,5.73384,1,NULL,NULL),(2874,'MARUTI','2018-02-01 12:46:58','2018-02-01 13:11:16','2018-02-01 13:16:07',279014,353324,9326.05,9421.05,2.43329,1,NULL,NULL),(2875,'SBIN','2018-02-01 12:42:40','2018-02-01 13:13:21','2018-02-01 13:16:07',9814648,12866293,307.2,310.3,2.25224,1,NULL,NULL),(2876,'LT','2018-02-01 14:24:58','2018-02-01 15:13:26','2018-02-01 15:15:12',7308777,7913460,1442.2,1457.15,1.72627,0,NULL,NULL);
+/*!40000 ALTER TABLE `positive_price_trend_data` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `positive_price_trend_data_for_sell_order`
 --
 
@@ -522,8 +746,17 @@ CREATE TABLE `positive_price_trend_data_for_sell_order` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2851 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `positive_price_trend_data_for_sell_order`
+--
+
+LOCK TABLES `positive_price_trend_data_for_sell_order` WRITE;
+/*!40000 ALTER TABLE `positive_price_trend_data_for_sell_order` DISABLE KEYS */;
+/*!40000 ALTER TABLE `positive_price_trend_data_for_sell_order` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `positive_price_trend_data_log`
@@ -549,6 +782,16 @@ CREATE TABLE `positive_price_trend_data_log` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `positive_price_trend_data_log`
+--
+
+LOCK TABLES `positive_price_trend_data_log` WRITE;
+/*!40000 ALTER TABLE `positive_price_trend_data_log` DISABLE KEYS */;
+INSERT INTO `positive_price_trend_data_log` VALUES ('LT','2018-02-01 12:40:21','2018-02-01 13:12:12','2018-02-01 13:16:07',5010713,6293710,1443.95,1458.5,5.73384,1,NULL),('LT','2018-02-01 12:40:21','2018-02-01 13:16:40','2018-02-01 13:21:07',5010713,6376426,1443.95,1458.45,5.37128,0,0),('LT','2018-02-01 12:40:29','2018-02-01 13:26:05','2018-02-01 13:26:07',5015629,6501754,1442.3,1456.9,4.61778,0,0),('LT','2018-02-01 12:40:29','2018-02-01 13:27:06','2018-02-01 13:31:09',5015629,6510972,1442.3,1456.9,4.54509,0,0),('LT','2018-02-01 12:40:29','2018-02-01 13:31:29','2018-02-01 13:36:10',5015629,6541229,1442.3,1457.05,4.19541,0,0),('LT','2018-02-01 14:24:58','2018-02-01 15:13:26','2018-02-01 15:15:12',7308777,7913460,1442.2,1457.15,1.72627,1,NULL),('MARUTI','2018-02-01 12:40:47','2018-02-01 13:32:34','2018-02-01 13:36:10',251135,397763,9392.8,9492.55,2.16116,0,0),('MARUTI','2018-02-01 12:41:54','2018-02-01 13:29:16','2018-02-01 13:31:09',254905,392467,9384.05,9478,2.35124,0,0),('MARUTI','2018-02-01 12:45:11','2018-02-01 13:21:58','2018-02-01 13:26:07',273179,366773,9343.65,9438.95,2.02208,0,0),('MARUTI','2018-02-01 12:46:58','2018-02-01 13:11:16','2018-02-01 13:16:07',279014,353324,9326.05,9421.05,2.43329,1,NULL),('MARUTI','2018-02-01 12:46:58','2018-02-01 13:17:16','2018-02-01 13:21:07',279014,358788,9326.05,9420,2.11835,0,0),('SBIN','2018-02-01 12:42:16','2018-02-01 13:18:10','2018-02-01 13:21:07',9711517,13044810,307,310.2,2.0356,0,0),('SBIN','2018-02-01 12:42:16','2018-02-01 13:25:45','2018-02-01 13:26:07',9711517,13250352,307,310.15,1.81255,0,0),('SBIN','2018-02-01 12:42:40','2018-02-01 13:13:21','2018-02-01 13:16:07',9814648,12866293,307.2,310.3,2.25224,1,NULL),('SBIN','2018-02-01 12:42:40','2018-02-01 13:32:08','2018-02-01 13:36:10',9814648,13420047,307.2,310.3,1.65053,0,0),('SBIN','2018-02-01 12:45:53','2018-02-01 13:29:00','2018-02-01 13:31:09',10324751,13302679,306.7,309.8,1.56151,0,0);
+/*!40000 ALTER TABLE `positive_price_trend_data_log` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `selected_instrument`
 --
 
@@ -565,9 +808,21 @@ CREATE TABLE `selected_instrument` (
   `last_implied_volatility` float DEFAULT NULL,
   `expiry_factor_quotient` float NOT NULL DEFAULT '1',
   `url` varchar(500) NOT NULL,
+  `expiry_date_full` varchar(45) DEFAULT '2018-02-22',
+  `expiry_date_prefix` varchar(45) DEFAULT '18FEB',
   PRIMARY KEY (`symbol`,`option_type`,`option_strike_price`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `selected_instrument`
+--
+
+LOCK TABLES `selected_instrument` WRITE;
+/*!40000 ALTER TABLE `selected_instrument` DISABLE KEYS */;
+INSERT INTO `selected_instrument` VALUES ('LT','CE',1460,36.45,750,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=LT&instrument=OPTSTK&strike=1460.00&type=CE&expiry=22FEB2018\r','2018-02-22','18FEB'),('LT','PE',1340,16,750,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=LT&instrument=OPTSTK&strike=1400.00&type=PE&expiry=22FEB2018\r','2018-02-22','18FEB'),('MARUTI','CE',9400,404.1,75,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=MARUTI&instrument=OPTSTK&strike=9700.00&type=CE&expiry=22FEB2018\r','2018-02-22','18FEB'),('MARUTI','PE',9200,97.9,75,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=MARUTI&instrument=OPTSTK&strike=9400.00&type=PE&expiry=22FEB2018\r','2018-02-22','18FEB'),('RELIANCE','CE',1020,12.4,1000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=RELIANCE&instrument=OPTSTK&strike=1020.00&type=CE&expiry=22FEB2018\r','2018-02-22','18FEB'),('RELIANCE','PE',900,5.5,1000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=RELIANCE&instrument=OPTSTK&strike=900.00&type=PE&expiry=22FEB2018\r','2018-02-22','18FEB'),('SBIN','CE',325,8.8,3000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=SBIN&instrument=OPTSTK&strike=325.00&type=CE&expiry=22FEB2018\r','2018-02-22','18FEB'),('SBIN','PE',300,8,3000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=SBIN&instrument=OPTSTK&strike=300.00&type=PE&expiry=22FEB2018\r','2018-02-22','18FEB');
+/*!40000 ALTER TABLE `selected_instrument` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `selected_instrument_archive`
@@ -592,6 +847,16 @@ CREATE TABLE `selected_instrument_archive` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `selected_instrument_archive`
+--
+
+LOCK TABLES `selected_instrument_archive` WRITE;
+/*!40000 ALTER TABLE `selected_instrument_archive` DISABLE KEYS */;
+INSERT INTO `selected_instrument_archive` VALUES ('2018-01-19','AXISBANK','PE',580,11.8,1200,20000,46.29,1,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=AXISBANK&instrument=OPTSTK&strike=580.00&type=PE&expiry=25JAN2018'),('2018-01-19','CAPF','PE',740,8.5,800,20000,42.46,1,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=CAPF&instrument=OPTSTK&strike=800.00&type=CE&expiry=25JAN2018'),('2018-01-19','HDFC','PE',1880,14,500,20000,15.79,1,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDFC&instrument=OPTSTK&strike=1880.00&type=CE&expiry=25JAN2018'),('2018-01-19','ICICIBANK','PE',340,3.5,2750,20000,36.51,1,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=ICICIBANK&instrument=OPTSTK&strike=340.00&type=PE&expiry=25JAN2018'),('2018-01-19','JINDALSTEL','PE',250,3.9,4500,20000,57.01,1,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=JINDALSTEL&instrument=OPTSTK&strike=260.00&type=PE&expiry=25JAN2018'),('2018-01-19','LT','CE',1400,4.05,750,20000,15.73,1,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=LT&instrument=OPTSTK&strike=1360.00&type=CE&expiry=25JAN2018'),('2018-01-19','MARUTI','PE',9300,103.15,75,20000,26.23,1,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=MARUTI&instrument=OPTSTK&strike=9300.00&type=PE&expiry=25JAN2018'),('2018-01-19','PCJEWELLER','PE',560,8.2,1500,20000,57.2,1,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=PCJEWELLER&instrument=OPTSTK&strike=560.00&type=PE&expiry=25JAN2018#'),('2018-01-25','AXISBANK','CE',630,18.75,1200,50000,0,1,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=AXISBANK&instrument=OPTSTK&strike=630.00&type=CE&expiry=22FEB2018'),('2018-01-25','HDFC','CE',1940,41.55,500,50000,0,1,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDFC&instrument=OPTSTK&strike=1940.00&type=CE&expiry=22FEB2018'),('2018-01-25','HDFC','PE',1880,34.4,500,50000,0,1,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDFC&instrument=OPTSTK&strike=1880.00&type=PE&expiry=22FEB2018'),('2018-01-25','HDFCBANK','CE',2000,33.75,500,50000,0,1,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDFCBANK&instrument=OPTSTK&strike=2000.00&type=CE&expiry=22FEB2018'),('2018-01-25','HDFCBANK','PE',1940,36.45,500,50000,0,1,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDFCBANK&instrument=OPTSTK&strike=1940.00&type=PE&expiry=22FEB2018'),('2018-01-25','ICICIBANK','CE',360,14.55,2750,50000,0,1,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=ICICIBANK&instrument=OPTSTK&strike=360.00&type=CE&expiry=22FEB2018'),('2018-01-25','ICICIBANK','PE',345,12.7,2750,50000,0,1,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=ICICIBANK&instrument=OPTSTK&strike=345.00&type=PE&expiry=22FEB2018'),('2018-01-25','INFY','CE',1200,34,600,50000,0,1,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=INFY&instrument=OPTSTK&strike=1200.00&type=CE&expiry=22FEB2018'),('2018-01-25','INFY','PE',1140,20.2,600,50000,0,1,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=INFY&instrument=OPTSTK&strike=1140.00&type=PE&expiry=22FEB2018'),('2018-01-25','KOTAKBANK','PE',1020,6,800,50000,0,1,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=KOTAKBANK&instrument=OPTSTK&strike=1020.00&type=PE&expiry=22FEB2018'),('2018-01-25','LT','CE',1440,36.65,750,50000,0,1,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=LT&instrument=OPTSTK&strike=1440.00&type=CE&expiry=22FEB2018'),('2018-01-25','LT','PE',1300,15.05,750,50000,0,1,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=LT&instrument=OPTSTK&strike=1300.00&type=PE&expiry=22FEB2018'),('2018-01-25','MARUTI','CE',9400,369.8,75,50000,0,1,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=MARUTI&instrument=OPTSTK&strike=9400.00&type=CE&expiry=22FEB2018'),('2018-01-25','MARUTI','PE',9200,196.2,75,50000,0,1,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=MARUTI&instrument=OPTSTK&strike=9200.00&type=PE&expiry=22FEB2018'),('2018-01-25','RELIANCE','CE',1020,16.2,1000,50000,0,1,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=RELIANCE&instrument=OPTSTK&strike=1020.00&type=CE&expiry=22FEB2018'),('2018-01-25','RELIANCE','PE',960,28.3,1000,50000,0,1,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=RELIANCE&instrument=OPTSTK&strike=960.00&type=PE&expiry=22FEB2018'),('2018-01-29','AXISBANK','CE',650,11.25,1200,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=AXISBANK&instrument=OPTSTK&strike=650.00&type=CE&expiry=22FEB2018'),('2018-01-29','AXISBANK','PE',590,12.2,1200,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=AXISBANK&instrument=OPTSTK&strike=590.00&type=PE&expiry=22FEB2018'),('2018-01-29','HDFC','CE',1940,36.1,500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDFC&instrument=OPTSTK&strike=1940.00&type=CE&expiry=22FEB2018'),('2018-01-29','HDFC','PE',1900,41.05,500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDFC&instrument=OPTSTK&strike=1900.00&type=PE&expiry=22FEB2018'),('2018-01-29','HDFCBANK','CE',2000,25.4,500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDFCBANK&instrument=OPTSTK&strike=2000.00&type=CE&expiry=22FEB2018'),('2018-01-29','HDFCBANK','PE',1940,22.8,500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDFCBANK&instrument=OPTSTK&strike=1940.00&type=PE&expiry=22FEB2018'),('2018-01-29','HDIL','CE',65,2.15,9000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDIL&instrument=OPTSTK&strike=65.00&type=CE&expiry=22FEB2018'),('2018-01-29','HDIL','PE',55,2.3,9000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDIL&instrument=OPTSTK&strike=55.00&type=PE&expiry=22FEB2018'),('2018-01-29','ICICIBANK','CE',360,15.15,2750,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=ICICIBANK&instrument=OPTSTK&strike=360.00&type=CE&expiry=22FEB2018'),('2018-01-29','ICICIBANK','PE',345,10.8,2750,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=ICICIBANK&instrument=OPTSTK&strike=345.00&type=PE&expiry=22FEB2018'),('2018-01-29','IDFCBANK','CE',62.5,0.8,9000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=IDFCBANK&instrument=OPTSTK&strike=62.50&type=CE&expiry=22FEB2018'),('2018-01-29','IDFCBANK','PE',55,0.65,9000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=IDFCBANK&instrument=OPTSTK&strike=55.00&type=PE&expiry=22FEB2018'),('2018-01-29','INFY','CE',1200,24.2,600,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=INFY&instrument=OPTSTK&strike=1200.00&type=CE&expiry=22FEB2018'),('2018-01-29','INFY','PE',1140,19.1,600,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=INFY&instrument=OPTSTK&strike=1140.00&type=PE&expiry=22FEB2018'),('2018-01-29','ITC','CE',290,7.2,2400,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=ITC&instrument=OPTSTK&strike=290.00&type=CE&expiry=22FEB2018'),('2018-01-29','ITC','PE',275,7.05,2400,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=ITC&instrument=OPTSTK&strike=275.00&type=PE&expiry=22FEB2018'),('2018-01-29','JINDALSTEL','CE',290,12.35,4500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=JINDALSTEL&instrument=OPTSTK&strike=290.00&type=CE&expiry=22FEB2018'),('2018-01-29','JINDALSTEL','PE',270,9.75,4500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=JINDALSTEL&instrument=OPTSTK&strike=270.00&type=PE&expiry=22FEB2018'),('2018-01-29','KOTAKBANK','CE',1100,23.35,800,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=KOTAKBANK&instrument=OPTSTK&strike=1100.00&type=CE&expiry=22FEB2018'),('2018-01-29','KOTAKBANK','PE',1080,19.7,800,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=KOTAKBANK&instrument=OPTSTK&strike=1080.00&type=PE&expiry=22FEB2018'),('2018-01-29','LT','CE',1460,31.5,750,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=LT&instrument=OPTSTK&strike=1460.00&type=CE&expiry=22FEB2018'),('2018-01-29','LT','PE',1340,21.9,750,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=LT&instrument=OPTSTK&strike=1340.00&type=PE&expiry=22FEB2018'),('2018-01-29','MARUTI','CE',9400,270.95,75,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=MARUTI&instrument=OPTSTK&strike=9400.00&type=CE&expiry=22FEB2018'),('2018-01-29','MARUTI','PE',9200,224.45,75,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=MARUTI&instrument=OPTSTK&strike=9200.00&type=PE&expiry=22FEB2018'),('2018-01-29','RELIANCE','CE',1020,13.4,1000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=RELIANCE&instrument=OPTSTK&strike=1020.00&type=CE&expiry=22FEB2018'),('2018-01-29','RELIANCE','PE',900,6,1000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=RELIANCE&instrument=OPTSTK&strike=900.00&type=PE&expiry=22FEB2018'),('2018-01-29','SBIN','CE',325,10.75,3000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=SBIN&instrument=OPTSTK&strike=325.00&type=CE&expiry=22FEB2018'),('2018-01-29','SBIN','PE',300,8.35,3000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=SBIN&instrument=OPTSTK&strike=300.00&type=PE&expiry=22FEB2018'),('2018-01-29','TATASTEEL','CE',800,15.8,1000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=TATASTEEL&instrument=OPTSTK&strike=800.00&type=CE&expiry=22FEB2018'),('2018-01-29','TATASTEEL','PE',760,23.2,1000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=TATASTEEL&instrument=OPTSTK&strike=760.00&type=PE&expiry=22FEB2018'),('2018-01-30','AXISBANK','CE',650,4.45,1200,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=AXISBANK&instrument=OPTSTK&strike=650.00&type=CE&expiry=22FEB2018\r'),('2018-01-30','AXISBANK','PE',570,8.55,1200,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=AXISBANK&instrument=OPTSTK&strike=570.00&type=PE&expiry=22FEB2018\r'),('2018-01-30','AXISBANK','PE',590,13.55,1200,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=AXISBANK&instrument=OPTSTK&strike=570.00&type=PE&expiry=22FEB2018\r'),('2018-01-30','HDFC','CE',1940,63.35,500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDFC&instrument=OPTSTK&strike=1980.00&type=CE&expiry=22FEB2018\r'),('2018-01-30','HDFC','CE',1980,36.5,500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDFC&instrument=OPTSTK&strike=1980.00&type=CE&expiry=22FEB2018\r'),('2018-01-30','HDFC','PE',1900,18,500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDFC&instrument=OPTSTK&strike=1900.00&type=PE&expiry=22FEB2018\r'),('2018-01-30','HDFCBANK','CE',2000,41.95,500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDFCBANK&instrument=OPTSTK&strike=2040.00&type=CE&expiry=22FEB2018\r'),('2018-01-30','HDFCBANK','CE',2040,26,500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDFCBANK&instrument=OPTSTK&strike=2040.00&type=CE&expiry=22FEB2018\r'),('2018-01-30','HDFCBANK','PE',1940,11.25,500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDFCBANK&instrument=OPTSTK&strike=1940.00&type=PE&expiry=22FEB2018\r'),('2018-01-30','HDIL','CE',60,2.95,9000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDIL&instrument=OPTSTK&strike=60.00&type=CE&expiry=22FEB2018\r'),('2018-01-30','HDIL','CE',65,2.25,9000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDIL&instrument=OPTSTK&strike=60.00&type=CE&expiry=22FEB2018\r'),('2018-01-30','HDIL','PE',55,2.3,9000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDIL&instrument=OPTSTK&strike=55.00&type=PE&expiry=22FEB2018\r'),('2018-01-30','ICICIBANK','CE',360,11.05,2750,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=ICICIBANK&instrument=OPTSTK&strike=360.00&type=CE&expiry=22FEB2018\r'),('2018-01-30','ICICIBANK','PE',345,10,2750,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=ICICIBANK&instrument=OPTSTK&strike=345.00&type=PE&expiry=22FEB2018\r'),('2018-01-30','IDFCBANK','CE',62.5,0.65,9000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=IDFCBANK&instrument=OPTSTK&strike=60.00&type=CE&expiry=22FEB2018\r'),('2018-01-30','IDFCBANK','PE',55,0.8,9000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=IDFCBANK&instrument=OPTSTK&strike=55.00&type=PE&expiry=22FEB2018\r'),('2018-01-30','INFY','CE',1200,27.5,600,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=INFY&instrument=OPTSTK&strike=1200.00&type=CE&expiry=22FEB2018\r'),('2018-01-30','INFY','PE',1140,16.1,600,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=INFY&instrument=OPTSTK&strike=1140.00&type=PE&expiry=22FEB2018\r'),('2018-01-30','ITC','CE',290,5.65,2400,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=ITC&instrument=OPTSTK&strike=290.00&type=CE&expiry=22FEB2018\r'),('2018-01-30','ITC','PE',275,9,2400,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=ITC&instrument=OPTSTK&strike=270.00&type=PE&expiry=22FEB2018\r'),('2018-01-30','JINDALSTEL','CE',290,7,4500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=JINDALSTEL&instrument=OPTSTK&strike=280.00&type=CE&expiry=22FEB2018\r'),('2018-01-30','JINDALSTEL','PE',270,16.15,4500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=JINDALSTEL&instrument=OPTSTK&strike=260.00&type=PE&expiry=22FEB2018\r'),('2018-01-30','KOTAKBANK','CE',1100,33.5,800,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=KOTAKBANK&instrument=OPTSTK&strike=1100.00&type=CE&expiry=22FEB2018\r'),('2018-01-30','KOTAKBANK','PE',1080,13.6,800,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=KOTAKBANK&instrument=OPTSTK&strike=1060.00&type=PE&expiry=22FEB2018\r'),('2018-01-30','LT','CE',1460,36.45,750,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=LT&instrument=OPTSTK&strike=1460.00&type=CE&expiry=22FEB2018\r'),('2018-01-30','LT','PE',1340,16,750,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=LT&instrument=OPTSTK&strike=1400.00&type=PE&expiry=22FEB2018\r'),('2018-01-30','MARUTI','CE',9400,404.1,75,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=MARUTI&instrument=OPTSTK&strike=9700.00&type=CE&expiry=22FEB2018\r'),('2018-01-30','MARUTI','PE',9200,97.9,75,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=MARUTI&instrument=OPTSTK&strike=9400.00&type=PE&expiry=22FEB2018\r'),('2018-01-30','RELIANCE','CE',1020,12.4,1000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=RELIANCE&instrument=OPTSTK&strike=1020.00&type=CE&expiry=22FEB2018\r'),('2018-01-30','RELIANCE','PE',900,5.5,1000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=RELIANCE&instrument=OPTSTK&strike=900.00&type=PE&expiry=22FEB2018\r'),('2018-01-30','SBIN','CE',325,8.8,3000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=SBIN&instrument=OPTSTK&strike=325.00&type=CE&expiry=22FEB2018\r'),('2018-01-30','SBIN','PE',300,8,3000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=SBIN&instrument=OPTSTK&strike=300.00&type=PE&expiry=22FEB2018\r'),('2018-01-30','TATASTEEL','CE',800,19.3,1000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=TATASTEEL&instrument=OPTSTK&strike=800.00&type=CE&expiry=22FEB2018\r'),('2018-01-30','TATASTEEL','PE',760,17.55,1000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=TATASTEEL&instrument=OPTSTK&strike=760.00&type=PE&expiry=22FEB2018\r'),('2018-02-01','AXISBANK','CE',650,4.45,1200,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=AXISBANK&instrument=OPTSTK&strike=650.00&type=CE&expiry=22FEB2018\r'),('2018-02-01','AXISBANK','PE',570,8.55,1200,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=AXISBANK&instrument=OPTSTK&strike=570.00&type=PE&expiry=22FEB2018\r'),('2018-02-01','HDFC','CE',1980,36.5,500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDFC&instrument=OPTSTK&strike=1980.00&type=CE&expiry=22FEB2018\r'),('2018-02-01','HDFC','PE',1900,18,500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDFC&instrument=OPTSTK&strike=1900.00&type=PE&expiry=22FEB2018\r'),('2018-02-01','HDFCBANK','CE',2040,26,500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDFCBANK&instrument=OPTSTK&strike=2040.00&type=CE&expiry=22FEB2018\r'),('2018-02-01','HDFCBANK','PE',1940,11.25,500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDFCBANK&instrument=OPTSTK&strike=1940.00&type=PE&expiry=22FEB2018\r'),('2018-02-01','HDIL','CE',60,2.95,9000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDIL&instrument=OPTSTK&strike=60.00&type=CE&expiry=22FEB2018\r'),('2018-02-01','HDIL','PE',55,2.3,9000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDIL&instrument=OPTSTK&strike=55.00&type=PE&expiry=22FEB2018\r'),('2018-02-01','ICICIBANK','CE',360,11.05,2750,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=ICICIBANK&instrument=OPTSTK&strike=360.00&type=CE&expiry=22FEB2018\r'),('2018-02-01','ICICIBANK','PE',345,10,2750,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=ICICIBANK&instrument=OPTSTK&strike=345.00&type=PE&expiry=22FEB2018\r'),('2018-02-01','IDFCBANK','CE',60,0.9,9000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=IDFCBANK&instrument=OPTSTK&strike=60.00&type=CE&expiry=22FEB2018\r'),('2018-02-01','IDFCBANK','PE',55,1,9000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=IDFCBANK&instrument=OPTSTK&strike=55.00&type=PE&expiry=22FEB2018\r'),('2018-02-01','INFY','CE',1200,14.6,600,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=INFY&instrument=OPTSTK&strike=1200.00&type=CE&expiry=22FEB2018\r'),('2018-02-01','INFY','PE',1100,9.05,600,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=INFY&instrument=OPTSTK&strike=1140.00&type=PE&expiry=22FEB2018\r'),('2018-02-01','ITC','CE',280,6.9,2400,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=ITC&instrument=OPTSTK&strike=290.00&type=CE&expiry=22FEB2018\r'),('2018-02-01','ITC','PE',270,7.95,2400,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=ITC&instrument=OPTSTK&strike=270.00&type=PE&expiry=22FEB2018\r'),('2018-02-01','JINDALSTEL','CE',280,9.8,4500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=JINDALSTEL&instrument=OPTSTK&strike=280.00&type=CE&expiry=22FEB2018\r'),('2018-02-01','JINDALSTEL','PE',260,10.4,4500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=JINDALSTEL&instrument=OPTSTK&strike=260.00&type=PE&expiry=22FEB2018\r'),('2018-02-01','KOTAKBANK','CE',1100,32.6,800,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=KOTAKBANK&instrument=OPTSTK&strike=1100.00&type=CE&expiry=22FEB2018\r'),('2018-02-01','KOTAKBANK','PE',1060,8.15,800,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=KOTAKBANK&instrument=OPTSTK&strike=1060.00&type=PE&expiry=22FEB2018\r'),('2018-02-01','LT','CE',1460,36.45,750,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=LT&instrument=OPTSTK&strike=1460.00&type=CE&expiry=22FEB2018\r'),('2018-02-01','LT','PE',1340,16,750,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=LT&instrument=OPTSTK&strike=1400.00&type=PE&expiry=22FEB2018\r'),('2018-02-01','MARUTI','CE',9400,404.1,75,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=MARUTI&instrument=OPTSTK&strike=9700.00&type=CE&expiry=22FEB2018\r'),('2018-02-01','MARUTI','PE',9200,97.9,75,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=MARUTI&instrument=OPTSTK&strike=9400.00&type=PE&expiry=22FEB2018\r'),('2018-02-01','RELIANCE','CE',1020,12.4,1000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=RELIANCE&instrument=OPTSTK&strike=1020.00&type=CE&expiry=22FEB2018\r'),('2018-02-01','RELIANCE','PE',900,5.5,1000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=RELIANCE&instrument=OPTSTK&strike=900.00&type=PE&expiry=22FEB2018\r'),('2018-02-01','SBIN','CE',325,8.8,3000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=SBIN&instrument=OPTSTK&strike=325.00&type=CE&expiry=22FEB2018\r'),('2018-02-01','SBIN','PE',300,8,3000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=SBIN&instrument=OPTSTK&strike=300.00&type=PE&expiry=22FEB2018\r'),('2018-02-02','AXISBANK','CE',650,7.95,1200,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=AXISBANK&instrument=OPTSTK&strike=650.00&type=CE&expiry=22FEB2018\r'),('2018-02-02','AXISBANK','PE',590,13.55,1200,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=AXISBANK&instrument=OPTSTK&strike=570.00&type=PE&expiry=22FEB2018\r'),('2018-02-02','HDFC','CE',1940,63.35,500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDFC&instrument=OPTSTK&strike=1980.00&type=CE&expiry=22FEB2018\r'),('2018-02-02','HDFC','PE',1900,21,500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDFC&instrument=OPTSTK&strike=1900.00&type=PE&expiry=22FEB2018\r'),('2018-02-02','HDFCBANK','CE',2000,41.95,500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDFCBANK&instrument=OPTSTK&strike=2040.00&type=CE&expiry=22FEB2018\r'),('2018-02-02','HDFCBANK','PE',1940,14.45,500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDFCBANK&instrument=OPTSTK&strike=1940.00&type=PE&expiry=22FEB2018\r'),('2018-02-02','HDIL','CE',65,2.25,9000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDIL&instrument=OPTSTK&strike=60.00&type=CE&expiry=22FEB2018\r'),('2018-02-02','HDIL','PE',55,2.1,9000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=HDIL&instrument=OPTSTK&strike=55.00&type=PE&expiry=22FEB2018\r'),('2018-02-02','ICICIBANK','CE',360,14.75,2750,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=ICICIBANK&instrument=OPTSTK&strike=360.00&type=CE&expiry=22FEB2018\r'),('2018-02-02','ICICIBANK','PE',345,11.15,2750,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=ICICIBANK&instrument=OPTSTK&strike=345.00&type=PE&expiry=22FEB2018\r'),('2018-02-02','IDFCBANK','CE',62.5,0.65,9000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=IDFCBANK&instrument=OPTSTK&strike=60.00&type=CE&expiry=22FEB2018\r'),('2018-02-02','IDFCBANK','PE',55,0.8,9000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=IDFCBANK&instrument=OPTSTK&strike=55.00&type=PE&expiry=22FEB2018\r'),('2018-02-02','INFY','CE',1200,27.5,600,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=INFY&instrument=OPTSTK&strike=1200.00&type=CE&expiry=22FEB2018\r'),('2018-02-02','INFY','PE',1140,16.1,600,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=INFY&instrument=OPTSTK&strike=1140.00&type=PE&expiry=22FEB2018\r'),('2018-02-02','ITC','CE',290,5.65,2400,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=ITC&instrument=OPTSTK&strike=290.00&type=CE&expiry=22FEB2018\r'),('2018-02-02','ITC','PE',275,9,2400,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=ITC&instrument=OPTSTK&strike=270.00&type=PE&expiry=22FEB2018\r'),('2018-02-02','JINDALSTEL','CE',290,7,4500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=JINDALSTEL&instrument=OPTSTK&strike=280.00&type=CE&expiry=22FEB2018\r'),('2018-02-02','JINDALSTEL','PE',270,16.15,4500,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=JINDALSTEL&instrument=OPTSTK&strike=260.00&type=PE&expiry=22FEB2018\r'),('2018-02-02','KOTAKBANK','CE',1100,33.5,800,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=KOTAKBANK&instrument=OPTSTK&strike=1100.00&type=CE&expiry=22FEB2018\r'),('2018-02-02','KOTAKBANK','PE',1080,13.6,800,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=KOTAKBANK&instrument=OPTSTK&strike=1060.00&type=PE&expiry=22FEB2018\r'),('2018-02-02','LT','CE',1460,36.45,750,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=LT&instrument=OPTSTK&strike=1460.00&type=CE&expiry=22FEB2018\r'),('2018-02-02','LT','PE',1340,16,750,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=LT&instrument=OPTSTK&strike=1400.00&type=PE&expiry=22FEB2018\r'),('2018-02-02','MARUTI','CE',9400,404.1,75,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=MARUTI&instrument=OPTSTK&strike=9700.00&type=CE&expiry=22FEB2018\r'),('2018-02-02','MARUTI','PE',9200,97.9,75,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=MARUTI&instrument=OPTSTK&strike=9400.00&type=PE&expiry=22FEB2018\r'),('2018-02-02','RELIANCE','CE',1020,12.4,1000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=RELIANCE&instrument=OPTSTK&strike=1020.00&type=CE&expiry=22FEB2018\r'),('2018-02-02','RELIANCE','PE',900,5.5,1000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=RELIANCE&instrument=OPTSTK&strike=900.00&type=PE&expiry=22FEB2018\r'),('2018-02-02','SBIN','CE',325,8.8,3000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=SBIN&instrument=OPTSTK&strike=325.00&type=CE&expiry=22FEB2018\r'),('2018-02-02','SBIN','PE',300,8,3000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=SBIN&instrument=OPTSTK&strike=300.00&type=PE&expiry=22FEB2018\r'),('2018-02-02','TATASTEEL','CE',800,19.3,1000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=TATASTEEL&instrument=OPTSTK&strike=800.00&type=CE&expiry=22FEB2018\r'),('2018-02-02','TATASTEEL','PE',760,17.55,1000,50000,0,0,'https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=TATASTEEL&instrument=OPTSTK&strike=760.00&type=PE&expiry=22FEB2018\r');
+/*!40000 ALTER TABLE `selected_instrument_archive` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `trading_parameters`
 --
 
@@ -606,6 +871,40 @@ CREATE TABLE `trading_parameters` (
   PRIMARY KEY (`param_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `trading_parameters`
+--
+
+LOCK TABLES `trading_parameters` WRITE;
+/*!40000 ALTER TABLE `trading_parameters` DISABLE KEYS */;
+INSERT INTO `trading_parameters` VALUES ('EXPIRY_FACTOR','A FACTOR MULTIPLIED WITH THE EXPIRY FACTOR QUOTIENT FOR THE SELECTED INSTRUMENT. IT IS USEFUL IN CALCULATING THE DEPRECIATION OF THE OPTION PRICE AT THE START OF THE CURRENT DAY',0.05,NULL),('INITIAL_TARGET_PROFIT_FACTOR','FACTOR BY WHICH INITIAL SELL PRICE IS PLACED W.R.T THE BUY PRICE',1.15,NULL),('NEW_BUY_ORDER_TIME','TIME WHEN BUY ORDERS WILL BE APPLIED IN MARKET IN THE MORNING. (SAMPLE TIME - IGNORE THE DATE)',0,'2018-01-21 09:30:00'),('ORDER_CYCLE_FREQUENCY','FREQUENCY OF TREND AND ORDER CYCLES IN MINUTES',5,NULL),('STOP_LOSS_TRIGER_CYCLE_FREQUENCY','FREQUENCY OF CYCLE(IN MINUTES) WHICH CALCULATES IF STOP LOSS LEVEL HAS BEEN REACHED AND APPROPRIATE SELL ORDERS ARE TO BE PLACES',1,NULL),('STRENGTH_TO_BUY_ORDER_FACTOR','FACTOR BY WHICH THE STRENGTH WILL BE APPLIED TO THE CURRENT BUY ORDER. SAME DIRECTION STRENGTH WILL INCREASE ORDER PRICE AND VICE VERSA. NEW PRICE = OLD PRICE +/-  (STRENGTH_TO_BUY_ORDER_FACTOR * STRENGTH) ;',0.15,NULL),('STRENGTH_TO_SELL_ORDER_FACTOR','FACTOR BY WHICH THE STRENGTH WILL BE APPLIED TO THE CURRENT SELL ORDER. SAME DIRECTION STRENGTH WILL INCREASE ORDER PRICE AND VICE VERSA. NEW PRICE = OLD PRICE +/-  (STRENGTH_TO_BUY_ORDER_FACTOR * STRENGTH) ;',0.15,NULL);
+/*!40000 ALTER TABLE `trading_parameters` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_tokens`
+--
+
+DROP TABLE IF EXISTS `user_tokens`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_tokens` (
+  `curr_date` date NOT NULL,
+  `user_id` varchar(45) NOT NULL,
+  `request_token` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`curr_date`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_tokens`
+--
+
+LOCK TABLES `user_tokens` WRITE;
+/*!40000 ALTER TABLE `user_tokens` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_tokens` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Dumping events for database 'engine_live'
@@ -4768,6 +5067,7 @@ replace into selected_instrument_archive(
 SELECT date(START_TIME_IN),a.* FROM selected_instrument a);
 */
 
+DELETE FROM live_data where curr_time < CONCAT(DATE(START_TIME_IN),' 09:15:00');
 
 DELETE FROM live_data where date(curr_time) < date(START_TIME_IN);
 
@@ -5013,9 +5313,13 @@ INSERT INTO engine_live.log_messages VALUES(null,NOW(),
 
 -- HARDCODING BELOW ------ TO BE REMOVED ------ START
 
+/*
 SET DATE_REFERENCE = '2018-02-01';
 
 SET IS_DUMMY_EXECUTION = TRUE;
+
+SET VAR_NOW_TIME = CONCAT(DATE(DATE_REFERENCE),' 09:25:00');
+*/
 
 -- HARDCODING BELOW ------ TO BE REMOVED ------ END
 
@@ -5028,18 +5332,9 @@ SET DAY_END_REFERENCE = CONCAT(DATE(DATE_REFERENCE),' 15:30:00');
 
 
 
--- HARDCODING BELOW ------ TO BE REMOVED ------ START
-
--- SET VAR_NOW_TIME = CONCAT(DATE(DATE_REFERENCE),concat(' ',time(now())));
-SET VAR_NOW_TIME = CONCAT(DATE(DATE_REFERENCE),' 09:25:00');
-
--- HARDCODING BELOW ------ TO BE REMOVED ------ START
-
-
-
 -- REAL VALUE TO BE SET  ------- START
 
--- SET VAR_NOW_TIME = NOW();
+SET VAR_NOW_TIME = NOW();
 
 -- REAL VALUE TO BE SET  ------- END
 
@@ -5107,6 +5402,14 @@ INTO VAR_STOP_LOSS_TRIGER_CYCLE_FREQUENCY;
 
 
 
+WHILE ( time(VAR_NOW_TIME) < time('2018-01-21 09:15:00'))
+DO
+
+DO SLEEP(5);
+
+SET VAR_NOW_TIME = NOW();
+
+END WHILE;
 
 
 
@@ -5138,14 +5441,7 @@ END WHILE;
 
 
 
-WHILE ( time(VAR_NOW_TIME) < time('2018-01-21 09:15:00'))
-DO
 
-DO SLEEP(5);
-
-SET VAR_NOW_TIME = NOW();
-
-END WHILE;
 
 
 
@@ -6869,4 +7165,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-08 12:27:39
+-- Dump completed on 2018-02-12  8:58:06
