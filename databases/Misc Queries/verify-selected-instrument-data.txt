@@ -1,0 +1,2 @@
+select * from selected_instrument
+where url not like concat('%',option_strike_price,'%');

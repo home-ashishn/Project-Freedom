@@ -12,8 +12,14 @@ import com.freedom.live.models.LiveProcessStatusRecord;
 public interface LiveProcessStatusRecordRepository extends CrudRepository<LiveProcessStatusRecord, Long> { 
 	
 	@Query("SELECT lsr FROM LiveProcessStatusRecord lsr "
-			+ "where lsr.currTime = (select max(currTime) from LiveProcessStatusRecord "
-			+ "where is_error_handled = 0)")
+			+ "where lsr.currTime = (select max(currTime) from LiveProcessStatusRecord"
+			+ ")")
 	LiveProcessStatusRecord findMaxRecord();
+	
+	
+/*	@Query("SELECT lsr FROM LiveProcessStatusRecord lsr "
+			+ "where lsr.currTime = (select max(currTime) from LiveProcessStatusRecord "
+			+ "where is_orders_handled = 0)")
+	LiveProcessStatusRecord findMaxRecordUnHandled();*/
 
 }

@@ -46,6 +46,10 @@ public class LiveExecutionManager {
 
 	@Autowired
 	private LiveOptionPriceExtractor liveOptionPriceExtractor;
+	
+	@Autowired
+	private LiveOrderExecutionService liveOrderExecutionService;	
+	
 
 /*	
 	@Autowired
@@ -144,7 +148,9 @@ public class LiveExecutionManager {
 
 	public void manageExecution() throws Exception, KiteException {
 
-		init();
+		// init();
+		
+		liveOrderExecutionService.runOrderService();
 
 		boolean isValidRange = true; // checkTimeRange(); // true;
 

@@ -66,7 +66,7 @@ CREATE TABLE `live_data` (
   `volume` int(11) DEFAULT NULL,
   `price` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1230 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -110,7 +110,7 @@ CREATE TABLE `live_option_price_data` (
   `bid_quantity_2` int(11) DEFAULT NULL,
   `offer_quantity_2` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1268 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -165,6 +165,7 @@ CREATE TABLE `live_process_status_record` (
   `curr_time` datetime NOT NULL,
   `process_status` varchar(7) NOT NULL,
   `is_error_handled` tinyint(4) NOT NULL DEFAULT '0',
+  `is_orders_handled` tinyint(4) DEFAULT '0',
   PRIMARY KEY (`curr_time`,`process_status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -182,7 +183,7 @@ CREATE TABLE `log_messages` (
   `source` varchar(100) DEFAULT NULL,
   `message` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=90 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -223,7 +224,7 @@ CREATE TABLE `negative_price_trend_data` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2215 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -294,7 +295,7 @@ CREATE TABLE `option_buy_order` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14313077 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -317,7 +318,7 @@ CREATE TABLE `option_buy_order_cancelled` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14313350 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -388,7 +389,7 @@ CREATE TABLE `option_position` (
   `buy_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `sell_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`order_id`,`buy_time`,`sell_time`)
-) ENGINE=InnoDB AUTO_INCREMENT=14313060 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14313404 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -411,7 +412,7 @@ CREATE TABLE `option_sell_order` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9899192 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -473,7 +474,7 @@ CREATE TABLE `option_stop_loss_order_price` (
   `buy_price` float DEFAULT NULL,
   `sl_price` float NOT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1101 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1108 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -498,7 +499,7 @@ CREATE TABLE `positive_price_trend_data` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2877 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2879 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -590,6 +591,8 @@ CREATE TABLE `selected_instrument_archive` (
   `last_implied_volatility` float DEFAULT NULL,
   `expiry_factor_quotient` float NOT NULL DEFAULT '1',
   `url` varchar(500) NOT NULL,
+  `expiry_date_full` varchar(45) DEFAULT '2018-02-22',
+  `expiry_date_prefix` varchar(45) DEFAULT '18FEB',
   PRIMARY KEY (`curr_date`,`symbol`,`option_type`,`option_strike_price`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -2918,6 +2921,9 @@ curr_date = date(DUMMY_CURRENT_TIME) into VAR_IS_NEW_ORDERS_DONE;
 
        CALL  MARKET_NEW_ORDER_MASTER(DUMMY_CURRENT_TIME);
 
+          update market_day_events_status set is_new_orders_done = 1
+          where curr_date =  date(DUMMY_CURRENT_TIME);
+
        END IF;
 
 IF(IS_DUMMY_CYCLE) THEN
@@ -4463,17 +4469,17 @@ DECLARE MAX_ID INT;
 
 
 replace into basis_for_calls_archive(
-SELECT date(START_TIME_IN),a.* FROM basis_for_calls a);
+SELECT DATE_REFERENCE_IN,a.* FROM basis_for_calls a);
 
 
 replace into selected_instrument_archive(
-SELECT date(START_TIME_IN),a.* FROM selected_instrument a);
+SELECT DATE_REFERENCE_IN,a.* FROM selected_instrument a);
 
 replace into live_data_archive( SELECT * FROM live_data);
 
 replace into live_option_price_data_archive( SELECT * FROM live_option_price_data);
 
-replace into live_process_status_record_archive( SELECT * FROM live_process_status_record);
+-- replace into live_process_status_record_archive( SELECT * FROM live_process_status_record);
 
 
 delete from  live_data_archive
@@ -4482,8 +4488,12 @@ where date(curr_time) < date_sub(DATE_REFERENCE_IN,interval 6 day);
 delete from  live_option_price_data_archive
 where date(curr_time) < date_sub(DATE_REFERENCE_IN,interval 6 day);
 
+
+/*
 delete from  live_process_status_record_archive
 where date(curr_time) < date_sub(DATE_REFERENCE_IN,interval 6 day);
+
+*/
 
 SELECT MAX(id) from live_data into MAX_ID;
 
@@ -4507,7 +4517,7 @@ ALTER TABLE live_option_price_data AUTO_INCREMENT =1;
 END IF;
 
 
-SELECT MAX(id) from option_buy_order into MAX_ID;
+SELECT MAX(order_id) from option_buy_order into MAX_ID;
 
 delete from option_buy_order;
 
@@ -4518,7 +4528,7 @@ ALTER TABLE option_buy_order AUTO_INCREMENT =1;
 END IF;
 
 
-SELECT MAX(id) from option_sell_order into MAX_ID;
+SELECT MAX(order_id) from option_sell_order into MAX_ID;
 
 delete from option_sell_order;
 
@@ -5040,6 +5050,8 @@ INSERT INTO engine_live.log_messages VALUES(null,NOW(),
                           concat('LIVE_DATA_EXECUTION_MASTER - STARTING - ', NOW())
                           , 'START');
 
+SET IS_DUMMY_EXECUTION = TRUE;
+
 
 -- HARDCODING BELOW ------ TO BE REMOVED ------ START
 
@@ -5177,7 +5189,7 @@ END WHILE;
 
 SELECT TIMESTAMPDIFF(SECOND,VAR_NOW_TIME,DAY_END_REFERENCE) INTO INITIAL_FILL_TIME;
 
-SET NO_OF_LOOPS_BEFORE_CURRENT_TIME  = (INITIAL_FILL_TIME/ 60) + 5;
+SET NO_OF_LOOPS_BEFORE_CURRENT_TIME  = (INITIAL_FILL_TIME/ 60) + 1;
 
 
 loop0: loop
@@ -5189,6 +5201,8 @@ loop0: loop
         SET VAR_CURRENT_REFERENCE_TIME = NOW();
 
 
+         select is_market_opening_done from market_day_events_status where
+         curr_date = DATE_REFERENCE into VAR_IS_MARKET_OPENING_DONE;
 
         IF(VAR_IS_MARKET_OPENING_DONE IS NULL OR !VAR_IS_MARKET_OPENING_DONE) THEN
 
@@ -5206,10 +5220,11 @@ loop0: loop
           leave loop0;
        end if;
 
+
        IF(time(VAR_CURRENT_REFERENCE_TIME) >= time('2018-01-21 14:45:00')
        AND time(VAR_CURRENT_REFERENCE_TIME) <= time('2018-01-21 14:50:00')) THEN
 
-       CALL PUT_CANCEL_OPTION_BUY_ORDER_EVENT(VAR_CURRENT_REFERENCE_TIME);
+        CALL PUT_CANCEL_OPTION_BUY_ORDER_EVENT(VAR_CURRENT_REFERENCE_TIME);
 
        end if;
 
@@ -5226,12 +5241,6 @@ loop0: loop
 
        IF(VAR_IS_MARKET_OPENING_DONE IS NULL OR !VAR_IS_MARKET_OPENING_DONE) THEN
 
-         select is_market_opening_done from market_day_events_status where
-         curr_date = DATE_REFERENCE into VAR_IS_MARKET_OPENING_DONE;
-
-
-         IF(VAR_IS_MARKET_OPENING_DONE IS NULL OR !VAR_IS_MARKET_OPENING_DONE) THEN
-
           CALL MARKET_OPENING_MASTER(VAR_CURRENT_REFERENCE_TIME);
 
           SET VAR_IS_MARKET_OPENING_DONE = 1;
@@ -5239,9 +5248,8 @@ loop0: loop
           update market_day_events_status set is_market_opening_done = 1
           where curr_date =  DATE_REFERENCE;
 
-         END IF;
-
        END IF;
+
 
            -- CALL DUMMY_HANDLE_BUY_ORDER_EVENTS();
 
@@ -5277,7 +5285,8 @@ loop0: loop
        -- SET VAR_LOOP_END_TIME = CONCAT(DATE(DATE_REFERENCE),concat(' ',time(now())));
 
 
-
+       -- Loop incremented at end so that 1st cycle is always complete order cycle  - COMPLETE_ORDER_CYCLE
+       set l_loop := l_loop + 1;
 
        SET VAR_TARGET_NEXT_START_TIME = DATE_ADD( VAR_LOOP_START_TIME , INTERVAL 60 SECOND);
 
@@ -5291,8 +5300,7 @@ loop0: loop
        END IF;
 
 
-  -- Loop incremented at end so that 1st cycle is always complete order cycle  - COMPLETE_ORDER_CYCLE
-       set l_loop := l_loop + 1;
+
 
 
 
@@ -5943,7 +5951,7 @@ DECLARE VAR_QUANTITY INT DEFAULT 0;
 
 DECLARE VAR_MARGIN_FOR_STOCK FLOAT;
 
-DECLARE VAR_ORDER_PRICE FLOAT;
+DECLARE VAR_ORDER_PRICE FLOAT DEFAULT 0;
 
 DECLARE VAR_EFFICIENT_ORDER_PRICE FLOAT;
 
@@ -6591,7 +6599,7 @@ BEGIN
 
 
 DECLARE cursor_OPTION_BUY_ERROR_EVENTS CURSOR FOR
-SELECT symbol,option_type,option_strike_price,buy_price
+SELECT symbol,option_type,option_strike_price
 FROM option_buy_order_event
 where event_type = 'ERNEW'
 -- and curr_time = time_in
@@ -6901,4 +6909,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-12 13:25:58
+-- Dump completed on 2018-02-12 22:57:13

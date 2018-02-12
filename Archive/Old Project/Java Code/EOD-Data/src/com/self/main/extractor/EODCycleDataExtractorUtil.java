@@ -189,7 +189,7 @@ public class EODCycleDataExtractorUtil {
 		}
 
 		cleanFolder(folderPath);
-/*
+
 		if (equityCurrentTime == null) {
 			equityCurrentTime = new EquityCurrentTime();
 		}
@@ -204,7 +204,7 @@ public class EODCycleDataExtractorUtil {
 			String filePath = files[0].getAbsolutePath();
 
 			eodCycleDBHelper.loadDataToDB(filePath, 5);
-*/
+
 		{
 			Thread.sleep(1000);
 
@@ -227,8 +227,11 @@ public class EODCycleDataExtractorUtil {
 			eodCycleDBHelper.call_verify_top25_data(5);
 
 			Thread.sleep(1000);
-
 		}
+		
+		}
+
+		
 
 	}
 

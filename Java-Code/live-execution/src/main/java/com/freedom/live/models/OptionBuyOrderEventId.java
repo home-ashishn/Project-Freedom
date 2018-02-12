@@ -2,45 +2,35 @@ package com.freedom.live.models;
 
 import java.io.Serializable;
 
+import org.joda.time.DateTime;
+
 public class OptionBuyOrderEventId implements Serializable{
 	
 	
-	private String symbol;
 	
-	
-	private String option_type;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-	
-	private float option_strike_price;
+	private int order_id;
 
+	private DateTime curr_time;
 
-	public String getSymbol() {
-		return symbol;
+	public int getOrder_id() {
+		return order_id;
 	}
 
-
-	public void setSymbol(String symbol) {
-		this.symbol = symbol;
+	public void setOrder_id(int order_id) {
+		this.order_id = order_id;
 	}
 
-
-	public String getOption_type() {
-		return option_type;
+	public DateTime getCurr_time() {
+		return curr_time;
 	}
 
-
-	public void setOption_type(String option_type) {
-		this.option_type = option_type;
-	}
-
-
-	public float getOption_strike_price() {
-		return option_strike_price;
-	}
-
-
-	public void setOption_strike_price(float option_strike_price) {
-		this.option_strike_price = option_strike_price;
+	public void setCurr_time(DateTime curr_time) {
+		this.curr_time = curr_time;
 	}
 
 }

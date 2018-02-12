@@ -20,6 +20,9 @@ public class LiveProcessStatusRecord {
 	private String process_status;
 	
 	private boolean is_error_handled;
+	
+	private boolean is_orders_handled;
+
 
 	public DateTime getCurr_time() {
 		return currTime;
@@ -43,6 +46,14 @@ public class LiveProcessStatusRecord {
 
 	public void setIs_error_handled(boolean is_error_handled) {
 		this.is_error_handled = is_error_handled;
+	}
+
+	public boolean isIs_orders_handled() {
+		return is_orders_handled;
+	}
+
+	public void setIs_orders_handled(boolean is_orders_handled) {
+		this.is_orders_handled = is_orders_handled;
 	}
 
 
