@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.freedom.live.models.SelectedInstrument;
-import com.freedom.live.repos.BasisForCallsRepository;
 import com.freedom.live.repos.SelectedInstrumentRepository;
 import com.googlecode.cqengine.ConcurrentIndexedCollection;
 import com.googlecode.cqengine.IndexedCollection;
@@ -26,6 +25,7 @@ import com.rainmatter.kiteconnect.KiteConnect;
 import com.rainmatter.kitehttp.SessionExpiryHook;
 import com.rainmatter.kitehttp.exceptions.KiteException;
 import com.rainmatter.models.Instrument;
+import com.rainmatter.models.UserModel;
 
 @Component
 @Service
@@ -36,54 +36,53 @@ public class LiveExecutionManager {
 	 * 
 	 */
 
-/*	
-	@Autowired
-	private BasisForCallsRepository basisForCallsRepository;
-
-*/	
+	/*
+	 * @Autowired private BasisForCallsRepository basisForCallsRepository;
+	 * 
+	 */
 	@Autowired
 	private SelectedInstrumentRepository selectedInstrumentRepository;
 
 	@Autowired
 	private LiveOptionPriceExtractor liveOptionPriceExtractor;
-	
-	@Autowired
-	private LiveOrderExecutionService liveOrderExecutionService;	
-	
 
-/*	
 	@Autowired
-	private LiveStockPriceExtractor liveStockPriceExtractor;
+	private LiveOrderExecutionService liveOrderExecutionService;
 
-*/	
-	private String requestToken = "mhlm9l1br2cjsujrbfl65c8hhotwwghg";
+	/*
+	 * @Autowired private LiveStockPriceExtractor liveStockPriceExtractor;
+	 * 
+	 */
+	private String requestToken = "xz3pf7ql2h5xvii02fv2dyyoq5hj2qf0";
 
 	private KiteConnect kiteConnect;
 
-	private Map<Long,SelectedInstrument> mapTokensToInstrument = new HashMap<Long,SelectedInstrument>();
-	
+	private Map<Long, SelectedInstrument> mapTokensToInstrument = new HashMap<Long, SelectedInstrument>();
+
+	private Map<String, String> mapInstrumentToTradingSymbol = new HashMap<String, String>();
+
 	private void init() throws JSONException, KiteException, IOException, WebSocketException {
 
 		initLogin();
 
-/*
-		Iterable<BasisForCalls> basisList = basisForCallsRepository.findAll();
-
-		for (BasisForCalls basisForCalls : basisList) {
-
-			String symbol = basisForCalls.getSymbol();// "BATAINDIA" + i;
-
-			liveStockPriceExtractor.symbols.add(symbol);
-
-			liveStockPriceExtractor.mapUrls.put(symbol, basisForCalls.getUrl());
-
-			long globalVolume = new Long(0);
-			liveStockPriceExtractor.mapGlobalVolumes.put(symbol, globalVolume);
-
-		}
-*/
+		/*
+		 * Iterable<BasisForCalls> basisList =
+		 * basisForCallsRepository.findAll();
+		 * 
+		 * for (BasisForCalls basisForCalls : basisList) {
+		 * 
+		 * String symbol = basisForCalls.getSymbol();// "BATAINDIA" + i;
+		 * 
+		 * liveStockPriceExtractor.symbols.add(symbol);
+		 * 
+		 * liveStockPriceExtractor.mapUrls.put(symbol, basisForCalls.getUrl());
+		 * 
+		 * long globalVolume = new Long(0);
+		 * liveStockPriceExtractor.mapGlobalVolumes.put(symbol, globalVolume);
+		 * 
+		 * }
+		 */
 		Iterable<SelectedInstrument> instrumentList = selectedInstrumentRepository.findAll();
-
 
 		initWebSocket(instrumentList);
 
@@ -96,12 +95,14 @@ public class LiveExecutionManager {
 		List<Instrument> nseInstruments = kiteConnect.getInstruments("NFO");
 
 		ArrayList<Long> tokens = getTokens(instrumentList, nseInstruments);
-		
+
 		liveOptionPriceExtractor.setTokens(tokens);
-		
+
 		liveOptionPriceExtractor.tickerUsage(kiteConnect, tokens);
-		
+
 		liveOptionPriceExtractor.setMapTokensToInstrument(mapTokensToInstrument);
+		
+		liveOrderExecutionService.setMapInstrumentToTradingSymbol(mapInstrumentToTradingSymbol);
 	}
 
 	private void initLogin() throws JSONException, KiteException {
@@ -129,27 +130,31 @@ public class LiveExecutionManager {
 		// process.
 
 /*		
-		UserModel userModel = kiteConnect.requestAccessToken(requestToken, "zyj7ezutg4dl5rm3m7wj86gfmylye9w9");
+		  UserModel userModel = kiteConnect.requestAccessToken(requestToken,
+		  "zyj7ezutg4dl5rm3m7wj86gfmylye9w9");
+		  
+		 kiteConnect.setAccessToken(userModel.accessToken);
+		  kiteConnect.setPublicToken(userModel.publicToken);
+		  
+*/		 
+
+		kiteConnect.setAccessToken("1ckbgh2fp5gl0ax4r3yt7wlm4f70wios");
+		kiteConnect.setPublicToken("80e0a68f195e288fe3dd43a954c90825");
+
 		
-		kiteConnect.setAccessToken(userModel.accessToken);
-		kiteConnect.setPublicToken(userModel.publicToken);
-
-*/
-		
-		kiteConnect.setAccessToken("luzel1k6ime45z3awpt1zgrelvm1x3ng");
-		kiteConnect.setPublicToken("ed757b5063a3821e588a4483cd76a845");
-
-
-		// liveStockPriceExtractor.kiteConnect = kiteConnect;
+		  
+		  // liveStockPriceExtractor.kiteConnect = kiteConnect;
 
 		liveOptionPriceExtractor.setKiteConnect(kiteConnect);
+		
+		liveOrderExecutionService.setKiteConnect(kiteConnect);
 
 	}
 
 	public void manageExecution() throws Exception, KiteException {
 
-		// init();
-		
+		init();
+
 		liveOrderExecutionService.runOrderService();
 
 		boolean isValidRange = true; // checkTimeRange(); // true;
@@ -174,62 +179,60 @@ public class LiveExecutionManager {
 				createAttributes(Instrument.class));
 		IndexedCollection<Instrument> instruments = new ConcurrentIndexedCollection<Instrument>();
 		instruments.addAll(nseInstruments);
-		
-
 
 		for (SelectedInstrument selectedInstrument : selectedIinstrumentList) {
-			
-			String symbol = selectedInstrument.getSymbol();
-			
-			String optionType = selectedInstrument.getOption_type();
-			
-			String optionStrikePrice = ""+selectedInstrument.getOption_strike_price();
-			
-			String expiry_date_full = ""+selectedInstrument.getExpiry_date_full();
 
-			
-			String expiry_date_prefix = ""+selectedInstrument.getExpiry_date_prefix();
+			String symbol = selectedInstrument.getSymbol().trim();
 
+			String optionType = selectedInstrument.getOption_type().trim();
 
-			
+			String optionStrikePrice = ("" + selectedInstrument.getOption_strike_price()).trim();
+
+			String expiry_date_full = selectedInstrument.getExpiry_date_full().trim();
+
+			String expiry_date_prefix = selectedInstrument.getExpiry_date_prefix().trim();
+
 			ResultSet<Instrument> results = null;
 			try {
 				results = parser.retrieve(instruments,
-						"SELECT * FROM instruments WHERE (" 
-								+ "tradingsymbol like '%"+symbol+expiry_date_prefix+"%' "
-								+ "AND instrument_type = '"+optionType+"' "
-								+ "AND strike = '"+optionStrikePrice+"' "
-								// + "AND '"+optionStrikePrice+"' like concat(strike,'%') "
-								+ "AND expiry = '"+expiry_date_full+"' )");
-				
-				
-				if(results.isNotEmpty()){
-					
-					if(results.size() == 1)
-					{				
-						Long instrumentToken = results.uniqueResult().getInstrument_token();
+						"SELECT * FROM instruments WHERE (" + "tradingsymbol like '%" + symbol + expiry_date_prefix
+								+ "%' " + "AND instrument_type = '" + optionType + "' " + "AND strike = '"
+								+ optionStrikePrice + "' "
+								// + "AND '"+optionStrikePrice+"' like
+								// concat(strike,'%') "
+								+ "AND expiry = '" + expiry_date_full + "' )");
+
+				if (results.isNotEmpty()) {
+
+					if (results.size() == 1) {
+
+						Instrument targetInstrument = results.uniqueResult();
+						Long instrumentToken = targetInstrument.getInstrument_token();
 						tokens.add(instrumentToken);
-						
-						mapTokensToInstrument.put(instrumentToken,selectedInstrument);
-						
+
+						mapInstrumentToTradingSymbol.put(symbol + optionType + optionStrikePrice,
+								targetInstrument.getTradingsymbol());
+
+						mapTokensToInstrument.put(instrumentToken, selectedInstrument);
+
 						liveOptionPriceExtractor.mapGlobalVolumes.put(instrumentToken, 0L);
-						
+
 						liveOptionPriceExtractor.mapGlobalTimeStamps.put(instrumentToken, new DateTime());
-						
+
 					}
-					/*else
-					{
-						
-					// 	tokens.add(results.iterator().next().getInstrument_token());
-						for(Instrument instrument : results )
-							
-						{
-							System.out.println(instrument.tradingsymbol);
-							
-						}
-												
-					}
-*/					
+					/*
+					 * else {
+					 * 
+					 * //
+					 * tokens.add(results.iterator().next().getInstrument_token(
+					 * )); for(Instrument instrument : results )
+					 * 
+					 * { System.out.println(instrument.tradingsymbol);
+					 * 
+					 * }
+					 * 
+					 * }
+					 */
 				}
 
 			} catch (Exception e) {
@@ -237,20 +240,17 @@ public class LiveExecutionManager {
 				e.printStackTrace();
 			}
 
-
 		}
 
 		return tokens;
 
 	}
 
-    
-    public static void main(String[] args) throws JSONException, IOException, WebSocketException, KiteException {
-		
-    	
-    	LiveExecutionManager test = new LiveExecutionManager();
-    	
-    	test.init();
+	public static void main(String[] args) throws JSONException, IOException, WebSocketException, KiteException {
+
+		LiveExecutionManager test = new LiveExecutionManager();
+
+		test.init();
 	}
 
 }
