@@ -24,5 +24,5 @@ public interface OptionBuyOrderEventRepository extends CrudRepository<OptionBuyO
 			+ "where oboe.event_type = "+"'MOD'"
 			+ " and oboe.curr_time = (select max(curr_time) from OptionBuyOrderEvent"
 			+ ")")
-	List<OptionBuyOrderEvent> findmODIFYOrderEvents();
+	List<OptionBuyOrderEvent> findModifyOrderEvents();
 }

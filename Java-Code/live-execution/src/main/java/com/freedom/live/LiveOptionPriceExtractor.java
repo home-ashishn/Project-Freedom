@@ -40,21 +40,13 @@ public class LiveOptionPriceExtractor {
 	 */
 
 	@Autowired
-	private LiveOptionPriceDataRepository LiveOptionPriceDataRepository;
+	private LiveOptionPriceDataRepository liveOptionPriceDataRepository;
 
 	List<SelectedInstrument> instrumentList = new ArrayList<>();
-
-	Map<SelectedInstrument, String> mapUrls = new HashMap<SelectedInstrument, String>();
-
-	Date startTime;
-
-	int scrapeCount = 0;
 
 	Map<Long, Long> mapGlobalVolumes;
 
 	List<LiveOptionPriceData> liveDataObjs = new ArrayList<>();
-
-	SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
 
 	private KiteConnect kiteConnect;
 
@@ -68,7 +60,6 @@ public class LiveOptionPriceExtractor {
 
 		try {
 			this.instrumentList = new ArrayList<SelectedInstrument>();
-			this.mapUrls = new HashMap<SelectedInstrument, String>();
 			// this.mapUrlDocuments = new HashMap<String, Document>();
 			this.mapGlobalVolumes = new HashMap<Long, Long>();
 			this.liveDataObjs = new ArrayList<>();
@@ -259,7 +250,7 @@ public class LiveOptionPriceExtractor {
 			synchronized (liveDataObjs) {
 
 				try {
-					LiveOptionPriceDataRepository.save(liveDataObjs);
+					liveOptionPriceDataRepository.save(liveDataObjs);
 
 					sop("^^^^^^^ &&&&&&& SUCCESSFULY SAVED");
 

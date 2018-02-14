@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import com.freedom.live.models.BasisForCalls;
 import com.freedom.live.models.SelectedInstrument;
+import com.freedom.live.repos.BasisForCallsRepository;
 import com.freedom.live.repos.SelectedInstrumentRepository;
 import com.googlecode.cqengine.ConcurrentIndexedCollection;
 import com.googlecode.cqengine.IndexedCollection;
@@ -25,7 +27,6 @@ import com.rainmatter.kiteconnect.KiteConnect;
 import com.rainmatter.kitehttp.SessionExpiryHook;
 import com.rainmatter.kitehttp.exceptions.KiteException;
 import com.rainmatter.models.Instrument;
-import com.rainmatter.models.UserModel;
 
 @Component
 @Service
@@ -36,10 +37,10 @@ public class LiveExecutionManager {
 	 * 
 	 */
 
-	/*
-	 * @Autowired private BasisForCallsRepository basisForCallsRepository;
-	 * 
-	 */
+	
+	@Autowired private BasisForCallsRepository basisForCallsRepository;
+	  
+	 
 	@Autowired
 	private SelectedInstrumentRepository selectedInstrumentRepository;
 
@@ -49,60 +50,68 @@ public class LiveExecutionManager {
 	@Autowired
 	private LiveOrderExecutionService liveOrderExecutionService;
 
-	/*
-	 * @Autowired private LiveStockPriceExtractor liveStockPriceExtractor;
-	 * 
-	 */
+	
+	 @Autowired 
+	 private LiveStockPriceExtractor liveStockPriceExtractor;
+	  
+	 
 	private String requestToken = "xz3pf7ql2h5xvii02fv2dyyoq5hj2qf0";
 
 	private KiteConnect kiteConnect;
 
 	private Map<Long, SelectedInstrument> mapTokensToInstrument = new HashMap<Long, SelectedInstrument>();
 
+	private Map<Long, BasisForCalls> mapTokensToStocks = new HashMap<Long, BasisForCalls>();
+
 	private Map<String, String> mapInstrumentToTradingSymbol = new HashMap<String, String>();
+	
+	SQLParser<Instrument> parser = SQLParser.forPojoWithAttributes(Instrument.class,
+			createAttributes(Instrument.class));
 
 	private void init() throws JSONException, KiteException, IOException, WebSocketException {
 
 		initLogin();
 
-		/*
-		 * Iterable<BasisForCalls> basisList =
-		 * basisForCallsRepository.findAll();
-		 * 
-		 * for (BasisForCalls basisForCalls : basisList) {
-		 * 
-		 * String symbol = basisForCalls.getSymbol();// "BATAINDIA" + i;
-		 * 
-		 * liveStockPriceExtractor.symbols.add(symbol);
-		 * 
-		 * liveStockPriceExtractor.mapUrls.put(symbol, basisForCalls.getUrl());
-		 * 
-		 * long globalVolume = new Long(0);
-		 * liveStockPriceExtractor.mapGlobalVolumes.put(symbol, globalVolume);
-		 * 
-		 * }
-		 */
+		
+		Iterable<BasisForCalls> basisList =  basisForCallsRepository.findAll();
+		
 		Iterable<SelectedInstrument> instrumentList = selectedInstrumentRepository.findAll();
 
-		initWebSocket(instrumentList);
+		initWebSocket(instrumentList,basisList);
+		
+
 
 	}
 
-	private void initWebSocket(Iterable<SelectedInstrument> instrumentList)
+	private void initWebSocket(Iterable<SelectedInstrument> instrumentList, Iterable<BasisForCalls> basisList)
 			throws JSONException, IOException, KiteException, WebSocketException {
 		// TODO Auto-generated method stub
 
 		List<Instrument> nseInstruments = kiteConnect.getInstruments("NFO");
 
-		ArrayList<Long> tokens = getTokens(instrumentList, nseInstruments);
+		ArrayList<Long> tokens = getTokensForInstruments(instrumentList, nseInstruments);
 
 		liveOptionPriceExtractor.setTokens(tokens);
 
 		liveOptionPriceExtractor.tickerUsage(kiteConnect, tokens);
 
 		liveOptionPriceExtractor.setMapTokensToInstrument(mapTokensToInstrument);
-		
+
 		liveOrderExecutionService.setMapInstrumentToTradingSymbol(mapInstrumentToTradingSymbol);
+
+		
+		
+		nseInstruments = kiteConnect.getInstruments("NSE");
+		
+		ArrayList<Long> tokensForStocks = getTokensForStocks(basisList, nseInstruments);
+
+		liveStockPriceExtractor.setTokens(tokensForStocks);
+
+		liveStockPriceExtractor.tickerUsage(kiteConnect, tokensForStocks);
+
+		liveStockPriceExtractor.setMapTokensToStocks(mapTokensToStocks);		
+				
+		
 	}
 
 	private void initLogin() throws JSONException, KiteException {
@@ -170,13 +179,14 @@ public class LiveExecutionManager {
 		System.out.println(text);
 	}
 
-	private ArrayList<Long> getTokens(Iterable<SelectedInstrument> selectedIinstrumentList,
+	
+	private ArrayList<Long> getTokensForInstruments(Iterable<SelectedInstrument> selectedIinstrumentList,
 			List<Instrument> nseInstruments) {
 
 		ArrayList<Long> tokens = new ArrayList<Long>();
 
-		SQLParser<Instrument> parser = SQLParser.forPojoWithAttributes(Instrument.class,
-				createAttributes(Instrument.class));
+
+		
 		IndexedCollection<Instrument> instruments = new ConcurrentIndexedCollection<Instrument>();
 		instruments.addAll(nseInstruments);
 
@@ -245,6 +255,69 @@ public class LiveExecutionManager {
 		return tokens;
 
 	}
+
+	
+	private ArrayList<Long> getTokensForStocks(Iterable<BasisForCalls> stocksList,
+			List<Instrument> nseInstruments) {
+
+		ArrayList<Long> tokens = new ArrayList<Long>();
+
+		IndexedCollection<Instrument> instruments = new ConcurrentIndexedCollection<Instrument>();
+		
+		instruments.addAll(nseInstruments);
+
+		for (BasisForCalls selectedStock : stocksList) {
+
+			String symbol = selectedStock.getSymbol().trim();
+
+
+			ResultSet<Instrument> results = null;
+			try {
+				results = parser.retrieve(instruments,
+						"SELECT * FROM instruments WHERE (" + "tradingsymbol = '" + symbol
+								+ "' " +  ")");
+
+				if (results.isNotEmpty()) {
+
+					if (results.size() == 1) {
+
+						Instrument targetInstrument = results.uniqueResult();
+						
+						Long instrumentToken = targetInstrument.getInstrument_token();
+						
+						tokens.add(instrumentToken);
+
+						mapTokensToStocks.put(instrumentToken, selectedStock);
+
+						liveStockPriceExtractor.mapGlobalVolumes.put(instrumentToken, 0L);
+
+					}
+					/*
+					 * else {
+					 * 
+					 * //
+					 * tokens.add(results.iterator().next().getInstrument_token(
+					 * )); for(Instrument instrument : results )
+					 * 
+					 * { System.out.println(instrument.tradingsymbol);
+					 * 
+					 * }
+					 * 
+					 * }
+					 */
+				}
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+
+		return tokens;
+
+	}
+
 
 	public static void main(String[] args) throws JSONException, IOException, WebSocketException, KiteException {
 

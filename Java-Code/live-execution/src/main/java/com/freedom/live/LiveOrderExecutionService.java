@@ -100,7 +100,7 @@ public class LiveOrderExecutionService {
 
 			// order time deviation assumed to be 5 seconds max
 
-			// if (maxRecordTime.isAfter(targetCycleTime.minusSeconds(5)))
+			if (maxRecordTime.isAfter(targetCycleTime.minusSeconds(5)))
 			{
 
 				isBuyOrdersHandledProperly = false;
@@ -170,10 +170,12 @@ public class LiveOrderExecutionService {
 	}
 
 	private void placeBuyOrders() {
+		
+		isBuyOrdersHandledProperly = true;
 
 		placeNewBuyOrders();
 
-		placeBuyOrdersModification();
+		// placeBuyOrdersModification();
 
 	}
 
@@ -195,7 +197,6 @@ public class LiveOrderExecutionService {
 
 		optionBuyOrderEventRepository.save(listNew);
 		
-		isBuyOrdersHandledProperly = true;
 
 	}
 
@@ -223,7 +224,8 @@ public class LiveOrderExecutionService {
 		try {
 			order11 = kiteConnect.placeOrder(param11, "regular");
 		} catch (JSONException | KiteException e) {
-			// TODO Auto-generated catch block
+
+			isBuyOrdersHandledProperly = false;
 			e.printStackTrace();
 		}
 		if (order11 != null) {
@@ -246,7 +248,76 @@ public class LiveOrderExecutionService {
 
 	private void placeBuyOrdersModification() {
 
+		List<OptionBuyOrderEvent> listNew = optionBuyOrderEventRepository.findModifyOrderEvents();
+
+		for (Iterator iterator = listNew.iterator(); iterator.hasNext();) {
+
+			OptionBuyOrderEvent optionBuyOrderEvent = (OptionBuyOrderEvent) iterator.next();
+			if (!optionBuyOrderEvent.isIs_event_handled()) {
+
+				placeModifyBuyOrder(optionBuyOrderEvent);
+
+				optionBuyOrderEvent.setIs_event_handled(true);
+			}
+
+		}
+
+		optionBuyOrderEventRepository.save(listNew);
+		
+
 	}
+	
+	
+
+	private void placeModifyBuyOrder(OptionBuyOrderEvent optionBuyOrderEvent) {
+
+		String tradingSymbolKey = optionBuyOrderEvent.getSymbol() + optionBuyOrderEvent.getOption_type()
+				+ optionBuyOrderEvent.getOption_strike_price();
+
+		String tradingSymbol = mapInstrumentToTradingSymbol.get(tradingSymbolKey);
+
+		Map<String, Object> param11 = new HashMap<String, Object>() {
+			{
+				put("price", "" + optionBuyOrderEvent.getBuy_price());
+				put("transaction_type", "BUY");
+				put("quantity", "" + optionBuyOrderEvent.getQuantity());
+				put("tradingsymbol", tradingSymbol);
+				put("exchange", "NFO");
+				put("validity", "DAY");
+				put("order_type", "LIMIT");
+				put("product", "MIS");				
+			}
+		};
+		
+		
+
+		Order order11 = null;
+		try {
+			order11 = kiteConnect.modifyOrder("",param11, "regular");
+		} catch (JSONException | KiteException e) {
+
+			isBuyOrdersHandledProperly = false;
+			e.printStackTrace();
+		}
+		if (order11 != null) {
+			
+			OptionBuyOrderInformation newOrder = new OptionBuyOrderInformation();
+			
+			newOrder.setOrder_id(order11.orderId);
+			newOrder.setSymbol(optionBuyOrderEvent.getSymbol());
+			newOrder.setOption_type(optionBuyOrderEvent.getOption_type());
+			newOrder.setOption_strike_price(optionBuyOrderEvent.getOption_strike_price());
+
+			optionBuyOrderInformationRepository.save(newOrder);
+			
+			System.out.println(" New Order placed for " + optionBuyOrderEvent.getSymbol() + " "
+					+ optionBuyOrderEvent.getOption_type() + " " + optionBuyOrderEvent.getOption_strike_price()
+					+ ", order id = " + order11.orderId);
+		}
+
+	}
+
+	
 
 	private void placeSellOrders() {
 

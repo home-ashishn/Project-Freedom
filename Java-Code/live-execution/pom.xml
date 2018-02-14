@@ -8,8 +8,8 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>live-data-SB</name>
-	<description>live-data-SB project</description>
+	<name>live-execution</name>
+	<description>live-execution project</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>

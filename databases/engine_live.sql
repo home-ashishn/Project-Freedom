@@ -66,7 +66,7 @@ CREATE TABLE `live_data` (
   `volume` int(11) DEFAULT NULL,
   `price` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=31645 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -110,7 +110,7 @@ CREATE TABLE `live_option_price_data` (
   `bid_quantity_2` int(11) DEFAULT NULL,
   `offer_quantity_2` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6014 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -183,7 +183,7 @@ CREATE TABLE `log_messages` (
   `source` varchar(100) DEFAULT NULL,
   `message` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=90 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -224,7 +224,7 @@ CREATE TABLE `negative_price_trend_data` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -249,7 +249,7 @@ CREATE TABLE `negative_price_trend_data_for_sell_order` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -295,7 +295,7 @@ CREATE TABLE `option_buy_order` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -340,6 +340,22 @@ CREATE TABLE `option_buy_order_event` (
   `event_type` varchar(5) NOT NULL COMMENT 'CAL- CALCULATED\nNEW - IMPLIES NEW ORDER TO BE INSERTED\nMOD - IMPLIES ORDER TO BE MODIFIED',
   `is_event_handled` tinyint(4) NOT NULL,
   PRIMARY KEY (`order_id`,`event_type`,`curr_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `option_buy_order_information`
+--
+
+DROP TABLE IF EXISTS `option_buy_order_information`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `option_buy_order_information` (
+  `order_id` varchar(15) NOT NULL,
+  `symbol` varchar(45) NOT NULL,
+  `option_type` varchar(2) NOT NULL,
+  `option_strike_price` float NOT NULL,
+  PRIMARY KEY (`order_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -412,7 +428,7 @@ CREATE TABLE `option_sell_order` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -434,6 +450,22 @@ CREATE TABLE `option_sell_order_event` (
   `event_type` varchar(5) NOT NULL COMMENT 'CAL- CALCULATED\nNEW - IMPLIES NEW ORDER TO BE INSERTED\nMOD - IMPLIES ORDER TO BE MODIFIED',
   `is_event_handled` tinyint(4) NOT NULL,
   PRIMARY KEY (`order_id`,`event_type`,`curr_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `option_sell_order_information`
+--
+
+DROP TABLE IF EXISTS `option_sell_order_information`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `option_sell_order_information` (
+  `order_id` varchar(15) NOT NULL,
+  `symbol` varchar(45) NOT NULL,
+  `option_type` varchar(2) NOT NULL,
+  `option_strike_price` float NOT NULL,
+  PRIMARY KEY (`order_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -499,7 +531,7 @@ CREATE TABLE `positive_price_trend_data` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2879 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2882 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1704,6 +1736,154 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `CHECK_NEGATIVE_PRICE_TREND_FOR_HALF_PC` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `CHECK_NEGATIVE_PRICE_TREND_FOR_HALF_PC`(
+SYMBOL_IN VARCHAR(20),
+LATEST_TIME_POINT_IN DATETIME,
+PER_HOUR_VOLUME_PREV_DAY_IN FLOAT,
+ORDER_CYCLE_FREQUENCY_IN FLOAT)
+BEGIN
+
+
+
+DECLARE CURSOR_TREND CURSOR FOR
+SELECT A.VOLUME, B.VOLUME,
+A.PRICE,B.PRICE,
+A.curr_time,B.curr_time FROM LIVE_DATA A,LIVE_DATA B
+WHERE
+A.symbol = SYMBOL_IN  AND B.symbol = SYMBOL_IN AND
+(B.CURR_TIME < LATEST_TIME_POINT_IN AND
+B.CURR_TIME >= DATE_SUB(LATEST_TIME_POINT_IN, INTERVAL (ORDER_CYCLE_FREQUENCY_IN * 60) SECOND))
+AND
+(A.curr_time < B.curr_time
+AND A.curr_time >= DATE_SUB(B.curr_time, INTERVAL 30 MINUTE))
+AND B.price <= (A.price * 0.995);
+
+  OPEN CURSOR_TREND;
+  BEGIN
+
+    DECLARE VAR_VOLUME_START INT;
+    DECLARE VAR_VOLUME_END INT;
+    DECLARE VAR_PRICE_START FLOAT;
+    DECLARE VAR_PRICE_END FLOAT;
+    DECLARE VAR_CURR_TIME_START DATETIME;
+    DECLARE VAR_CURR_TIME_END DATETIME;
+
+    DECLARE VAR_VOLUME_FACTOR FLOAT DEFAULT 0;
+
+    DECLARE VAR_STRENGTH FLOAT DEFAULT 0;
+
+    DECLARE VAR_PCT_LOSS FLOAT DEFAULT 0;
+
+
+
+    DECLARE VAR_MAX_STRENGTH FLOAT DEFAULT 0;
+
+    DECLARE TIME_DIFF FLOAT DEFAULT 0;
+
+
+    DECLARE VAR_VOLUME_START_FOR_MAX_STRENGTH INT;
+    DECLARE VAR_VOLUME_END_FOR_MAX_STRENGTH INT;
+    DECLARE VAR_PRICE_START_FOR_MAX_STRENGTH FLOAT;
+    DECLARE VAR_PRICE_END_FOR_MAX_STRENGTH FLOAT;
+    DECLARE VAR_CURR_TIME_START_FOR_MAX_STRENGTH DATETIME;
+    DECLARE VAR_CURR_TIME_END_FOR_MAX_STRENGTH DATETIME;
+
+
+
+
+
+    DECLARE EXIT HANDLER FOR NOT FOUND BEGIN
+    CLOSE CURSOR_TREND;
+            IF(VAR_MAX_STRENGTH > 0) THEN
+       call CHECK_N_P_T_1_PC_STRENGTH_VALIDITY(SYMBOL_IN,LATEST_TIME_POINT_IN,
+                                           VAR_MAX_STRENGTH,VAR_VOLUME_START_FOR_MAX_STRENGTH,
+                                           VAR_VOLUME_END_FOR_MAX_STRENGTH,VAR_PRICE_START_FOR_MAX_STRENGTH,
+                                           VAR_PRICE_END_FOR_MAX_STRENGTH,VAR_CURR_TIME_START_FOR_MAX_STRENGTH,
+                                           VAR_CURR_TIME_END_FOR_MAX_STRENGTH);
+
+
+       END IF;
+    END;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN CLOSE CURSOR_TREND; RESIGNAL; END;
+    LOOP
+      FETCH CURSOR_TREND INTO VAR_VOLUME_START,VAR_VOLUME_END,
+                                        VAR_PRICE_START,VAR_PRICE_END,
+                                        VAR_CURR_TIME_START,VAR_CURR_TIME_END;
+
+
+      SET TIME_DIFF = TIMESTAMPDIFF(second,VAR_CURR_TIME_START,VAR_CURR_TIME_END);
+
+
+      /*
+      VOLUME FACTOR (VF) = VOLUME GAINED / EXPECTED VOLUME GAIN BASED ON PREV DAY
+
+      STRENGTH = VF PER PERCENT LOSS. THIS WILL GIVEACCURATE STRENGTH AND WEED
+                 OUT HIGH SURGES IN LOW VOLUME. BENCHMARK FOR THIS IS 1
+                 i,e 1 VF PER PERCENT LOSS.
+
+      */
+
+       SET VAR_VOLUME_FACTOR =  ((VAR_VOLUME_END - VAR_VOLUME_START) / PER_HOUR_VOLUME_PREV_DAY_IN )
+                             * (1800 /   TIME_DIFF) ;
+
+       SET VAR_PCT_LOSS = (VAR_PRICE_START - VAR_PRICE_END) * 100/ VAR_PRICE_START;
+
+
+        SET VAR_STRENGTH = VAR_VOLUME_FACTOR / VAR_PCT_LOSS;
+
+       if   VAR_STRENGTH >= 1 then
+
+           if ( VAR_STRENGTH >  VAR_MAX_STRENGTH) then
+
+               SET VAR_MAX_STRENGTH = VAR_STRENGTH;
+
+               SET  VAR_VOLUME_START_FOR_MAX_STRENGTH = VAR_VOLUME_START;
+               SET  VAR_VOLUME_END_FOR_MAX_STRENGTH = VAR_VOLUME_END;
+               SET  VAR_PRICE_START_FOR_MAX_STRENGTH = VAR_PRICE_START;
+               SET  VAR_PRICE_END_FOR_MAX_STRENGTH = VAR_PRICE_END;
+               SET  VAR_CURR_TIME_START_FOR_MAX_STRENGTH = VAR_CURR_TIME_START;
+               SET  VAR_CURR_TIME_END_FOR_MAX_STRENGTH = VAR_CURR_TIME_END;
+
+
+
+           end if;
+       end if;
+
+      -- SET counter = counter + 1;
+
+    END LOOP;
+
+        IF(VAR_MAX_STRENGTH > 0) THEN
+       call CHECK_N_P_T_1_PC_STRENGTH_VALIDITY(SYMBOL_IN,LATEST_TIME_POINT_IN,
+                                           VAR_MAX_STRENGTH,VAR_VOLUME_START_FOR_MAX_STRENGTH,
+                                           VAR_VOLUME_END_FOR_MAX_STRENGTH,VAR_PRICE_START_FOR_MAX_STRENGTH,
+                                           VAR_PRICE_END_FOR_MAX_STRENGTH,VAR_CURR_TIME_START_FOR_MAX_STRENGTH,
+                                           VAR_CURR_TIME_END_FOR_MAX_STRENGTH);
+
+
+       END IF;
+  END;
+
+
+
+
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `CHECK_NEGATIVE_PRICE_TREND_FOR_ONE_PC` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -2249,6 +2429,153 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `CHECK_POSITIVE_PRICE_TREND_FOR_HALF_PC` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `CHECK_POSITIVE_PRICE_TREND_FOR_HALF_PC`(
+SYMBOL_IN VARCHAR(20),
+LATEST_TIME_POINT_IN DATETIME,
+PER_HOUR_VOLUME_PREV_DAY_IN FLOAT,
+ORDER_CYCLE_FREQUENCY_IN FLOAT)
+BEGIN
+
+
+DECLARE CURSOR_TREND CURSOR FOR
+SELECT A.VOLUME, B.VOLUME,
+A.PRICE,B.PRICE,
+A.curr_time,B.curr_time FROM LIVE_DATA A,LIVE_DATA B
+WHERE
+A.symbol = SYMBOL_IN  AND B.symbol = SYMBOL_IN AND
+(B.CURR_TIME < LATEST_TIME_POINT_IN AND
+B.CURR_TIME >= DATE_SUB(LATEST_TIME_POINT_IN, INTERVAL (ORDER_CYCLE_FREQUENCY_IN * 60) SECOND))
+AND
+(A.curr_time < B.curr_time
+AND A.curr_time >= DATE_SUB(B.curr_time, INTERVAL 30 MINUTE))
+AND B.price >= (A.price * 1.005);
+
+  OPEN CURSOR_TREND;
+  BEGIN
+
+    DECLARE VAR_VOLUME_START INT;
+    DECLARE VAR_VOLUME_END INT;
+    DECLARE VAR_PRICE_START FLOAT;
+    DECLARE VAR_PRICE_END FLOAT;
+    DECLARE VAR_CURR_TIME_START DATETIME;
+    DECLARE VAR_CURR_TIME_END DATETIME;
+
+    DECLARE VAR_VOLUME_FACTOR FLOAT DEFAULT 0;
+
+    DECLARE VAR_STRENGTH FLOAT DEFAULT 0;
+
+    DECLARE VAR_PCT_GAIN FLOAT DEFAULT 0;
+
+
+
+    DECLARE VAR_MAX_STRENGTH FLOAT DEFAULT 0;
+
+    DECLARE TIME_DIFF FLOAT DEFAULT 0;
+
+
+    DECLARE VAR_VOLUME_START_FOR_MAX_STRENGTH INT;
+    DECLARE VAR_VOLUME_END_FOR_MAX_STRENGTH INT;
+    DECLARE VAR_PRICE_START_FOR_MAX_STRENGTH FLOAT;
+    DECLARE VAR_PRICE_END_FOR_MAX_STRENGTH FLOAT;
+    DECLARE VAR_CURR_TIME_START_FOR_MAX_STRENGTH DATETIME;
+    DECLARE VAR_CURR_TIME_END_FOR_MAX_STRENGTH DATETIME;
+
+
+
+
+
+    DECLARE EXIT HANDLER FOR NOT FOUND BEGIN
+    CLOSE CURSOR_TREND;
+            IF(VAR_MAX_STRENGTH > 0) THEN
+       call CHECK_P_P_T_1_PC_STRENGTH_VALIDITY(SYMBOL_IN,LATEST_TIME_POINT_IN,
+                                           VAR_MAX_STRENGTH,VAR_VOLUME_START_FOR_MAX_STRENGTH,
+                                           VAR_VOLUME_END_FOR_MAX_STRENGTH,VAR_PRICE_START_FOR_MAX_STRENGTH,
+                                           VAR_PRICE_END_FOR_MAX_STRENGTH,VAR_CURR_TIME_START_FOR_MAX_STRENGTH,
+                                           VAR_CURR_TIME_END_FOR_MAX_STRENGTH);
+
+
+       END IF;
+    END;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN CLOSE CURSOR_TREND; RESIGNAL; END;
+    LOOP
+      FETCH CURSOR_TREND INTO VAR_VOLUME_START,VAR_VOLUME_END,
+                                        VAR_PRICE_START,VAR_PRICE_END,
+                                        VAR_CURR_TIME_START,VAR_CURR_TIME_END;
+
+
+      SET TIME_DIFF = TIMESTAMPDIFF(second,VAR_CURR_TIME_START,VAR_CURR_TIME_END);
+
+
+      /*
+      VOLUME FACTOR (VF) = VOLUME GAINED / EXPECTED VOLUME GAIN BASED ON PREV DAY
+
+      STRENGTH = VF PER PERCENT GAIN. THIS WILL GIVEACCURATE STRENGTH AND WEED
+                 OUT HIGH SURGES IN LOW VOLUME. BENCHMARK FOR THIS IS 1
+                 i,e 1 VF PER PERCENT GAIN.
+
+      */
+
+       SET VAR_VOLUME_FACTOR =  ((VAR_VOLUME_END - VAR_VOLUME_START) / PER_HOUR_VOLUME_PREV_DAY_IN )
+                             * (1800 /   TIME_DIFF) ;
+
+       SET VAR_PCT_GAIN = (VAR_PRICE_END -  VAR_PRICE_START) * 100/ VAR_PRICE_START;
+
+
+        SET VAR_STRENGTH = VAR_VOLUME_FACTOR / VAR_PCT_GAIN;
+
+       if   VAR_STRENGTH >= 1 then
+
+           if ( VAR_STRENGTH >  VAR_MAX_STRENGTH) then
+
+               SET VAR_MAX_STRENGTH = VAR_STRENGTH;
+
+               SET  VAR_VOLUME_START_FOR_MAX_STRENGTH = VAR_VOLUME_START;
+               SET  VAR_VOLUME_END_FOR_MAX_STRENGTH = VAR_VOLUME_END;
+               SET  VAR_PRICE_START_FOR_MAX_STRENGTH = VAR_PRICE_START;
+               SET  VAR_PRICE_END_FOR_MAX_STRENGTH = VAR_PRICE_END;
+               SET  VAR_CURR_TIME_START_FOR_MAX_STRENGTH = VAR_CURR_TIME_START;
+               SET  VAR_CURR_TIME_END_FOR_MAX_STRENGTH = VAR_CURR_TIME_END;
+
+
+
+           end if;
+       end if;
+
+      -- SET counter = counter + 1;
+
+    END LOOP;
+
+        IF(VAR_MAX_STRENGTH > 0) THEN
+       call CHECK_P_P_T_1_PC_STRENGTH_VALIDITY(SYMBOL_IN,LATEST_TIME_POINT_IN,
+                                           VAR_MAX_STRENGTH,VAR_VOLUME_START_FOR_MAX_STRENGTH,
+                                           VAR_VOLUME_END_FOR_MAX_STRENGTH,VAR_PRICE_START_FOR_MAX_STRENGTH,
+                                           VAR_PRICE_END_FOR_MAX_STRENGTH,VAR_CURR_TIME_START_FOR_MAX_STRENGTH,
+                                           VAR_CURR_TIME_END_FOR_MAX_STRENGTH);
+
+
+       END IF;
+  END;
+
+
+
+
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `CHECK_POSITIVE_PRICE_TREND_FOR_ONE_PC` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -2433,7 +2760,7 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `CHECK_PRICE_TREND_FOR_ONE_PC` */;
+/*!50003 DROP PROCEDURE IF EXISTS `CHECK_PRICE_TREND_FOR_SET_RANGE` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -2443,7 +2770,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `CHECK_PRICE_TREND_FOR_ONE_PC`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `CHECK_PRICE_TREND_FOR_SET_RANGE`(
 SYMBOL_IN VARCHAR(20),
 LATEST_TIME_POINT_IN DATETIME,
 PREV_DAY_VOLUME_IN INT(11))
@@ -2459,13 +2786,17 @@ INTO VAR_ORDER_CYCLE_FREQUENCY;
 
 SET PER_HOUR_VOLUME_PREV_DAY = PREV_DAY_VOLUME_IN * 4/25;
 
-CALL CHECK_POSITIVE_PRICE_TREND_FOR_ONE_PC(SYMBOL_IN,LATEST_TIME_POINT_IN,PER_HOUR_VOLUME_PREV_DAY
+-- CALL CHECK_POSITIVE_PRICE_TREND_FOR_ONE_PC(SYMBOL_IN,LATEST_TIME_POINT_IN,PER_HOUR_VOLUME_PREV_DAY
+                                                                      -- ,VAR_ORDER_CYCLE_FREQUENCY);
+
+-- CALL CHECK_NEGATIVE_PRICE_TREND_FOR_ONE_PC(SYMBOL_IN,LATEST_TIME_POINT_IN,PER_HOUR_VOLUME_PREV_DAY
+                                                                      -- ,VAR_ORDER_CYCLE_FREQUENCY);
+
+CALL CHECK_POSITIVE_PRICE_TREND_FOR_HALF_PC(SYMBOL_IN,LATEST_TIME_POINT_IN,PER_HOUR_VOLUME_PREV_DAY
                                                                       ,VAR_ORDER_CYCLE_FREQUENCY);
 
-CALL CHECK_NEGATIVE_PRICE_TREND_FOR_ONE_PC(SYMBOL_IN,LATEST_TIME_POINT_IN,PER_HOUR_VOLUME_PREV_DAY
+CALL CHECK_NEGATIVE_PRICE_TREND_FOR_HALF_PC(SYMBOL_IN,LATEST_TIME_POINT_IN,PER_HOUR_VOLUME_PREV_DAY
                                                                       ,VAR_ORDER_CYCLE_FREQUENCY);
-
-
 
 END ;;
 DELIMITER ;
@@ -2501,7 +2832,7 @@ SELECT volume_prev_day FROM BASIS_FOR_CALLS WHERE SYMBOL = SYMBOL_IN
 INTO PREV_DAY_VOLUME;
 
 
-CALL CHECK_PRICE_TREND_FOR_ONE_PC(SYMBOL_IN, LATEST_TIME_POINT,PREV_DAY_VOLUME);
+CALL CHECK_PRICE_TREND_FOR_SET_RANGE(SYMBOL_IN, LATEST_TIME_POINT,PREV_DAY_VOLUME);
 
 
 END ;;
@@ -4803,6 +5134,25 @@ replace into selected_instrument_archive(
 SELECT date(START_TIME_IN),a.* FROM selected_instrument a);
 */
 
+update basis_for_calls
+set symbol = trim(symbol),
+url = trim(url),
+prev_close = trim(prev_close),
+confidence_level = trim(confidence_level),
+volume_prev_day = trim(volume_prev_day);
+
+
+update selected_instrument
+set symbol = trim(symbol),
+option_type = trim(option_type),
+option_strike_price = trim(option_strike_price),
+expiry_date_full = trim(expiry_date_full),
+expiry_date_prefix = trim(expiry_date_prefix),
+lot_size = trim(lot_size),
+option_close_price = trim(option_close_price),
+last_implied_volatility = trim(last_implied_volatility),
+expiry_factor_quotient = trim(expiry_factor_quotient);
+
 DELETE FROM live_data where curr_time < CONCAT(DATE(START_TIME_IN),' 09:15:00');
 
 DELETE FROM live_data where date(curr_time) < date(START_TIME_IN);
@@ -4813,7 +5163,7 @@ DELETE FROM live_option_price_data where date(curr_time) < date(START_TIME_IN);
 select is_market_opening_done from market_day_events_status where
 curr_date = date(START_TIME_IN) into VAR_IS_MARKET_OPENING_DONE;
 
-IF ( ! VAR_IS_MARKET_OPENING_DONE) THEN
+IF (VAR_IS_MARKET_OPENING_DONE = 0) THEN
 
 
  DELETE FROM  option_buy_order;
@@ -4821,6 +5171,11 @@ IF ( ! VAR_IS_MARKET_OPENING_DONE) THEN
  DELETE FROM  option_sell_order;
 
  DELETE FROM option_stop_loss_order_price;
+
+ DELETE FROM option_buy_order_information;
+
+ DELETE FROM option_sell_order_information;
+
 
 
 
@@ -5006,7 +5361,7 @@ DECLARE VAR_ORDER_CYCLE_FREQUENCY FLOAT;
 DECLARE VAR_STOP_LOSS_TRIGER_CYCLE_FREQUENCY FLOAT;
 
 declare l_loop int default 0;
-                         
+
 declare NO_OF_LOOPS_BEFORE_CURRENT_TIME int default 0; -- consider loop time to be 2 mins
 
 DECLARE INITIAL_FILL_TIME INT;
@@ -5050,7 +5405,7 @@ INSERT INTO engine_live.log_messages VALUES(null,NOW(),
                           concat('LIVE_DATA_EXECUTION_MASTER - STARTING - ', NOW())
                           , 'START');
 
-SET IS_DUMMY_EXECUTION = TRUE;
+-- SET IS_DUMMY_EXECUTION = TRUE;
 
 
 -- HARDCODING BELOW ------ TO BE REMOVED ------ START
@@ -5235,7 +5590,7 @@ loop0: loop
  --       IF(true) then
 
        IF(time(VAR_CURRENT_REFERENCE_TIME) >= time('2018-01-21 09:15:00')
-       AND time(VAR_CURRENT_REFERENCE_TIME) < time('2018-01-21 09:30:00')) THEN
+       AND time(VAR_CURRENT_REFERENCE_TIME) < time(TEXT_NEW_BUY_ORDER_TIME)) THEN
 
 
 
@@ -6160,7 +6515,7 @@ DECLARE IS_DUMMY_OPTION_DATA BOOLEAN DEFAULT FALSE;
 
 
 
-SET DATE_REFERENCE = '2018-02-01';
+SET DATE_REFERENCE = '2018-02-14';
 
 SET DAY_START_REFERENCE = CONCAT(DATE(DATE_REFERENCE),' 09:15:00');
 
@@ -6357,7 +6712,7 @@ IF(ORDER_ERR_RECORD_COUNT > 0) THEN
 
 REPLACE INTO live_process_status_record
 
-VALUES(CURRENT_REFERENCE_TIME_IN, 'ERRORD',0);
+VALUES(CURRENT_REFERENCE_TIME_IN, 'ERRORD',0,0);
 
 END IF;
 
@@ -6377,7 +6732,7 @@ IF(ORDER_ERR_RECORD_COUNT > 0) THEN
 
 REPLACE INTO live_process_status_record
 
-VALUES(CURRENT_REFERENCE_TIME_IN, 'ERRORD',0);
+VALUES(CURRENT_REFERENCE_TIME_IN, 'ERRORD',0,0);
 
 END IF;
 
@@ -6394,7 +6749,7 @@ IF (ORDER_ERR_RECORD_COUNT IS NULL OR ORDER_ERR_RECORD_COUNT = 0) THEN
 
 REPLACE INTO live_process_status_record
 
-VALUES(CURRENT_REFERENCE_TIME_IN, 'SUCCESS',1);
+VALUES(CURRENT_REFERENCE_TIME_IN, 'SUCCESS',1,0);
 
 END IF;
 
@@ -6909,4 +7264,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-12 22:57:13
+-- Dump completed on 2018-02-14 16:27:46
