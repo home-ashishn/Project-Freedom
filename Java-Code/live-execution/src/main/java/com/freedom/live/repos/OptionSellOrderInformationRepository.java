@@ -6,15 +6,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-import com.freedom.live.models.OptionBuyOrderInformation;
+import com.freedom.live.models.OptionSellOrderInformation;
 
 @Transactional
-public interface OptionBuyOrderInformationRepository extends CrudRepository<OptionBuyOrderInformation, Long> {
+public interface OptionSellOrderInformationRepository extends CrudRepository<OptionSellOrderInformation, Long> {
 
 
 	
-	@Query("SELECT oboi.order_id FROM OptionBuyOrderInformation oboi where oboi.symbol = :title "
-			+ "AND oboi.option_type = :optionType AND oboi.option_strike_price = :optionStrikePrice")
+	@Query("SELECT osoi.order_id FROM OptionSellOrderInformation osoi where osoi.symbol = :title "
+			+ "AND osoi.option_type = :optionType AND osoi.option_strike_price = :optionStrikePrice")
 	public String findOrderIdByCombination(@Param("symbol") String symbol, @Param("optionType") String optionType,
 			@Param("optionStrikePrice") String optionStrikePrice);
 

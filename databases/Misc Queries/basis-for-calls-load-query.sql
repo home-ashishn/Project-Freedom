@@ -4,7 +4,7 @@ update basis_for_calls a, engine_ea.equity_data_main b
 set a.prev_close = b.close_price
 , a.volume_prev_day = b.total_traded_quantity
 where a.symbol = b.symbol
-and b.curr_date = '2018-02-12';
+and b.curr_date = '2018-02-01';
 
 
 update  selected_instrument a, selected_instrument_archive b
@@ -25,7 +25,7 @@ order by option_strike_price
 limit 1);
 
 replace into basis_for_calls_archive(
-SELECT '2018-01-30',a.* FROM basis_for_calls a);
+SELECT '2018-02-02',a.* FROM basis_for_calls a);
 
 
 replace into selected_instrument_archive(
@@ -44,7 +44,7 @@ prev_close,
 curr_signal,
 url,
 confidence_level FROM basis_for_calls_archive
-where curr_date = '2018-01-30' );
+where curr_date = '2018-02-02' );
 
 
 delete from selected_instrument;
@@ -58,8 +58,8 @@ lot_size,
 margin_allowance,
 last_implied_volatility,
 expiry_factor_quotient,
-url FROM selected_instrument_archive 
-where curr_date = '2018-01-30');
+url,expiry_date_full,expiry_date_prefix FROM selected_instrument_archive 
+where curr_date = '2018-02-02');
 
 
 delete from basis_for_calls where symbol not in 
