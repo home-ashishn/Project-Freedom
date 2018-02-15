@@ -66,7 +66,7 @@ CREATE TABLE `live_data` (
   `volume` int(11) DEFAULT NULL,
   `price` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31645 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=80275 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -110,7 +110,7 @@ CREATE TABLE `live_option_price_data` (
   `bid_quantity_2` int(11) DEFAULT NULL,
   `offer_quantity_2` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6014 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14033 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -224,7 +224,7 @@ CREATE TABLE `negative_price_trend_data` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -249,7 +249,7 @@ CREATE TABLE `negative_price_trend_data_for_sell_order` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -295,7 +295,7 @@ CREATE TABLE `option_buy_order` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -428,7 +428,7 @@ CREATE TABLE `option_sell_order` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -506,7 +506,7 @@ CREATE TABLE `option_stop_loss_order_price` (
   `buy_price` float DEFAULT NULL,
   `sl_price` float NOT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1108 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1110 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -531,7 +531,7 @@ CREATE TABLE `positive_price_trend_data` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2882 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2904 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1736,7 +1736,7 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `CHECK_NEGATIVE_PRICE_TREND_FOR_HALF_PC` */;
+/*!50003 DROP PROCEDURE IF EXISTS `CHECK_NEGATIVE_PRICE_TREND_FOR_SET_RANGE` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -1746,11 +1746,13 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `CHECK_NEGATIVE_PRICE_TREND_FOR_HALF_PC`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `CHECK_NEGATIVE_PRICE_TREND_FOR_SET_RANGE`(
 SYMBOL_IN VARCHAR(20),
 LATEST_TIME_POINT_IN DATETIME,
 PER_HOUR_VOLUME_PREV_DAY_IN FLOAT,
-ORDER_CYCLE_FREQUENCY_IN FLOAT)
+ORDER_CYCLE_FREQUENCY_IN FLOAT,
+THRESHOLD_VALUE_PCT_IN FLOAT,
+THRESHOLD_VALUE_REAL_IN FLOAT)
 BEGIN
 
 
@@ -1765,8 +1767,8 @@ A.symbol = SYMBOL_IN  AND B.symbol = SYMBOL_IN AND
 B.CURR_TIME >= DATE_SUB(LATEST_TIME_POINT_IN, INTERVAL (ORDER_CYCLE_FREQUENCY_IN * 60) SECOND))
 AND
 (A.curr_time < B.curr_time
-AND A.curr_time >= DATE_SUB(B.curr_time, INTERVAL 30 MINUTE))
-AND B.price <= (A.price * 0.995);
+AND A.curr_time >= DATE_SUB(B.curr_time, INTERVAL (3600 * THRESHOLD_VALUE_PCT_IN) SECOND))
+AND B.price <= (A.price * ( - THRESHOLD_VALUE_REAL_IN));
 
   OPEN CURSOR_TREND;
   BEGIN
@@ -1834,155 +1836,7 @@ AND B.price <= (A.price * 0.995);
       */
 
        SET VAR_VOLUME_FACTOR =  ((VAR_VOLUME_END - VAR_VOLUME_START) / PER_HOUR_VOLUME_PREV_DAY_IN )
-                             * (1800 /   TIME_DIFF) ;
-
-       SET VAR_PCT_LOSS = (VAR_PRICE_START - VAR_PRICE_END) * 100/ VAR_PRICE_START;
-
-
-        SET VAR_STRENGTH = VAR_VOLUME_FACTOR / VAR_PCT_LOSS;
-
-       if   VAR_STRENGTH >= 1 then
-
-           if ( VAR_STRENGTH >  VAR_MAX_STRENGTH) then
-
-               SET VAR_MAX_STRENGTH = VAR_STRENGTH;
-
-               SET  VAR_VOLUME_START_FOR_MAX_STRENGTH = VAR_VOLUME_START;
-               SET  VAR_VOLUME_END_FOR_MAX_STRENGTH = VAR_VOLUME_END;
-               SET  VAR_PRICE_START_FOR_MAX_STRENGTH = VAR_PRICE_START;
-               SET  VAR_PRICE_END_FOR_MAX_STRENGTH = VAR_PRICE_END;
-               SET  VAR_CURR_TIME_START_FOR_MAX_STRENGTH = VAR_CURR_TIME_START;
-               SET  VAR_CURR_TIME_END_FOR_MAX_STRENGTH = VAR_CURR_TIME_END;
-
-
-
-           end if;
-       end if;
-
-      -- SET counter = counter + 1;
-
-    END LOOP;
-
-        IF(VAR_MAX_STRENGTH > 0) THEN
-       call CHECK_N_P_T_1_PC_STRENGTH_VALIDITY(SYMBOL_IN,LATEST_TIME_POINT_IN,
-                                           VAR_MAX_STRENGTH,VAR_VOLUME_START_FOR_MAX_STRENGTH,
-                                           VAR_VOLUME_END_FOR_MAX_STRENGTH,VAR_PRICE_START_FOR_MAX_STRENGTH,
-                                           VAR_PRICE_END_FOR_MAX_STRENGTH,VAR_CURR_TIME_START_FOR_MAX_STRENGTH,
-                                           VAR_CURR_TIME_END_FOR_MAX_STRENGTH);
-
-
-       END IF;
-  END;
-
-
-
-
-
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `CHECK_NEGATIVE_PRICE_TREND_FOR_ONE_PC` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `CHECK_NEGATIVE_PRICE_TREND_FOR_ONE_PC`(
-SYMBOL_IN VARCHAR(20),
-LATEST_TIME_POINT_IN DATETIME,
-PER_HOUR_VOLUME_PREV_DAY_IN FLOAT,
-ORDER_CYCLE_FREQUENCY_IN FLOAT)
-BEGIN
-
-
-
-DECLARE CURSOR_TREND CURSOR FOR
-SELECT A.VOLUME, B.VOLUME,
-A.PRICE,B.PRICE,
-A.curr_time,B.curr_time FROM LIVE_DATA A,LIVE_DATA B
-WHERE
-A.symbol = SYMBOL_IN  AND B.symbol = SYMBOL_IN AND
-(B.CURR_TIME < LATEST_TIME_POINT_IN AND
-B.CURR_TIME >= DATE_SUB(LATEST_TIME_POINT_IN, INTERVAL (ORDER_CYCLE_FREQUENCY_IN * 60) SECOND))
-AND
-(A.curr_time < B.curr_time
-AND A.curr_time >= DATE_SUB(B.curr_time, INTERVAL 1 HOUR))
-AND B.price <= (A.price * 0.99);
-
-  OPEN CURSOR_TREND;
-  BEGIN
-
-    DECLARE VAR_VOLUME_START INT;
-    DECLARE VAR_VOLUME_END INT;
-    DECLARE VAR_PRICE_START FLOAT;
-    DECLARE VAR_PRICE_END FLOAT;
-    DECLARE VAR_CURR_TIME_START DATETIME;
-    DECLARE VAR_CURR_TIME_END DATETIME;
-
-    DECLARE VAR_VOLUME_FACTOR FLOAT DEFAULT 0;
-
-    DECLARE VAR_STRENGTH FLOAT DEFAULT 0;
-
-    DECLARE VAR_PCT_LOSS FLOAT DEFAULT 0;
-
-
-
-    DECLARE VAR_MAX_STRENGTH FLOAT DEFAULT 0;
-
-    DECLARE TIME_DIFF FLOAT DEFAULT 0;
-
-
-    DECLARE VAR_VOLUME_START_FOR_MAX_STRENGTH INT;
-    DECLARE VAR_VOLUME_END_FOR_MAX_STRENGTH INT;
-    DECLARE VAR_PRICE_START_FOR_MAX_STRENGTH FLOAT;
-    DECLARE VAR_PRICE_END_FOR_MAX_STRENGTH FLOAT;
-    DECLARE VAR_CURR_TIME_START_FOR_MAX_STRENGTH DATETIME;
-    DECLARE VAR_CURR_TIME_END_FOR_MAX_STRENGTH DATETIME;
-
-
-
-
-
-    DECLARE EXIT HANDLER FOR NOT FOUND BEGIN
-    CLOSE CURSOR_TREND;
-            IF(VAR_MAX_STRENGTH > 0) THEN
-       call CHECK_N_P_T_1_PC_STRENGTH_VALIDITY(SYMBOL_IN,LATEST_TIME_POINT_IN,
-                                           VAR_MAX_STRENGTH,VAR_VOLUME_START_FOR_MAX_STRENGTH,
-                                           VAR_VOLUME_END_FOR_MAX_STRENGTH,VAR_PRICE_START_FOR_MAX_STRENGTH,
-                                           VAR_PRICE_END_FOR_MAX_STRENGTH,VAR_CURR_TIME_START_FOR_MAX_STRENGTH,
-                                           VAR_CURR_TIME_END_FOR_MAX_STRENGTH);
-
-
-       END IF;
-    END;
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN CLOSE CURSOR_TREND; RESIGNAL; END;
-    LOOP
-      FETCH CURSOR_TREND INTO VAR_VOLUME_START,VAR_VOLUME_END,
-                                        VAR_PRICE_START,VAR_PRICE_END,
-                                        VAR_CURR_TIME_START,VAR_CURR_TIME_END;
-
-
-      SET TIME_DIFF = TIMESTAMPDIFF(second,VAR_CURR_TIME_START,VAR_CURR_TIME_END);
-
-
-      /*
-      VOLUME FACTOR (VF) = VOLUME GAINED / EXPECTED VOLUME GAIN BASED ON PREV DAY
-
-      STRENGTH = VF PER PERCENT LOSS. THIS WILL GIVEACCURATE STRENGTH AND WEED
-                 OUT HIGH SURGES IN LOW VOLUME. BENCHMARK FOR THIS IS 1
-                 i,e 1 VF PER PERCENT LOSS.
-
-      */
-
-       SET VAR_VOLUME_FACTOR =  ((VAR_VOLUME_END - VAR_VOLUME_START) / PER_HOUR_VOLUME_PREV_DAY_IN )
-                             * (3600 /   TIME_DIFF) ;
+                             * ((3600 * THRESHOLD_VALUE_PCT_IN) /   TIME_DIFF) ;
 
        SET VAR_PCT_LOSS = (VAR_PRICE_START - VAR_PRICE_END) * 100/ VAR_PRICE_START;
 
@@ -2249,7 +2103,11 @@ DECLARE VAR_ENCLOSING_RECORD_ID INT;
 
 DECLARE VAR_TIME_DIFF_MINUTES FLOAT;
 
+DECLARE VAR_SPURT_CONTROL_THRESHOLD FLOAT;
 
+
+SELECT  param_value FROM trading_parameters WHERE param_id = 'SPURT_CONTROL_THRESHOLD'
+INTO VAR_SPURT_CONTROL_THRESHOLD;
 
 
 SELECT count(*) FROM engine_live.negative_price_trend_data
@@ -2278,13 +2136,13 @@ is_strength_applied = 0)
 into STRENGTH_TO_BE_APPLIED,VAR_ENCLOSING_RECORD_ID,VAR_TREND_RECORD_ID,VAR_TIME_DIFF_MINUTES;
 
 
-IF( VAR_TIME_DIFF_MINUTES < 10 AND STRENGTH_TO_BE_APPLIED > 2.5) THEN
+IF( VAR_TIME_DIFF_MINUTES < VAR_SPURT_CONTROL_THRESHOLD AND STRENGTH_TO_BE_APPLIED > 2.5) THEN
 
 update negative_price_trend_data
 set  original_max_strength = STRENGTH_TO_BE_APPLIED
 where id = VAR_TREND_RECORD_ID;
 
-SET STRENGTH_TO_BE_APPLIED = STRENGTH_TO_BE_APPLIED * (VAR_TIME_DIFF_MINUTES / 10 );
+SET STRENGTH_TO_BE_APPLIED = STRENGTH_TO_BE_APPLIED * (VAR_TIME_DIFF_MINUTES / VAR_SPURT_CONTROL_THRESHOLD );
 
 update negative_price_trend_data
 set  max_strength = STRENGTH_TO_BE_APPLIED
@@ -2332,12 +2190,18 @@ DECLARE VAR_COUNT_TREND_RECORDS INT;
 
 DECLARE VAR_TREND_RECORD_ID INT;
 
-
 DECLARE STRENGTH_TO_BE_APPLIED FLOAT;
 
 DECLARE VAR_ENCLOSING_RECORD_ID INT;
 
 DECLARE VAR_TIME_DIFF_MINUTES FLOAT;
+
+DECLARE VAR_SPURT_CONTROL_THRESHOLD FLOAT;
+
+
+SELECT  param_value FROM trading_parameters WHERE param_id = 'SPURT_CONTROL_THRESHOLD'
+INTO VAR_SPURT_CONTROL_THRESHOLD;
+
 
 
 
@@ -2369,13 +2233,13 @@ is_strength_applied = 0
 )
 into STRENGTH_TO_BE_APPLIED,VAR_ENCLOSING_RECORD_ID,VAR_TREND_RECORD_ID,VAR_TIME_DIFF_MINUTES;
 
-IF( VAR_TIME_DIFF_MINUTES < 10 AND STRENGTH_TO_BE_APPLIED > 2.5) THEN
+IF( VAR_TIME_DIFF_MINUTES < VAR_SPURT_CONTROL_THRESHOLD AND STRENGTH_TO_BE_APPLIED > 2.5) THEN
 
 update positive_price_trend_data
 set  original_max_strength = STRENGTH_TO_BE_APPLIED
 where id = VAR_TREND_RECORD_ID;
 
-SET STRENGTH_TO_BE_APPLIED = STRENGTH_TO_BE_APPLIED * (VAR_TIME_DIFF_MINUTES / 10 );
+SET STRENGTH_TO_BE_APPLIED = STRENGTH_TO_BE_APPLIED * (VAR_TIME_DIFF_MINUTES / VAR_SPURT_CONTROL_THRESHOLD );
 
 update positive_price_trend_data
 set  max_strength = STRENGTH_TO_BE_APPLIED
@@ -2429,7 +2293,7 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `CHECK_POSITIVE_PRICE_TREND_FOR_HALF_PC` */;
+/*!50003 DROP PROCEDURE IF EXISTS `CHECK_POSITIVE_PRICE_TREND_FOR_SET_RANGE` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
 /*!50003 SET @saved_col_connection = @@collation_connection */ ;
@@ -2439,12 +2303,16 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `CHECK_POSITIVE_PRICE_TREND_FOR_HALF_PC`(
+CREATE DEFINER=`root`@`localhost` PROCEDURE `CHECK_POSITIVE_PRICE_TREND_FOR_SET_RANGE`(
 SYMBOL_IN VARCHAR(20),
 LATEST_TIME_POINT_IN DATETIME,
 PER_HOUR_VOLUME_PREV_DAY_IN FLOAT,
-ORDER_CYCLE_FREQUENCY_IN FLOAT)
+ORDER_CYCLE_FREQUENCY_IN FLOAT,
+THRESHOLD_VALUE_PCT_IN FLOAT,
+THRESHOLD_VALUE_REAL_IN FLOAT)
 BEGIN
+
+
 
 
 DECLARE CURSOR_TREND CURSOR FOR
@@ -2457,8 +2325,8 @@ A.symbol = SYMBOL_IN  AND B.symbol = SYMBOL_IN AND
 B.CURR_TIME >= DATE_SUB(LATEST_TIME_POINT_IN, INTERVAL (ORDER_CYCLE_FREQUENCY_IN * 60) SECOND))
 AND
 (A.curr_time < B.curr_time
-AND A.curr_time >= DATE_SUB(B.curr_time, INTERVAL 30 MINUTE))
-AND B.price >= (A.price * 1.005);
+AND A.curr_time >= DATE_SUB(B.curr_time, INTERVAL (3600 * THRESHOLD_VALUE_PCT_IN) SECOND))
+AND B.price >= (A.price * (1 + THRESHOLD_VALUE_REAL_IN));
 
   OPEN CURSOR_TREND;
   BEGIN
@@ -2526,154 +2394,7 @@ AND B.price >= (A.price * 1.005);
       */
 
        SET VAR_VOLUME_FACTOR =  ((VAR_VOLUME_END - VAR_VOLUME_START) / PER_HOUR_VOLUME_PREV_DAY_IN )
-                             * (1800 /   TIME_DIFF) ;
-
-       SET VAR_PCT_GAIN = (VAR_PRICE_END -  VAR_PRICE_START) * 100/ VAR_PRICE_START;
-
-
-        SET VAR_STRENGTH = VAR_VOLUME_FACTOR / VAR_PCT_GAIN;
-
-       if   VAR_STRENGTH >= 1 then
-
-           if ( VAR_STRENGTH >  VAR_MAX_STRENGTH) then
-
-               SET VAR_MAX_STRENGTH = VAR_STRENGTH;
-
-               SET  VAR_VOLUME_START_FOR_MAX_STRENGTH = VAR_VOLUME_START;
-               SET  VAR_VOLUME_END_FOR_MAX_STRENGTH = VAR_VOLUME_END;
-               SET  VAR_PRICE_START_FOR_MAX_STRENGTH = VAR_PRICE_START;
-               SET  VAR_PRICE_END_FOR_MAX_STRENGTH = VAR_PRICE_END;
-               SET  VAR_CURR_TIME_START_FOR_MAX_STRENGTH = VAR_CURR_TIME_START;
-               SET  VAR_CURR_TIME_END_FOR_MAX_STRENGTH = VAR_CURR_TIME_END;
-
-
-
-           end if;
-       end if;
-
-      -- SET counter = counter + 1;
-
-    END LOOP;
-
-        IF(VAR_MAX_STRENGTH > 0) THEN
-       call CHECK_P_P_T_1_PC_STRENGTH_VALIDITY(SYMBOL_IN,LATEST_TIME_POINT_IN,
-                                           VAR_MAX_STRENGTH,VAR_VOLUME_START_FOR_MAX_STRENGTH,
-                                           VAR_VOLUME_END_FOR_MAX_STRENGTH,VAR_PRICE_START_FOR_MAX_STRENGTH,
-                                           VAR_PRICE_END_FOR_MAX_STRENGTH,VAR_CURR_TIME_START_FOR_MAX_STRENGTH,
-                                           VAR_CURR_TIME_END_FOR_MAX_STRENGTH);
-
-
-       END IF;
-  END;
-
-
-
-
-
-END ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `CHECK_POSITIVE_PRICE_TREND_FOR_ONE_PC` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8 */ ;
-/*!50003 SET character_set_results = utf8 */ ;
-/*!50003 SET collation_connection  = utf8_general_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `CHECK_POSITIVE_PRICE_TREND_FOR_ONE_PC`(
-SYMBOL_IN VARCHAR(20),
-LATEST_TIME_POINT_IN DATETIME,
-PER_HOUR_VOLUME_PREV_DAY_IN FLOAT,
-ORDER_CYCLE_FREQUENCY_IN FLOAT)
-BEGIN
-
-
-DECLARE CURSOR_TREND CURSOR FOR
-SELECT A.VOLUME, B.VOLUME,
-A.PRICE,B.PRICE,
-A.curr_time,B.curr_time FROM LIVE_DATA A,LIVE_DATA B
-WHERE
-A.symbol = SYMBOL_IN  AND B.symbol = SYMBOL_IN AND
-(B.CURR_TIME < LATEST_TIME_POINT_IN AND
-B.CURR_TIME >= DATE_SUB(LATEST_TIME_POINT_IN, INTERVAL (ORDER_CYCLE_FREQUENCY_IN * 60) SECOND))
-AND
-(A.curr_time < B.curr_time
-AND A.curr_time >= DATE_SUB(B.curr_time, INTERVAL 1 HOUR))
-AND B.price >= (A.price * 1.01);
-
-  OPEN CURSOR_TREND;
-  BEGIN
-
-    DECLARE VAR_VOLUME_START INT;
-    DECLARE VAR_VOLUME_END INT;
-    DECLARE VAR_PRICE_START FLOAT;
-    DECLARE VAR_PRICE_END FLOAT;
-    DECLARE VAR_CURR_TIME_START DATETIME;
-    DECLARE VAR_CURR_TIME_END DATETIME;
-
-    DECLARE VAR_VOLUME_FACTOR FLOAT DEFAULT 0;
-
-    DECLARE VAR_STRENGTH FLOAT DEFAULT 0;
-
-    DECLARE VAR_PCT_GAIN FLOAT DEFAULT 0;
-
-
-
-    DECLARE VAR_MAX_STRENGTH FLOAT DEFAULT 0;
-
-    DECLARE TIME_DIFF FLOAT DEFAULT 0;
-
-
-    DECLARE VAR_VOLUME_START_FOR_MAX_STRENGTH INT;
-    DECLARE VAR_VOLUME_END_FOR_MAX_STRENGTH INT;
-    DECLARE VAR_PRICE_START_FOR_MAX_STRENGTH FLOAT;
-    DECLARE VAR_PRICE_END_FOR_MAX_STRENGTH FLOAT;
-    DECLARE VAR_CURR_TIME_START_FOR_MAX_STRENGTH DATETIME;
-    DECLARE VAR_CURR_TIME_END_FOR_MAX_STRENGTH DATETIME;
-
-
-
-
-
-    DECLARE EXIT HANDLER FOR NOT FOUND BEGIN
-    CLOSE CURSOR_TREND;
-            IF(VAR_MAX_STRENGTH > 0) THEN
-       call CHECK_P_P_T_1_PC_STRENGTH_VALIDITY(SYMBOL_IN,LATEST_TIME_POINT_IN,
-                                           VAR_MAX_STRENGTH,VAR_VOLUME_START_FOR_MAX_STRENGTH,
-                                           VAR_VOLUME_END_FOR_MAX_STRENGTH,VAR_PRICE_START_FOR_MAX_STRENGTH,
-                                           VAR_PRICE_END_FOR_MAX_STRENGTH,VAR_CURR_TIME_START_FOR_MAX_STRENGTH,
-                                           VAR_CURR_TIME_END_FOR_MAX_STRENGTH);
-
-
-       END IF;
-    END;
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN CLOSE CURSOR_TREND; RESIGNAL; END;
-    LOOP
-      FETCH CURSOR_TREND INTO VAR_VOLUME_START,VAR_VOLUME_END,
-                                        VAR_PRICE_START,VAR_PRICE_END,
-                                        VAR_CURR_TIME_START,VAR_CURR_TIME_END;
-
-
-      SET TIME_DIFF = TIMESTAMPDIFF(second,VAR_CURR_TIME_START,VAR_CURR_TIME_END);
-
-
-      /*
-      VOLUME FACTOR (VF) = VOLUME GAINED / EXPECTED VOLUME GAIN BASED ON PREV DAY
-
-      STRENGTH = VF PER PERCENT GAIN. THIS WILL GIVEACCURATE STRENGTH AND WEED
-                 OUT HIGH SURGES IN LOW VOLUME. BENCHMARK FOR THIS IS 1
-                 i,e 1 VF PER PERCENT GAIN.
-
-      */
-
-       SET VAR_VOLUME_FACTOR =  ((VAR_VOLUME_END - VAR_VOLUME_START) / PER_HOUR_VOLUME_PREV_DAY_IN )
-                             * (3600 /   TIME_DIFF) ;
+                             * ((3600 * THRESHOLD_VALUE_PCT_IN) /   TIME_DIFF) ;
 
        SET VAR_PCT_GAIN = (VAR_PRICE_END -  VAR_PRICE_START) * 100/ VAR_PRICE_START;
 
@@ -2781,22 +2502,30 @@ DECLARE VAR_ORDER_CYCLE_FREQUENCY FLOAT;
 
 DECLARE PER_HOUR_VOLUME_PREV_DAY FLOAT DEFAULT 0;
 
+DECLARE VAR_THRESHOLD_VALUE_PCT FLOAT DEFAULT 0.5;
+
+DECLARE VAR_THRESHOLD_VALUE_REAL FLOAT DEFAULT 0.005;
+
+
+
 SELECT  param_value FROM trading_parameters WHERE param_id = 'ORDER_CYCLE_FREQUENCY'
 INTO VAR_ORDER_CYCLE_FREQUENCY;
 
 SET PER_HOUR_VOLUME_PREV_DAY = PREV_DAY_VOLUME_IN * 4/25;
 
--- CALL CHECK_POSITIVE_PRICE_TREND_FOR_ONE_PC(SYMBOL_IN,LATEST_TIME_POINT_IN,PER_HOUR_VOLUME_PREV_DAY
-                                                                      -- ,VAR_ORDER_CYCLE_FREQUENCY);
+SELECT  param_value FROM trading_parameters WHERE param_id = 'PRICE_CHANGE_THRESHOLD_TIME'
+INTO VAR_THRESHOLD_VALUE_PCT;
 
--- CALL CHECK_NEGATIVE_PRICE_TREND_FOR_ONE_PC(SYMBOL_IN,LATEST_TIME_POINT_IN,PER_HOUR_VOLUME_PREV_DAY
-                                                                      -- ,VAR_ORDER_CYCLE_FREQUENCY);
+SET  VAR_THRESHOLD_VALUE_REAL =  VAR_THRESHOLD_VALUE_PCT / 100;
 
-CALL CHECK_POSITIVE_PRICE_TREND_FOR_HALF_PC(SYMBOL_IN,LATEST_TIME_POINT_IN,PER_HOUR_VOLUME_PREV_DAY
-                                                                      ,VAR_ORDER_CYCLE_FREQUENCY);
 
-CALL CHECK_NEGATIVE_PRICE_TREND_FOR_HALF_PC(SYMBOL_IN,LATEST_TIME_POINT_IN,PER_HOUR_VOLUME_PREV_DAY
-                                                                      ,VAR_ORDER_CYCLE_FREQUENCY);
+CALL CHECK_POSITIVE_PRICE_TREND_FOR_SET_RANGE(SYMBOL_IN,LATEST_TIME_POINT_IN,PER_HOUR_VOLUME_PREV_DAY
+                                                                      ,VAR_ORDER_CYCLE_FREQUENCY
+                                                                      ,VAR_THRESHOLD_VALUE_PCT,VAR_THRESHOLD_VALUE_REAL);
+
+CALL CHECK_NEGATIVE_PRICE_TREND_FOR_SET_RANGE(SYMBOL_IN,LATEST_TIME_POINT_IN,PER_HOUR_VOLUME_PREV_DAY
+                                                                      ,VAR_ORDER_CYCLE_FREQUENCY
+                                                                      ,VAR_THRESHOLD_VALUE_PCT,VAR_THRESHOLD_VALUE_REAL);
 
 END ;;
 DELIMITER ;
@@ -6569,10 +6298,12 @@ SELECT TIMESTAMPDIFF(SECOND,DAY_START_REFERENCE,DUMMY_NOW_TIME) INTO INITIAL_FIL
 
 SET NO_OF_LOOPS_BEFORE_CURRENT_TIME  = INITIAL_FILL_TIME/ 60;
 
-
+/*
 REPLACE INTO log_messages VALUES(DAY_START_REFERENCE,
                           concat('PUT_ORDERS_WITH_LIVE_DATA - ', DAY_START_REFERENCE)
                           , 'START');
+
+*/
 
 
 loop0: loop
@@ -7264,4 +6995,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-14 16:27:46
+-- Dump completed on 2018-02-15 17:08:16

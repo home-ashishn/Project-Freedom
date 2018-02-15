@@ -112,7 +112,7 @@ public class LiveStockPriceExtractor {
 		tickerProvider.setOnTickerArrivalListener(new OnTick() {
 			@Override
 			public void onTick(ArrayList<Tick> ticks) {
-				System.out.println("ticks size = " + ticks.size() + " at current time = " + new DateTime());
+				sop("ticks size = " + ticks.size() + " at current time = " + new DateTime());
 
 				if (ticks.size() > 0) 
 				{
@@ -177,7 +177,7 @@ public class LiveStockPriceExtractor {
 
 			Long lastVolume = mapGlobalVolumes.get(tokenValue);
 
-			if (currentVolume > lastVolume) {
+			if (currentVolume > (lastVolume * 1.0002)) {
 
 				mapGlobalVolumes.put(tokenValue, currentVolume);
 				
@@ -219,7 +219,7 @@ public class LiveStockPriceExtractor {
 
 				} catch (Exception e) {
 
-					sop("^^^^^^^ &&&&&&& ERROR WHILE SAVING ************* STOCK DATA ^^^^^^^ &&&&&&&" + e.getMessage());
+					System.out.println("^^^^^^^ &&&&&&& ERROR WHILE SAVING ************* STOCK DATA ^^^^^^^ &&&&&&&" + e.getMessage());
 				}
 
 				liveDataObjs = new ArrayList<LiveStockData>();

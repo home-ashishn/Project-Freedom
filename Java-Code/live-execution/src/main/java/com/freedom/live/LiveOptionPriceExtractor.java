@@ -114,7 +114,7 @@ public class LiveOptionPriceExtractor {
 		tickerProvider.setOnTickerArrivalListener(new OnTick() {
 			@Override
 			public void onTick(ArrayList<Tick> ticks) {
-				System.out.println("ticks size = " + ticks.size() + " at current time = " + new DateTime());
+				sop("ticks size = " + ticks.size() + " at current time = " + new DateTime());
 
 				if (ticks.size() > 0) 
 				{
@@ -256,7 +256,7 @@ public class LiveOptionPriceExtractor {
 
 				} catch (Exception e) {
 
-					sop("^^^^^^^ &&&&&&& ERROR WHILE SAVING ^^^^^^^ &&&&&&&" + e.getMessage());
+					System.out.println("^^^^^^^ &&&&&&& ERROR WHILE SAVING ^^^^^^^ &&&&&&&" + e.getMessage());
 				}
 
 				liveDataObjs = new ArrayList<LiveOptionPriceData>();
