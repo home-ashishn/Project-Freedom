@@ -13,9 +13,9 @@ public interface OptionSellOrderInformationRepository extends CrudRepository<Opt
 
 
 	
-	@Query("SELECT osoi.order_id FROM OptionSellOrderInformation osoi where osoi.symbol = :title "
+	@Query("SELECT osoi.order_id FROM OptionSellOrderInformation osoi where osoi.symbol = :symbol "
 			+ "AND osoi.option_type = :optionType AND osoi.option_strike_price = :optionStrikePrice")
 	public String findOrderIdByCombination(@Param("symbol") String symbol, @Param("optionType") String optionType,
-			@Param("optionStrikePrice") String optionStrikePrice);
+			@Param("optionStrikePrice") float optionStrikePrice);
 
 }

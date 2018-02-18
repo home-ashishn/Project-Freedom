@@ -39,7 +39,7 @@ public class LiveOrderExecutionService {
 
 	@Autowired
 	OptionBuyOrderInformationRepository optionBuyOrderInformationRepository;
-	
+
 	@Autowired
 	OptionSellOrderEventRepository optionSellOrderEventRepository;
 
@@ -57,7 +57,7 @@ public class LiveOrderExecutionService {
 	private KiteConnect kiteConnect;
 
 	private Map<String, String> mapInstrumentToTradingSymbol = new HashMap<String, String>();
-	
+
 	public Map<String, String> getMapInstrumentToTradingSymbol() {
 		return mapInstrumentToTradingSymbol;
 	}
@@ -74,25 +74,12 @@ public class LiveOrderExecutionService {
 		this.kiteConnect = kiteConnect;
 	}
 
-
 	public void runOrderService() throws InterruptedException {
 
 		ThreadPoolExecutor executor = new ThreadPoolExecutor(5, 10, 0L, TimeUnit.MILLISECONDS,
 				new LinkedBlockingQueue<Runnable>());
 
 		while (true) {
-
-			/*
-			 * DateTime currentTime = new DateTime();
-			 * 
-			 * long difference = currentTime.getMillis() -
-			 * targetCycleTime.getMillis();
-			 * 
-			 * if(difference <= 15000){ return; }
-			 * 
-			 * targetCycleTime = currentTime;
-			 */
-
 			if (executor.getQueue().size() > 0) {
 				continue;
 			}
@@ -126,19 +113,26 @@ public class LiveOrderExecutionService {
 
 			// order time deviation assumed to be 5 seconds max
 
-			if (maxRecordTime.isAfter(targetCycleTime.minusSeconds(5))) {
+			// if (maxRecordTime.isAfter(targetCycleTime.minusSeconds(5)))
+			{
 
 				isBuyOrdersHandledProperly = false;
 
 				isSellOrdersHandledProperly = false;
 
-				makeOrderCallables(executor);
-
-				Thread.sleep(8000);
+				sop(" 1st call to makeOrderCallables at " + new DateTime());
 
 				makeOrderCallables(executor);
 
 				Thread.sleep(8000);
+
+				sop(" 2nd call to makeOrderCallables at " + new DateTime());
+
+				makeOrderCallables(executor);
+
+				Thread.sleep(8000);
+
+				sop(" 3rd call to makeOrderCallables at " + new DateTime());
 
 				makeOrderCallables(executor);
 
@@ -209,6 +203,7 @@ public class LiveOrderExecutionService {
 		for (Iterator<OptionBuyOrderEvent> iterator = listNew.iterator(); iterator.hasNext();) {
 
 			OptionBuyOrderEvent optionBuyOrderEvent = (OptionBuyOrderEvent) iterator.next();
+
 			if (!optionBuyOrderEvent.isIs_event_handled()) {
 
 				placeNewBuyOrder(optionBuyOrderEvent);
@@ -224,8 +219,18 @@ public class LiveOrderExecutionService {
 
 	private void placeNewBuyOrder(OptionBuyOrderEvent optionBuyOrderEvent) {
 
-		String tradingSymbolKey = optionBuyOrderEvent.getSymbol() + optionBuyOrderEvent.getOption_type()
-				+ optionBuyOrderEvent.getOption_strike_price();
+		String symbol = optionBuyOrderEvent.getSymbol();
+		String optionType = optionBuyOrderEvent.getOption_type();
+		float optionStrikePrice = optionBuyOrderEvent.getOption_strike_price();
+
+		String orderId = optionBuyOrderInformationRepository.findOrderIdByCombination(symbol, optionType,
+				optionStrikePrice);
+
+		if (orderId != null && !"".equals(orderId)) {
+			return;
+		}
+
+		String tradingSymbolKey = symbol + optionType + optionStrikePrice;
 
 		String tradingSymbol = mapInstrumentToTradingSymbol.get(tradingSymbolKey);
 
@@ -261,7 +266,7 @@ public class LiveOrderExecutionService {
 
 			optionBuyOrderInformationRepository.save(newOrder);
 
-			System.out.println(" New Order placed for " + optionBuyOrderEvent.getSymbol() + " "
+			System.out.println(" New Buy Order placed for " + optionBuyOrderEvent.getSymbol() + " "
 					+ optionBuyOrderEvent.getOption_type() + " " + optionBuyOrderEvent.getOption_strike_price()
 					+ ", order id = " + order11.orderId);
 		}
@@ -292,7 +297,7 @@ public class LiveOrderExecutionService {
 
 		String symbol = optionBuyOrderEvent.getSymbol();
 		String optionType = optionBuyOrderEvent.getOption_type();
-		String optionStrikePrice = "" + optionBuyOrderEvent.getOption_strike_price();
+		float optionStrikePrice = optionBuyOrderEvent.getOption_strike_price();
 
 		String tradingSymbolKey = symbol + optionType + optionStrikePrice;
 
@@ -323,20 +328,25 @@ public class LiveOrderExecutionService {
 			isBuyOrdersHandledProperly = false;
 			e.printStackTrace();
 		}
+		if (order11 != null) {
+
+			System.out.println(" Modify Buy Order placed for " + symbol + " "
+					+ optionType + " " + optionStrikePrice
+					+ ", order id = " + order11.orderId);
+		}
+
 	}
 
 	private void placeSellOrders() {
-		
+
 		isSellOrdersHandledProperly = true;
 
 		placeNewSellOrders();
-
 		placeSellOrdersModification();
 
 	}
 
 	private void placeNewSellOrders() {
-
 
 		List<OptionSellOrderEvent> listNew = optionSellOrderEventRepository.findNewOrderEvents();
 
@@ -354,13 +364,23 @@ public class LiveOrderExecutionService {
 
 		optionSellOrderEventRepository.save(listNew);
 
-	
 	}
-	
+
 	private void placeNewSellOrder(OptionSellOrderEvent optionSellOrderEvent) {
 
-		String tradingSymbolKey = optionSellOrderEvent.getSymbol() + optionSellOrderEvent.getOption_type()
-				+ optionSellOrderEvent.getOption_strike_price();
+		String symbol = optionSellOrderEvent.getSymbol();
+		String optionType = optionSellOrderEvent.getOption_type();
+		float optionStrikePrice = optionSellOrderEvent.getOption_strike_price();
+
+		String orderId = optionSellOrderInformationRepository.findOrderIdByCombination(symbol, optionType,
+				optionStrikePrice);
+
+		if (orderId != null && !"".equals(orderId)) {
+			return;
+		}
+
+		String tradingSymbolKey = symbol + optionType + optionStrikePrice;
+
 
 		String tradingSymbol = mapInstrumentToTradingSymbol.get(tradingSymbolKey);
 
@@ -396,16 +416,14 @@ public class LiveOrderExecutionService {
 
 			optionSellOrderInformationRepository.save(newOrder);
 
-			System.out.println(" New Order placed for " + optionSellOrderEvent.getSymbol() + " "
+			System.out.println(" New Sell Order placed for " + optionSellOrderEvent.getSymbol() + " "
 					+ optionSellOrderEvent.getOption_type() + " " + optionSellOrderEvent.getOption_strike_price()
 					+ ", order id = " + order11.orderId);
 		}
 
 	}
 
-
 	private void placeSellOrdersModification() {
-
 
 		List<OptionSellOrderEvent> listNew = optionSellOrderEventRepository.findModifyOrderEvents();
 
@@ -423,16 +441,13 @@ public class LiveOrderExecutionService {
 
 		optionSellOrderEventRepository.save(listNew);
 
-	
 	}
-	
-	
 
 	private void placeModifySellOrder(OptionSellOrderEvent optionSellOrderEvent) {
 
 		String symbol = optionSellOrderEvent.getSymbol();
 		String optionType = optionSellOrderEvent.getOption_type();
-		String optionStrikePrice = "" + optionSellOrderEvent.getOption_strike_price();
+		float optionStrikePrice = optionSellOrderEvent.getOption_strike_price();
 
 		String tradingSymbolKey = symbol + optionType + optionStrikePrice;
 
@@ -463,9 +478,20 @@ public class LiveOrderExecutionService {
 			isSellOrdersHandledProperly = false;
 			e.printStackTrace();
 		}
+		
+		if (order11 != null) {
+
+			System.out.println(" Modify Sell Order placed for " + symbol + " "
+					+ optionType + " " + optionStrikePrice
+					+ ", order id = " + order11.orderId);
+		}
+		
+		
 	}
 
+	private void sop(String text) {
 
-
+		System.out.println(text);
+	}
 
 }

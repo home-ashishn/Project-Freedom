@@ -27,6 +27,7 @@ import com.rainmatter.kiteconnect.KiteConnect;
 import com.rainmatter.kitehttp.SessionExpiryHook;
 import com.rainmatter.kitehttp.exceptions.KiteException;
 import com.rainmatter.models.Instrument;
+import com.rainmatter.models.UserModel;
 
 @Component
 @Service
@@ -55,7 +56,7 @@ public class LiveExecutionManager {
 	 private LiveStockPriceExtractor liveStockPriceExtractor;
 	  
 	 
-	private String requestToken = "xz3pf7ql2h5xvii02fv2dyyoq5hj2qf0";
+	private String requestToken = "ir5btzkokgeodqwsw0ynk9ru4mow0g15";
 
 	private KiteConnect kiteConnect;
 
@@ -147,8 +148,8 @@ public class LiveExecutionManager {
 		  
 */		 
 
-		kiteConnect.setAccessToken("1ckbgh2fp5gl0ax4r3yt7wlm4f70wios");
-		kiteConnect.setPublicToken("80e0a68f195e288fe3dd43a954c90825");
+		kiteConnect.setAccessToken("rorr294b9vo339ogprw99gs2nomxmqfo");
+		kiteConnect.setPublicToken("c797318ecc2a818d4f6e4d5dd3e4dc47");
 
 		
 		  

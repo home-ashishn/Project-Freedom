@@ -276,11 +276,6 @@ public class LiveOptionPriceExtractor {
 
 	}
 
-	private void sop(String text) {
-
-		System.out.println(text);
-	}
-
 	public List<Long> getTokens() {
 		return tokens;
 	}
@@ -304,5 +299,12 @@ public class LiveOptionPriceExtractor {
 	public void setMapTokensToInstrument(Map<Long, SelectedInstrument> mapTokensToInstrument) {
 		this.mapTokensToInstrument = mapTokensToInstrument;
 	}
+	
+	private void sop(String text) {
+
+		// System.out.println(text);
+	}
+
+
 
 }

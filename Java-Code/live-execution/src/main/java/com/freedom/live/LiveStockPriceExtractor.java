@@ -239,11 +239,6 @@ public class LiveStockPriceExtractor {
 
 	}
 
-	private void sop(String text) {
-
-		System.out.println(text);
-	}
-
 	public List<Long> getTokens() {
 		return tokens;
 	}
@@ -267,5 +262,11 @@ public class LiveStockPriceExtractor {
 	public void setMapTokensToStocks(Map<Long, BasisForCalls> mapTokensToStocks) {
 		this.mapTokensToStocks = mapTokensToStocks;
 	}
+
+	private void sop(String text) {
+
+		// System.out.println(text);
+	}
+
 
 }

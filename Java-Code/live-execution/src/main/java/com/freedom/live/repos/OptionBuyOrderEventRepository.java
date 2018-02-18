@@ -15,14 +15,13 @@ public interface OptionBuyOrderEventRepository extends CrudRepository<OptionBuyO
 	
 	@Query("SELECT oboe FROM OptionBuyOrderEvent oboe "
 			+ "where oboe.event_type = "+"'NEW'"
-			+ " and oboe.curr_time = (select max(curr_time) from OptionBuyOrderEvent"
-			+ ")")
+			+ " and oboe.curr_time = (select max(curr_time) from OptionBuyOrderEvent)"
+			)
 	List<OptionBuyOrderEvent> findNewOrderEvents();
 
 
 	@Query("SELECT oboe FROM OptionBuyOrderEvent oboe "
 			+ "where oboe.event_type = "+"'MOD'"
-			+ " and oboe.curr_time = (select max(curr_time) from OptionBuyOrderEvent"
-			+ ")")
+			+ " and oboe.curr_time = (select max(curr_time) from OptionBuyOrderEvent)")
 	List<OptionBuyOrderEvent> findModifyOrderEvents();
 }

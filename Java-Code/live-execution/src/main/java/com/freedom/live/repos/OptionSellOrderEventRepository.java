@@ -13,16 +13,16 @@ import com.freedom.live.models.OptionSellOrderEvent;
 @Transactional
 public interface OptionSellOrderEventRepository extends CrudRepository<OptionSellOrderEvent, Long> { 
 	
-	@Query("SELECT oboe FROM OptionSellOrderEvent oboe "
-			+ "where oboe.event_type = "+"'NEW'"
-			+ " and oboe.curr_time = (select max(curr_time) from OptionSellOrderEvent"
-			+ ")")
+	@Query("SELECT osoe FROM OptionSellOrderEvent osoe "
+			+ "where osoe.event_type = "+"'NEW'"
+			// + " and osoe.curr_time = (select max(curr_time) from OptionSellOrderEvent)"
+			)
 	List<OptionSellOrderEvent> findNewOrderEvents();
 
 
-	@Query("SELECT oboe FROM OptionSellOrderEvent oboe "
-			+ "where oboe.event_type = "+"'MOD'"
-			+ " and oboe.curr_time = (select max(curr_time) from OptionSellOrderEvent"
-			+ ")")
+	@Query("SELECT osoe FROM OptionSellOrderEvent osoe "
+			+ "where osoe.event_type = "+"'MOD'"
+			+ " and osoe.curr_time = (select max(curr_time) from OptionSellOrderEvent)"
+			)
 	List<OptionSellOrderEvent> findModifyOrderEvents();
 }
