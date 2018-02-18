@@ -113,7 +113,7 @@ public class LiveOrderExecutionService {
 
 			// order time deviation assumed to be 5 seconds max
 
-			// if (maxRecordTime.isAfter(targetCycleTime.minusSeconds(5)))
+			if (maxRecordTime.isAfter(targetCycleTime.minusSeconds(5)))
 			{
 
 				isBuyOrdersHandledProperly = false;
