@@ -295,7 +295,7 @@ CREATE TABLE `option_buy_order` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=786877 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -318,7 +318,7 @@ CREATE TABLE `option_buy_order_cancelled` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=786877 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -404,7 +404,7 @@ CREATE TABLE `option_position` (
   `buy_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `sell_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`position_id`,`buy_time`,`sell_time`)
-) ENGINE=InnoDB AUTO_INCREMENT=14313405 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=567575786 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -427,7 +427,7 @@ CREATE TABLE `option_sell_order` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=112 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=114 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -505,7 +505,7 @@ CREATE TABLE `option_stop_loss_order_price` (
   `buy_price` float DEFAULT NULL,
   `sl_price` float NOT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1118 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1120 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1761,6 +1761,9 @@ if(time(CURRENT_TIME_IN) > time(TEXT_NEW_BUY_ORDER_TIME)) then
 CALL SYNC_NEW_BUY_ORDER_POSITIONS(CURRENT_TIME_IN);
 
 CALL SYNC_OLD_BUY_ORDER_POSITIONS(CURRENT_TIME_IN);
+
+CALL SYNC_SELL_ORDER_POSITIONS(CURRENT_TIME_IN);
+
 
 END IF;
 
@@ -5892,6 +5895,13 @@ IF(IS_SL_ORDER_TRIGGER = 0) THEN
 
 END IF;
 
+-- For Logging Partial Order Fulfilment
+
+
+update option_sell_order
+set no_of_lots = NO_OF_LOTS_IN,
+quantity = QUANTITY_IN
+where order_id = VAR_ORDER_ID;
 
 -- For Logging Purposes - to log that this price was changed to efficient price
 
@@ -7022,7 +7032,9 @@ and b.isExecuted = 0;
     If( VAR_QUANTITY >= VAR_ORIGINAL_QUANTITY) then
 
 
-    update option_buy_order set isExecuted = 1
+    update option_buy_order set isExecuted = 1,
+    filled_quantity = VAR_QUANTITY,
+    remaining_quantity =  0
     where symbol = VAR_SYMBOL
     and option_type = VAR_OPTION_TYPE and option_strike_price = VAR_OPTION_STRIKE_PRICE;
 
@@ -7036,9 +7048,9 @@ and b.isExecuted = 0;
     VAR_QUANTITY,CALCULATED_SELL_PRICE,0,CURRENT_TIME_IN,0);
 
         update option_stop_loss_order_price set sl_price = round_price_value(VAR_BUY_PRICE * 0.9)
-    where symbol = SYMBOL_IN
-    and option_type = OPTION_TYPE_IN
-    and option_strike_price = OPTION_STRIKE_PRICE_IN;
+    where symbol = VAR_SYMBOL
+    and option_type = VAR_OPTION_TYPE
+    and option_strike_price = VAR_OPTION_STRIKE_PRICE;
 
 
     else
@@ -7067,9 +7079,9 @@ and b.isExecuted = 0;
     VAR_QUANTITY,CALCULATED_SELL_PRICE,0,CURRENT_TIME_IN,0);
 
         update option_stop_loss_order_price set sl_price = round_price_value(VAR_BUY_PRICE * 0.9)
-    where symbol = SYMBOL_IN
-    and option_type = OPTION_TYPE_IN
-    and option_strike_price = OPTION_STRIKE_PRICE_IN;
+    where symbol = VAR_SYMBOL
+    and option_type = VAR_OPTION_TYPE
+    and option_strike_price = VAR_OPTION_STRIKE_PRICE;
 
 
     end if;
@@ -7176,7 +7188,7 @@ and b.isExecuted = 0;
 
       REPLACE INTO option_buy_order_event
       (
-        SELECT order_id,symbol,time_in,option_type,option_strike_price,
+        SELECT order_id,symbol,CURRENT_TIME_IN,option_type,option_strike_price,
         buy_price,no_of_lots,quantity,'CANCL',0 FROM option_buy_order WHERE
         order_id = PENDING_BUY_ORDER_ID
       );
@@ -7189,8 +7201,11 @@ and b.isExecuted = 0;
         FROM option_buy_order WHERE order_id = PENDING_BUY_ORDER_ID
         );
 
+
+/*
       delete from option_buy_order
       where order_id = PENDING_BUY_ORDER_ID;
+*/
 
     END IF;
 
@@ -7388,4 +7403,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-19 21:27:41
+-- Dump completed on 2018-02-19 23:46:06
