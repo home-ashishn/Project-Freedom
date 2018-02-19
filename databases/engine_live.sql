@@ -66,7 +66,7 @@ CREATE TABLE `live_data` (
   `volume` int(11) DEFAULT NULL,
   `price` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=80275 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -110,7 +110,7 @@ CREATE TABLE `live_option_price_data` (
   `bid_quantity_2` int(11) DEFAULT NULL,
   `offer_quantity_2` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14033 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -183,7 +183,7 @@ CREATE TABLE `log_messages` (
   `source` varchar(100) DEFAULT NULL,
   `message` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=116 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -224,7 +224,7 @@ CREATE TABLE `negative_price_trend_data` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=177 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -249,7 +249,7 @@ CREATE TABLE `negative_price_trend_data_for_sell_order` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -295,7 +295,7 @@ CREATE TABLE `option_buy_order` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -318,7 +318,7 @@ CREATE TABLE `option_buy_order_cancelled` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14313350 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -389,23 +389,22 @@ DROP TABLE IF EXISTS `option_position`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `option_position` (
-  `order_id` int(11) NOT NULL AUTO_INCREMENT,
+  `position_id` int(11) NOT NULL AUTO_INCREMENT,
   `symbol` varchar(45) NOT NULL,
   `option_type` varchar(2) NOT NULL,
   `option_strike_price` float NOT NULL,
   `buy_price` float NOT NULL,
   `no_of_lots` int(11) DEFAULT NULL,
-  `quantity` int(11) DEFAULT NULL,
-  `exchange_order_id` int(11) DEFAULT NULL,
-  `filled_quantity` int(11) DEFAULT NULL,
-  `remaining_quantity` int(11) DEFAULT NULL,
-  `total_buy_price` float NOT NULL,
-  `sell_price` float DEFAULT NULL,
-  `total_sell_price` float DEFAULT NULL,
+  `buy_quantity` int(11) DEFAULT '0',
+  `exchange_order_id` varchar(20) DEFAULT NULL,
+  `sell_quantity` int(11) DEFAULT '0',
+  `total_buy_price` double NOT NULL,
+  `sell_price` float DEFAULT '0',
+  `total_sell_price` double DEFAULT '0',
   `buy_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `sell_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`order_id`,`buy_time`,`sell_time`)
-) ENGINE=InnoDB AUTO_INCREMENT=14313404 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`position_id`,`buy_time`,`sell_time`)
+) ENGINE=InnoDB AUTO_INCREMENT=14313405 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -428,7 +427,7 @@ CREATE TABLE `option_sell_order` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=112 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -506,7 +505,7 @@ CREATE TABLE `option_stop_loss_order_price` (
   `buy_price` float DEFAULT NULL,
   `sl_price` float NOT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1110 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1118 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -531,7 +530,7 @@ CREATE TABLE `positive_price_trend_data` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2904 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2994 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -556,7 +555,7 @@ CREATE TABLE `positive_price_trend_data_for_sell_order` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2994 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1736,6 +1735,42 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `CHECK_AND_SYNC_POSITIONS` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `CHECK_AND_SYNC_POSITIONS`(
+CURRENT_TIME_IN DATETIME)
+BEGIN
+
+
+DECLARE TEXT_NEW_BUY_ORDER_TIME VARCHAR(100) DEFAULT '2018-01-21 09:30:00';
+
+SELECT  text_param_value FROM trading_parameters WHERE param_id = 'NEW_BUY_ORDER_TIME'
+INTO TEXT_NEW_BUY_ORDER_TIME;
+
+if(time(CURRENT_TIME_IN) > time(TEXT_NEW_BUY_ORDER_TIME)) then
+
+
+CALL SYNC_NEW_BUY_ORDER_POSITIONS(CURRENT_TIME_IN);
+
+CALL SYNC_OLD_BUY_ORDER_POSITIONS(CURRENT_TIME_IN);
+
+END IF;
+
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `CHECK_NEGATIVE_PRICE_TREND_FOR_SET_RANGE` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -1768,7 +1803,7 @@ B.CURR_TIME >= DATE_SUB(LATEST_TIME_POINT_IN, INTERVAL (ORDER_CYCLE_FREQUENCY_IN
 AND
 (A.curr_time < B.curr_time
 AND A.curr_time >= DATE_SUB(B.curr_time, INTERVAL (3600 * THRESHOLD_VALUE_PCT_IN) SECOND))
-AND B.price <= (A.price * ( - THRESHOLD_VALUE_REAL_IN));
+AND B.price <= (A.price * (1 - THRESHOLD_VALUE_REAL_IN));
 
   OPEN CURSOR_TREND;
   BEGIN
@@ -3770,7 +3805,7 @@ replace INTO option_position
     FINAL_BUY_PRICE,
     no_of_lots,
     quantity,
-    exchange_order_id,quantity,0, FINAL_BUY_PRICE*quantity,0,0,
+    exchange_order_id,quantity, FINAL_BUY_PRICE*quantity,0,0,
     time_in,time_in FROM option_buy_order
 where symbol = VAR_SYMBOL
 and option_type = VAR_OPTION_TYPE and option_strike_price = VAR_OPTION_STRIKE_PRICE );
@@ -4543,10 +4578,10 @@ replace into live_option_price_data_archive( SELECT * FROM live_option_price_dat
 
 
 delete from  live_data_archive
-where date(curr_time) < date_sub(DATE_REFERENCE_IN,interval 6 day);
+where date(curr_time) < date_sub(DATE_REFERENCE_IN,interval 8 day);
 
 delete from  live_option_price_data_archive
-where date(curr_time) < date_sub(DATE_REFERENCE_IN,interval 6 day);
+where date(curr_time) < date_sub(DATE_REFERENCE_IN,interval 8 day);
 
 
 /*
@@ -6244,7 +6279,7 @@ DECLARE IS_DUMMY_OPTION_DATA BOOLEAN DEFAULT FALSE;
 
 
 
-SET DATE_REFERENCE = '2018-02-14';
+SET DATE_REFERENCE = '2018-02-02';
 
 SET DAY_START_REFERENCE = CONCAT(DATE(DATE_REFERENCE),' 09:15:00');
 
@@ -6812,9 +6847,367 @@ IF(IS_DUMMY_CYCLE) THEN
 
   CALL DUMMY_CHECK_POSITIONS(CURRENT_TIME_IN,INTERVAL_SECONDS_IN);
 
+ELSE
+
+CALL CHECK_AND_SYNC_POSITIONS(CURRENT_TIME_IN);
+
 END IF;
 
 CALL SLOW_STOP_LOSS_TRIGGER(CURRENT_TIME_IN,INTERVAL_SECONDS_IN);
+
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `SYNC_NEW_BUY_ORDER_POSITIONS` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SYNC_NEW_BUY_ORDER_POSITIONS`(
+CURRENT_TIME_IN DATETIME)
+BEGIN
+
+
+DECLARE VAR_OPTION_TYPE varchar(2);
+DECLARE VAR_OPTION_STRIKE_PRICE FLOAT;
+DECLARE VAR_NO_OF_LOTS INT;
+DECLARE VAR_QUANTITY INT;
+
+DECLARE VAR_BUY_PRICE FLOAT;
+
+DECLARE VAR_ORIGINAL_QUANTITY INT;
+
+
+
+DECLARE cursor_OPTION_POSITIONS_TO_SYNC CURSOR FOR
+SELECT a.symbol,a.option_type,a.option_strike_price,a.no_of_lots,
+a.buy_quantity,a.buy_price FROM option_position a
+where not exists
+(select * from option_sell_order b
+where a.symbol = b.symbol
+and a.option_type = b.option_type
+and a.option_strike_price = b.option_strike_price);
+
+  OPEN cursor_OPTION_POSITIONS_TO_SYNC;
+  BEGIN
+    DECLARE VAR_SYMBOL varchar(20);
+
+    DECLARE EXIT HANDLER FOR NOT FOUND BEGIN CLOSE cursor_OPTION_POSITIONS_TO_SYNC; END;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN CLOSE cursor_OPTION_POSITIONS_TO_SYNC; RESIGNAL; END;
+    LOOP
+      FETCH cursor_OPTION_POSITIONS_TO_SYNC INTO VAR_SYMBOL,VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE,
+                      VAR_NO_OF_LOTS,VAR_QUANTITY,VAR_BUY_PRICE;
+
+
+    IF(VAR_NO_OF_LOTS = NULL) THEN
+
+           SET VAR_NO_OF_LOTS = 0;
+
+    END IF;
+
+    select quantity from option_buy_order
+    where  symbol = VAR_SYMBOL
+    and option_type = VAR_OPTION_TYPE
+    and option_strike_price =  VAR_OPTION_STRIKE_PRICE
+    into VAR_ORIGINAL_QUANTITY;
+
+    If( VAR_QUANTITY >= VAR_ORIGINAL_QUANTITY) then
+
+
+    update option_buy_order set isExecuted = 1
+    where symbol = VAR_SYMBOL
+    and option_type = VAR_OPTION_TYPE and option_strike_price = VAR_OPTION_STRIKE_PRICE;
+
+    ELSE
+
+    update option_buy_order set filled_quantity = VAR_QUANTITY,
+    remaining_quantity =  (VAR_ORIGINAL_QUANTITY -  VAR_QUANTITY)
+    where symbol = VAR_SYMBOL
+    and option_type = VAR_OPTION_TYPE and option_strike_price = VAR_OPTION_STRIKE_PRICE;
+
+    end if;
+
+    /* ALSO SET NEW LOT SIZE AND QUANTITY FROM FILLED QUANTITY */
+
+    CALL PUT_NEW_OPTION_SELL_ORDER_EVENT(VAR_SYMBOL,VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE,VAR_NO_OF_LOTS,
+    VAR_QUANTITY,VAR_BUY_PRICE,CURRENT_TIME_IN);
+
+
+    END LOOP;
+  END;
+
+
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `SYNC_OLD_BUY_ORDER_POSITIONS` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SYNC_OLD_BUY_ORDER_POSITIONS`(
+CURRENT_TIME_IN DATETIME)
+BEGIN
+
+
+DECLARE VAR_OPTION_TYPE varchar(2);
+DECLARE VAR_OPTION_STRIKE_PRICE FLOAT;
+DECLARE VAR_NO_OF_LOTS INT;
+DECLARE VAR_QUANTITY INT;
+
+DECLARE VAR_BUY_PRICE FLOAT;
+
+DECLARE VAR_ORIGINAL_QUANTITY INT;
+
+DECLARE VAR_ORIGINAL_FILLED_QUANTITY INT;
+
+DECLARE CALCULATED_SELL_PRICE FLOAT DEFAULT 0;
+
+DECLARE VAR_INITIAL_TARGET_PROFIT_FACTOR FLOAT DEFAULT 1.15;
+
+-- DECLARE VAR_EFFICIENT_ORDER_PRICE FLOAT;
+
+
+
+DECLARE cursor_OPTION_POSITIONS_TO_SYNC CURSOR FOR
+SELECT a.symbol,a.option_type,a.option_strike_price,a.no_of_lots,
+a.buy_quantity,a.buy_price FROM option_position a,option_buy_order b
+where a.symbol = b.symbol
+and a.option_type = b.option_type
+and a.option_strike_price = b.option_strike_price
+and b.isExecuted = 0;
+
+  OPEN cursor_OPTION_POSITIONS_TO_SYNC;
+  BEGIN
+    DECLARE VAR_SYMBOL varchar(20);
+
+    DECLARE EXIT HANDLER FOR NOT FOUND BEGIN CLOSE cursor_OPTION_POSITIONS_TO_SYNC; END;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN CLOSE cursor_OPTION_POSITIONS_TO_SYNC; RESIGNAL; END;
+    LOOP
+      FETCH cursor_OPTION_POSITIONS_TO_SYNC INTO VAR_SYMBOL,VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE,
+                      VAR_NO_OF_LOTS,VAR_QUANTITY,VAR_BUY_PRICE;
+
+
+    IF(VAR_NO_OF_LOTS = NULL) THEN
+
+           SET VAR_NO_OF_LOTS = 0;
+
+    END IF;
+
+    select quantity from option_buy_order
+    where  symbol = VAR_SYMBOL
+    and option_type = VAR_OPTION_TYPE
+    and option_strike_price =  VAR_OPTION_STRIKE_PRICE
+    into VAR_ORIGINAL_QUANTITY;
+
+
+    If( VAR_QUANTITY >= VAR_ORIGINAL_QUANTITY) then
+
+
+    update option_buy_order set isExecuted = 1
+    where symbol = VAR_SYMBOL
+    and option_type = VAR_OPTION_TYPE and option_strike_price = VAR_OPTION_STRIKE_PRICE;
+
+
+    SELECT  param_value FROM trading_parameters WHERE param_id = 'INITIAL_TARGET_PROFIT_FACTOR'
+    INTO VAR_INITIAL_TARGET_PROFIT_FACTOR;
+
+    SET CALCULATED_SELL_PRICE = round_price_value(VAR_BUY_PRICE * VAR_INITIAL_TARGET_PROFIT_FACTOR);
+
+    CALL PUT_MODIFY_OPTION_SELL_ORDER_EVENT(VAR_SYMBOL,VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE,VAR_NO_OF_LOTS,
+    VAR_QUANTITY,CALCULATED_SELL_PRICE,0,CURRENT_TIME_IN,0);
+
+        update option_stop_loss_order_price set sl_price = round_price_value(VAR_BUY_PRICE * 0.9)
+    where symbol = SYMBOL_IN
+    and option_type = OPTION_TYPE_IN
+    and option_strike_price = OPTION_STRIKE_PRICE_IN;
+
+
+    else
+
+
+    select filled_quantity from option_buy_order
+    where  symbol = VAR_SYMBOL
+    and option_type = VAR_OPTION_TYPE
+    and option_strike_price =  VAR_OPTION_STRIKE_PRICE
+    into VAR_ORIGINAL_FILLED_QUANTITY;
+
+    If( VAR_QUANTITY > VAR_ORIGINAL_FILLED_QUANTITY) then
+
+     update option_buy_order set filled_quantity = VAR_QUANTITY,
+    remaining_quantity =  (VAR_ORIGINAL_QUANTITY -  VAR_QUANTITY)
+    where symbol = VAR_SYMBOL
+    and option_type = VAR_OPTION_TYPE and option_strike_price = VAR_OPTION_STRIKE_PRICE;
+
+    SELECT  param_value FROM trading_parameters WHERE param_id = 'INITIAL_TARGET_PROFIT_FACTOR'
+    INTO VAR_INITIAL_TARGET_PROFIT_FACTOR;
+
+
+     SET CALCULATED_SELL_PRICE = round_price_value(VAR_BUY_PRICE * VAR_INITIAL_TARGET_PROFIT_FACTOR);
+
+    CALL PUT_MODIFY_OPTION_SELL_ORDER_EVENT(VAR_SYMBOL,VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE,VAR_NO_OF_LOTS,
+    VAR_QUANTITY,CALCULATED_SELL_PRICE,0,CURRENT_TIME_IN,0);
+
+        update option_stop_loss_order_price set sl_price = round_price_value(VAR_BUY_PRICE * 0.9)
+    where symbol = SYMBOL_IN
+    and option_type = OPTION_TYPE_IN
+    and option_strike_price = OPTION_STRIKE_PRICE_IN;
+
+
+    end if;
+
+
+
+
+    end if;
+
+
+
+
+    END LOOP;
+  END;
+
+
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `SYNC_SELL_ORDER_POSITIONS` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SYNC_SELL_ORDER_POSITIONS`(
+CURRENT_TIME_IN DATETIME)
+BEGIN
+
+
+DECLARE VAR_OPTION_TYPE varchar(2);
+DECLARE VAR_OPTION_STRIKE_PRICE FLOAT;
+DECLARE VAR_NO_OF_LOTS INT;
+DECLARE VAR_QUANTITY INT;
+
+DECLARE VAR_SELL_PRICE FLOAT;
+
+DECLARE VAR_ORIGINAL_QUANTITY INT;
+
+DECLARE PENDING_BUY_ORDER_ID INT;
+
+
+
+
+DECLARE cursor_OPTION_POSITIONS_TO_SYNC CURSOR FOR
+SELECT a.symbol,a.option_type,a.option_strike_price,a.no_of_lots,
+a.sell_quantity,a.sell_price FROM option_position a
+,option_sell_order b
+where 
+a.sell_quantity > 0
+and a.symbol = b.symbol
+and a.option_type = b.option_type
+and a.option_strike_price = b.option_strike_price
+and b.isExecuted = 0;
+
+  OPEN cursor_OPTION_POSITIONS_TO_SYNC;
+  BEGIN
+    DECLARE VAR_SYMBOL varchar(20);
+
+    DECLARE EXIT HANDLER FOR NOT FOUND BEGIN CLOSE cursor_OPTION_POSITIONS_TO_SYNC; END;
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN CLOSE cursor_OPTION_POSITIONS_TO_SYNC; RESIGNAL; END;
+    LOOP
+      FETCH cursor_OPTION_POSITIONS_TO_SYNC INTO VAR_SYMBOL,VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE,
+                      VAR_NO_OF_LOTS,VAR_QUANTITY,VAR_SELL_PRICE;
+
+
+    IF(VAR_NO_OF_LOTS = NULL) THEN
+
+           SET VAR_NO_OF_LOTS = 0;
+
+    END IF;
+
+
+    select quantity from option_sell_order
+    where  symbol = VAR_SYMBOL
+    and option_type = VAR_OPTION_TYPE
+    and option_strike_price =  VAR_OPTION_STRIKE_PRICE
+    into VAR_ORIGINAL_QUANTITY;
+
+    If( VAR_QUANTITY >= VAR_ORIGINAL_QUANTITY) then
+
+
+    update option_sell_order set isExecuted = 1
+    where symbol = VAR_SYMBOL
+    and option_type = VAR_OPTION_TYPE and option_strike_price = VAR_OPTION_STRIKE_PRICE;
+
+    select order_id from  option_buy_order
+    where symbol = VAR_SYMBOL
+    and option_type = VAR_OPTION_TYPE and option_strike_price = VAR_OPTION_STRIKE_PRICE
+    and isExecuted = 0
+    INTO PENDING_BUY_ORDER_ID;
+
+
+    IF(PENDING_BUY_ORDER_ID IS NOT NULL) THEN
+
+
+      REPLACE INTO option_buy_order_event
+      (
+        SELECT order_id,symbol,time_in,option_type,option_strike_price,
+        buy_price,no_of_lots,quantity,'CANCL',0 FROM option_buy_order WHERE
+        order_id = PENDING_BUY_ORDER_ID
+      );
+
+
+
+      REPLACE INTO option_buy_order_cancelled
+      (
+      SELECT *
+        FROM option_buy_order WHERE order_id = PENDING_BUY_ORDER_ID
+        );
+
+      delete from option_buy_order
+      where order_id = PENDING_BUY_ORDER_ID;
+
+    END IF;
+
+
+
+    ELSE
+
+    update option_sell_order set filled_quantity = VAR_QUANTITY,
+    remaining_quantity =  (VAR_ORIGINAL_QUANTITY -  VAR_QUANTITY)
+    where symbol = VAR_SYMBOL
+    and option_type = VAR_OPTION_TYPE and option_strike_price = VAR_OPTION_STRIKE_PRICE;
+
+    end if;
+
+    END LOOP;
+  END;
+
 
 
 END ;;
@@ -6995,4 +7388,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-15 17:08:16
+-- Dump completed on 2018-02-19 21:27:41

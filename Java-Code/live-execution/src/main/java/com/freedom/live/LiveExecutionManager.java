@@ -55,7 +55,10 @@ public class LiveExecutionManager {
 	 @Autowired 
 	 private LiveStockPriceExtractor liveStockPriceExtractor;
 	  
-	 
+
+	 @Autowired
+	 private LivePositionSyncService livePositionSyncService;
+
 	private String requestToken = "ir5btzkokgeodqwsw0ynk9ru4mow0g15";
 
 	private KiteConnect kiteConnect;
@@ -100,7 +103,7 @@ public class LiveExecutionManager {
 
 		liveOrderExecutionService.setMapInstrumentToTradingSymbol(mapInstrumentToTradingSymbol);
 
-		
+		livePositionSyncService.setMapTokensToInstrument(mapTokensToInstrument);
 		
 		nseInstruments = kiteConnect.getInstruments("NSE");
 		
@@ -155,9 +158,11 @@ public class LiveExecutionManager {
 		  
 		  // liveStockPriceExtractor.kiteConnect = kiteConnect;
 
-		liveOptionPriceExtractor.setKiteConnect(kiteConnect);
+		// liveOptionPriceExtractor.setKiteConnect(kiteConnect);
 		
 		liveOrderExecutionService.setKiteConnect(kiteConnect);
+		
+		livePositionSyncService.setKiteConnect(kiteConnect);
 
 	}
 
