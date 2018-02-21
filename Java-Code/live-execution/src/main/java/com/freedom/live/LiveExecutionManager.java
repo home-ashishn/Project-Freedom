@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.joda.time.DateTime;
 import org.json.JSONException;
@@ -59,7 +63,9 @@ public class LiveExecutionManager {
 	 @Autowired
 	 private LivePositionSyncService livePositionSyncService;
 
-	private String requestToken = "ir5btzkokgeodqwsw0ynk9ru4mow0g15";
+	private String requestToken = "v0c8x9mckmvkn1bt7jzz8wt1zbu5cfgo";
+	
+	private boolean askForUserToken = true;
 
 	private KiteConnect kiteConnect;
 
@@ -142,17 +148,29 @@ public class LiveExecutionManager {
 		// Set request token and public token which are obtained from login
 		// process.
 
-/*		
+
+		if(askForUserToken)
+		{
 		  UserModel userModel = kiteConnect.requestAccessToken(requestToken,
 		  "zyj7ezutg4dl5rm3m7wj86gfmylye9w9");
 		  
 		 kiteConnect.setAccessToken(userModel.accessToken);
-		  kiteConnect.setPublicToken(userModel.publicToken);
-		  
-*/		 
+		 kiteConnect.setPublicToken(userModel.publicToken);
+		 
+		 sop(" userModel.accessToken = "+userModel.accessToken);
+		 
+		 sop(" userModel.publicToken = "+userModel.publicToken);
 
-		kiteConnect.setAccessToken("rorr294b9vo339ogprw99gs2nomxmqfo");
-		kiteConnect.setPublicToken("c797318ecc2a818d4f6e4d5dd3e4dc47");
+		 return;
+		}
+		  
+		else
+		{
+
+		kiteConnect.setAccessToken("pjsmz6jxyadb904189z96ohxvxhfi5hg");
+		kiteConnect.setPublicToken("1e13538af4786edcb345bdfc5d748b90");
+		
+		}
 
 		
 		  
@@ -169,8 +187,33 @@ public class LiveExecutionManager {
 	public void manageExecution() throws Exception, KiteException {
 
 		init();
+		
+		ThreadPoolExecutor executor = new ThreadPoolExecutor(3, 5, 0L, TimeUnit.MILLISECONDS,
+				new LinkedBlockingQueue<Runnable>());
+		
+		Callable<?> callableROS = new Callable<Object>() {
+			public String call() throws Exception {
+				liveOrderExecutionService.runOrderService();
+				return "";
+			}
 
-		liveOrderExecutionService.runOrderService();
+		};
+
+		executor.submit(callableROS);
+
+		Callable<?> callableRSS = new Callable<Object>() {
+			public String call() throws Exception {
+				livePositionSyncService.runSyncService();
+				return "";
+			}
+
+		};
+
+		executor.submit(callableRSS);
+
+
+		
+		
 
 		boolean isValidRange = true; // checkTimeRange(); // true;
 

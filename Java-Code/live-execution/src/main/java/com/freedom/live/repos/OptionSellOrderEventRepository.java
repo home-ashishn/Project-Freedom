@@ -22,7 +22,13 @@ public interface OptionSellOrderEventRepository extends CrudRepository<OptionSel
 
 	@Query("SELECT osoe FROM OptionSellOrderEvent osoe "
 			+ "where osoe.event_type = "+"'MOD'"
-			+ " and osoe.curr_time = (select max(curr_time) from OptionSellOrderEvent)"
+			// + " and osoe.curr_time = (select max(curr_time) from OptionSellOrderEvent)"
 			)
 	List<OptionSellOrderEvent> findModifyOrderEvents();
+	
+	@Query("SELECT osoe FROM OptionSellOrderEvent osoe "
+			+ "where osoe.event_type = "+"'CANCL'"
+			// + " and osoe.curr_time = (select max(curr_time) from OptionSellOrderEvent)"
+			)
+	List<OptionSellOrderEvent> findCancelOrderEvents();
 }

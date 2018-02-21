@@ -2,6 +2,8 @@ package com.freedom.live.models;
 
 import java.io.Serializable;
 
+import javax.persistence.Id;
+
 import org.joda.time.DateTime;
 
 public class OptionSellOrderEventId implements Serializable{
@@ -16,6 +18,8 @@ public class OptionSellOrderEventId implements Serializable{
 	private int order_id;
 
 	private DateTime curr_time;
+	
+	private String event_type;
 
 	public int getOrder_id() {
 		return order_id;
@@ -31,6 +35,14 @@ public class OptionSellOrderEventId implements Serializable{
 
 	public void setCurr_time(DateTime curr_time) {
 		this.curr_time = curr_time;
+	}
+
+	public String getEvent_type() {
+		return event_type;
+	}
+
+	public void setEvent_type(String event_type) {
+		this.event_type = event_type;
 	}
 
 }

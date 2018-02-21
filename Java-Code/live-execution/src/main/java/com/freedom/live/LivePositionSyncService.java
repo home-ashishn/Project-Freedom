@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,13 +26,21 @@ public class LivePositionSyncService {
 	@Autowired
 	private OptionPositionRepository optionPositionRepository;
 
-	public void runOrderService() throws InterruptedException {
+	public void runSyncService() throws InterruptedException {
 
 		while (true) {
+			
+			try
+			{
 
 			syncPositions();
 
-			Thread.sleep(1000);
+			Thread.sleep(60000);
+			
+			}	
+			catch(Exception e){
+				
+			}
 
 		}
 
@@ -63,8 +72,10 @@ public class LivePositionSyncService {
 	private OptionPosition convertToPositionRecord(Position position) {
 
 		String tokenForPosition = position.instrumentToken;
+		
+		Long longToken = new Long(tokenForPosition);
 
-		SelectedInstrument instrument = mapTokensToInstrument.get(tokenForPosition);
+		SelectedInstrument instrument = mapTokensToInstrument.get(longToken);
 
 		if (instrument == null)
 
@@ -89,6 +100,11 @@ public class LivePositionSyncService {
 		optionPosition.setSell_price(position.sellPrice.floatValue());
 
 		optionPosition.setSell_quantity(position.sellQuantity);
+		
+		optionPosition.setTotal_sell_price(position.sellValue);
+
+		
+		// optionPosition.setBuy_time(new DateTime());
 
 		return optionPosition;
 	}

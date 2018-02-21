@@ -1,5 +1,7 @@
 package com.freedom.live.models;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -9,15 +11,16 @@ import org.joda.time.DateTime;
 
 @Entity
 @Table(name = "option_position")
-public class OptionPosition {
+@IdClass(OptionPositiontId.class)
+public class OptionPosition{
 
 	@Id
-	private int position_id;
-
 	private String symbol;	
 	
+	@Id
 	private String option_type;
 
+	@Id
 	private float option_strike_price;
 	
 	private float buy_price;
@@ -40,13 +43,6 @@ public class OptionPosition {
 
 	private DateTime sell_time;
 
-	public int getPosition_id() {
-		return position_id;
-	}
-
-	public void setPosition_id(int position_id) {
-		this.position_id = position_id;
-	}
 
 	public String getSymbol() {
 		return symbol;

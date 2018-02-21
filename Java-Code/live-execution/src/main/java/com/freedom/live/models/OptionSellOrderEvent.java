@@ -30,6 +30,7 @@ public class OptionSellOrderEvent {
 
 	private int quantity;
 
+	@Id
 	private String event_type;
 
 	private boolean is_event_handled;

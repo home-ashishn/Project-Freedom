@@ -16,6 +16,9 @@ public class OptionBuyOrderEventId implements Serializable{
 	private int order_id;
 
 	private DateTime curr_time;
+	
+	private String event_type;
+
 
 	public int getOrder_id() {
 		return order_id;
@@ -31,6 +34,14 @@ public class OptionBuyOrderEventId implements Serializable{
 
 	public void setCurr_time(DateTime curr_time) {
 		this.curr_time = curr_time;
+	}
+
+	public String getEvent_type() {
+		return event_type;
+	}
+
+	public void setEvent_type(String event_type) {
+		this.event_type = event_type;
 	}
 
 }

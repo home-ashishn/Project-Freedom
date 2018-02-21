@@ -113,8 +113,7 @@ public class LiveOrderExecutionService {
 
 			// order time deviation assumed to be 5 seconds max
 
-			if (maxRecordTime.isAfter(targetCycleTime.minusSeconds(5)))
-			{
+			if (maxRecordTime.isAfter(targetCycleTime.minusSeconds(5))) {
 
 				isBuyOrdersHandledProperly = false;
 
@@ -136,7 +135,7 @@ public class LiveOrderExecutionService {
 
 				makeOrderCallables(executor);
 
-				// liveProcessStatusRecordRepository.save(lsrLast);
+				Thread.sleep(5000);
 
 				isTargetCycleTimeDone = false;
 
@@ -194,6 +193,8 @@ public class LiveOrderExecutionService {
 
 		placeBuyOrdersModification();
 
+		placeBuyOrdersCancellation();
+
 	}
 
 	private void placeNewBuyOrders() {
@@ -243,7 +244,7 @@ public class LiveOrderExecutionService {
 				put("exchange", "NFO");
 				put("validity", "DAY");
 				put("order_type", "LIMIT");
-				put("product", "MIS");
+				put("product", "NRML");
 			}
 		};
 
@@ -282,7 +283,32 @@ public class LiveOrderExecutionService {
 			OptionBuyOrderEvent optionBuyOrderEvent = (OptionBuyOrderEvent) iterator.next();
 			if (!optionBuyOrderEvent.isIs_event_handled()) {
 
-				placeModifyBuyOrder(optionBuyOrderEvent);
+				try {
+					placeModifyBuyOrder(optionBuyOrderEvent);
+					optionBuyOrderEvent.setIs_event_handled(true);
+
+				} catch (Exception e) {
+
+				}
+
+			}
+
+		}
+
+		optionBuyOrderEventRepository.save(listNew);
+
+	}
+
+	private void placeBuyOrdersCancellation() {
+
+		List<OptionBuyOrderEvent> listNew = optionBuyOrderEventRepository.findCancelOrderEvents();
+
+		for (Iterator<OptionBuyOrderEvent> iterator = listNew.iterator(); iterator.hasNext();) {
+
+			OptionBuyOrderEvent optionBuyOrderEvent = (OptionBuyOrderEvent) iterator.next();
+			if (!optionBuyOrderEvent.isIs_event_handled()) {
+
+				placeCancelBuyOrder(optionBuyOrderEvent);
 
 				optionBuyOrderEvent.setIs_event_handled(true);
 			}
@@ -312,7 +338,7 @@ public class LiveOrderExecutionService {
 				put("exchange", "NFO");
 				put("validity", "DAY");
 				put("order_type", "LIMIT");
-				put("product", "MIS");
+				put("product", "NRML");
 			}
 		};
 
@@ -322,7 +348,38 @@ public class LiveOrderExecutionService {
 
 		Order order11 = null;
 		try {
-			order11 = kiteConnect.modifyOrder(orderId, param11, "regular");
+			if (orderId != null) {
+				order11 = kiteConnect.modifyOrder(orderId, param11, "regular");
+			}
+		} catch (Exception e) {
+
+			isBuyOrdersHandledProperly = false;
+			e.printStackTrace();
+		} catch (KiteException e) {
+			isBuyOrdersHandledProperly = false;
+			e.printStackTrace();
+		}
+		if (order11 != null) {
+
+			System.out.println(" Modify Buy Order placed for " + symbol + " " + optionType + " " + optionStrikePrice
+					+ ", order id = " + order11.orderId);
+		}
+
+	}
+
+	private void placeCancelBuyOrder(OptionBuyOrderEvent optionBuyOrderEvent) {
+
+		String symbol = optionBuyOrderEvent.getSymbol();
+		String optionType = optionBuyOrderEvent.getOption_type();
+		float optionStrikePrice = optionBuyOrderEvent.getOption_strike_price();
+
+		String orderId = "";
+
+		orderId = optionBuyOrderInformationRepository.findOrderIdByCombination(symbol, optionType, optionStrikePrice);
+
+		Order order11 = null;
+		try {
+			order11 = kiteConnect.cancelOrder(orderId, "regular");
 		} catch (JSONException | KiteException e) {
 
 			isBuyOrdersHandledProperly = false;
@@ -330,8 +387,7 @@ public class LiveOrderExecutionService {
 		}
 		if (order11 != null) {
 
-			System.out.println(" Modify Buy Order placed for " + symbol + " "
-					+ optionType + " " + optionStrikePrice
+			System.out.println(" Cancel Buy Order placed for " + symbol + " " + optionType + " " + optionStrikePrice
 					+ ", order id = " + order11.orderId);
 		}
 
@@ -342,7 +398,10 @@ public class LiveOrderExecutionService {
 		isSellOrdersHandledProperly = true;
 
 		placeNewSellOrders();
+
 		placeSellOrdersModification();
+
+		placeSellOrdersCancellation();
 
 	}
 
@@ -381,7 +440,6 @@ public class LiveOrderExecutionService {
 
 		String tradingSymbolKey = symbol + optionType + optionStrikePrice;
 
-
 		String tradingSymbol = mapInstrumentToTradingSymbol.get(tradingSymbolKey);
 
 		Map<String, Object> param11 = new HashMap<String, Object>() {
@@ -393,7 +451,7 @@ public class LiveOrderExecutionService {
 				put("exchange", "NFO");
 				put("validity", "DAY");
 				put("order_type", "LIMIT");
-				put("product", "MIS");
+				put("product", "NRML");
 			}
 		};
 
@@ -443,6 +501,26 @@ public class LiveOrderExecutionService {
 
 	}
 
+	private void placeSellOrdersCancellation() {
+
+		List<OptionSellOrderEvent> listNew = optionSellOrderEventRepository.findCancelOrderEvents();
+
+		for (Iterator<OptionSellOrderEvent> iterator = listNew.iterator(); iterator.hasNext();) {
+
+			OptionSellOrderEvent optionSellOrderEvent = (OptionSellOrderEvent) iterator.next();
+			if (!optionSellOrderEvent.isIs_event_handled()) {
+
+				placeCancelSellOrder(optionSellOrderEvent);
+
+				optionSellOrderEvent.setIs_event_handled(true);
+			}
+
+		}
+
+		optionSellOrderEventRepository.save(listNew);
+
+	}
+
 	private void placeModifySellOrder(OptionSellOrderEvent optionSellOrderEvent) {
 
 		String symbol = optionSellOrderEvent.getSymbol();
@@ -462,7 +540,7 @@ public class LiveOrderExecutionService {
 				put("exchange", "NFO");
 				put("validity", "DAY");
 				put("order_type", "LIMIT");
-				put("product", "MIS");
+				put("product", "NRML");
 			}
 		};
 
@@ -472,21 +550,48 @@ public class LiveOrderExecutionService {
 
 		Order order11 = null;
 		try {
-			order11 = kiteConnect.modifyOrder(orderId, param11, "regular");
+			if (orderId != null) {
+				order11 = kiteConnect.modifyOrder(orderId, param11, "regular");
+			}
 		} catch (JSONException | KiteException e) {
 
 			isSellOrdersHandledProperly = false;
 			e.printStackTrace();
 		}
-		
+
 		if (order11 != null) {
 
-			System.out.println(" Modify Sell Order placed for " + symbol + " "
-					+ optionType + " " + optionStrikePrice
+			System.out.println(" Modify Sell Order placed for " + symbol + " " + optionType + " " + optionStrikePrice
 					+ ", order id = " + order11.orderId);
 		}
-		
-		
+
+	}
+
+	private void placeCancelSellOrder(OptionSellOrderEvent optionSellOrderEvent) {
+
+		String symbol = optionSellOrderEvent.getSymbol();
+		String optionType = optionSellOrderEvent.getOption_type();
+		float optionStrikePrice = optionSellOrderEvent.getOption_strike_price();
+
+		String orderId = "";
+
+		orderId = optionSellOrderInformationRepository.findOrderIdByCombination(symbol, optionType, optionStrikePrice);
+
+		Order order11 = null;
+		try {
+			order11 = kiteConnect.cancelOrder(orderId, "regular");
+		} catch (JSONException | KiteException e) {
+
+			isSellOrdersHandledProperly = false;
+			e.printStackTrace();
+		}
+
+		if (order11 != null) {
+
+			System.out.println(" Cancel Sell Order placed for " + symbol + " " + optionType + " " + optionStrikePrice
+					+ ", order id = " + order11.orderId);
+		}
+
 	}
 
 	private void sop(String text) {
