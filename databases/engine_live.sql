@@ -6764,7 +6764,7 @@ and is_event_handled = 0;
       CALL PUT_MODIFY_OPTION_SELL_ORDER_EVENT
                         (VAR_SYMBOL,VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE,
                                            VAR_NO_OF_LOTS,VAR_QUANTITY,
-                                           NULL,VAR_SELL_PRICE,
+                                           VAR_SELL_PRICE, NULL,
                                            target_time_in,FALSE);
 
     END LOOP;
@@ -7113,7 +7113,7 @@ and b.isExecuted = 0;
     SET CALCULATED_SELL_PRICE = round_price_value(VAR_BUY_PRICE * VAR_INITIAL_TARGET_PROFIT_FACTOR);
 
     CALL PUT_MODIFY_OPTION_SELL_ORDER_EVENT(VAR_SYMBOL,VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE,VAR_NO_OF_LOTS,
-    VAR_QUANTITY,CALCULATED_SELL_PRICE,0,CURRENT_TIME_IN,0);
+    VAR_QUANTITY,CALCULATED_SELL_PRICE,NULL,CURRENT_TIME_IN,0);
 
         update option_stop_loss_order_price set sl_price = round_price_value(VAR_BUY_PRICE * 0.9)
     where symbol = VAR_SYMBOL
@@ -7144,7 +7144,7 @@ and b.isExecuted = 0;
      SET CALCULATED_SELL_PRICE = round_price_value(VAR_BUY_PRICE * VAR_INITIAL_TARGET_PROFIT_FACTOR);
 
     CALL PUT_MODIFY_OPTION_SELL_ORDER_EVENT(VAR_SYMBOL,VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE,VAR_NO_OF_LOTS,
-    VAR_QUANTITY,CALCULATED_SELL_PRICE,0,CURRENT_TIME_IN,0);
+    VAR_QUANTITY,CALCULATED_SELL_PRICE,NULL,CURRENT_TIME_IN,0);
 
         update option_stop_loss_order_price set sl_price = round_price_value(VAR_BUY_PRICE * 0.9)
     where symbol = VAR_SYMBOL
@@ -7471,4 +7471,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-21 18:19:37
+-- Dump completed on 2018-02-21 18:27:01
