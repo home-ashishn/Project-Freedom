@@ -1508,6 +1508,17 @@ DECLARE LATEST_OPTION_OFFER2_PRICE_QUANTITY INT(11);
 
 DECLARE LATEST_OPTION_BID1_PRICE FLOAT(6,2);
 
+DECLARE ORIGINAL_BUY_PRICE FLOAT(6,2);
+
+
+
+select buy_price from option_position
+where symbol = SYMBOL_IN
+and option_type = OPTION_TYPE_IN
+and option_strike_price = OPTION_STRIKE_PRICE_IN
+into ORIGINAL_BUY_PRICE;
+
+
 
 
 SET ORDER_PRICE_IN = round_price_value(ORDER_PRICE_IN);
@@ -1545,6 +1556,13 @@ SET EFFICIENT_ORDER_PRICE_OUT =  GREATEST(LATEST_OPTION_BID1_PRICE,LATEST_OPTION
 IF(LATEST_OPTION_OFFER1_PRICE > (EFFICIENT_ORDER_PRICE_OUT * 1.04)) THEN
 
 SET EFFICIENT_ORDER_PRICE_OUT =  LATEST_OPTION_OFFER1_PRICE;
+
+END IF;
+
+
+IF(EFFICIENT_ORDER_PRICE_OUT < (ORIGINAL_BUY_PRICE * 0.8)) THEN
+
+SET EFFICIENT_ORDER_PRICE_OUT =  ORIGINAL_BUY_PRICE * 0.9;
 
 END IF;
 
@@ -1595,6 +1613,12 @@ AND (LATEST_OPTION_OFFER1_PRICE_QUANTITY <  QUANTITY_IN) ) THEN
 
 SET EFFICIENT_ORDER_PRICE_OUT =  LATEST_OPTION_OFFER2_PRICE;
 
+IF(EFFICIENT_ORDER_PRICE_OUT < (ORIGINAL_BUY_PRICE * 0.8)) THEN
+
+SET EFFICIENT_ORDER_PRICE_OUT =  ORIGINAL_BUY_PRICE * 0.9;
+
+END IF;
+
 LEAVE  proc_ceSop;
 
 
@@ -1618,6 +1642,12 @@ IF( LATEST_OPTION_OFFER1_PRICE_QUANTITY <  QUANTITY_IN) THEN
 
 SET EFFICIENT_ORDER_PRICE_OUT =  LATEST_OPTION_OFFER1_PRICE;
 
+IF(EFFICIENT_ORDER_PRICE_OUT < (ORIGINAL_BUY_PRICE * 0.8)) THEN
+
+SET EFFICIENT_ORDER_PRICE_OUT =  ORIGINAL_BUY_PRICE * 0.9;
+
+END IF;
+
 LEAVE  proc_ceSop;
 
 END IF;
@@ -1632,7 +1662,11 @@ SET EFFICIENT_ORDER_PRICE_OUT = LATEST_OPTION_PRICE;
 
 END IF;
 
+IF(EFFICIENT_ORDER_PRICE_OUT < (ORIGINAL_BUY_PRICE * 0.8)) THEN
 
+SET EFFICIENT_ORDER_PRICE_OUT =  ORIGINAL_BUY_PRICE * 0.9;
+
+END IF;
 
 
 END ;;
@@ -4611,6 +4645,14 @@ delete from  live_option_price_data_archive
 where date(curr_time) < date_sub(DATE_REFERENCE_IN,interval 8 day);
 
 
+DELETE FROM  option_buy_order_log
+where date(update_time) < date_sub(DATE_REFERENCE_IN,interval 8 day);
+
+DELETE FROM  option_sell_order_log
+where date(update_time) < date_sub(DATE_REFERENCE_IN,interval 8 day);
+
+
+
 /*
 delete from  live_process_status_record_archive
 where date(curr_time) < date_sub(DATE_REFERENCE_IN,interval 6 day);
@@ -4976,13 +5018,13 @@ END IF;
 
 
 DELETE FROM  option_buy_order_event where date(curr_time) < date(START_TIME_IN);
-DELETE FROM  option_buy_order_log where date(update_time) < date(START_TIME_IN);
+-- DELETE FROM  option_buy_order_log where date(update_time) < date(START_TIME_IN);
 DELETE FROM  positive_price_trend_data where date(curr_time) < date(START_TIME_IN);
 DELETE FROM  positive_price_trend_data_log where date(curr_time) < date(START_TIME_IN);
 DELETE FROM  negative_price_trend_data where date(curr_time) < date(START_TIME_IN);
 DELETE FROM  negative_price_trend_data_log where date(curr_time) < date(START_TIME_IN);
 DELETE FROM  option_sell_order_event where date(curr_time) < date(START_TIME_IN);
-DELETE FROM  option_sell_order_log where date(update_time) < date(START_TIME_IN);
+-- DELETE FROM  option_sell_order_log where date(update_time) < date(START_TIME_IN);
 DELETE FROM option_position where date(buy_time) < date(START_TIME_IN);
 DELETE FROM negative_price_trend_data_for_sell_order where date(curr_time) < date(START_TIME_IN);
 DELETE FROM positive_price_trend_data_for_sell_order where date(curr_time) < date(START_TIME_IN);
@@ -5140,7 +5182,8 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `LIVE_DATA_EXECUTION_MASTER`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `LIVE_DATA_EXECUTION_MASTER`(
+IS_DUMMY_EXECUTION BOOLEAN)
 proc_ldem : BEGIN
 
 DECLARE DATE_REFERENCE DATE DEFAULT CURDATE();
@@ -5179,7 +5222,7 @@ DECLARE VAR_TARGET_NEXT_START_TIME DATETIME;
 DECLARE TEXT_NEW_BUY_ORDER_TIME VARCHAR(100) DEFAULT '2018-01-21 09:30:00';
 
 
-DECLARE IS_DUMMY_EXECUTION BOOLEAN DEFAULT FALSE;
+-- DECLARE IS_DUMMY_EXECUTION BOOLEAN DEFAULT FALSE;
 
 
 DECLARE IS_PROCESS_ALREADY_RUNNING BOOLEAN DEFAULT NULL;
@@ -7473,4 +7516,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-21 18:46:36
+-- Dump completed on 2018-02-21 23:31:10
