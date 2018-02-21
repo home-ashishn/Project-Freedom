@@ -66,7 +66,7 @@ CREATE TABLE `live_data` (
   `volume` int(11) DEFAULT NULL,
   `price` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=38233 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -110,7 +110,7 @@ CREATE TABLE `live_option_price_data` (
   `bid_quantity_2` int(11) DEFAULT NULL,
   `offer_quantity_2` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12244 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12232 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -295,7 +295,7 @@ CREATE TABLE `option_buy_order` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=786905 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -318,7 +318,7 @@ CREATE TABLE `option_buy_order_cancelled` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=786903 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -425,8 +425,9 @@ CREATE TABLE `option_sell_order` (
   `exchange_order_id` int(11) DEFAULT NULL,
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
+  `is_market_order_hit` tinyint(4) DEFAULT '0',
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=143 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6564565 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -504,7 +505,7 @@ CREATE TABLE `option_stop_loss_order_price` (
   `buy_price` float DEFAULT NULL,
   `sl_price` float NOT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1149 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1122 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -4424,7 +4425,7 @@ END IF;
 
 SELECT last_price FROM live_option_price_data where symbol = SYMBOL_IN
 and option_type = OPTION_TYPE_IN and option_strike_price = OPTION_STRIKE_PRICE_IN
-and curr_time < time_in and curr_time > DATE_SUB(time_in, INTERVAL 300 SECOND)
+and curr_time < time_in and curr_time > DATE_SUB(time_in, INTERVAL 60 SECOND)
 order by curr_time desc
 limit 1
 INTO VAR_LAST_PRICE;
@@ -4433,6 +4434,13 @@ INTO VAR_LAST_PRICE;
 IF(TARGET_STRENGTH > 2.5) THEN
 
 SET  TARGET_SELL_PRICE = 0;
+
+update option_sell_order
+set is_market_order_hit = 1
+where symbol = SYMBOL_IN
+and option_type = OPTION_TYPE_IN
+and option_strike_price = OPTION_STRIKE_PRICE_IN;
+
 
 ELSE  IF(TARGET_STRENGTH > 1.25) THEN
 
@@ -5884,6 +5892,11 @@ DECLARE VAR_CONVENTIONAL_SL_PRICE FLOAT;
 
 DECLARE VAR_FINAL_SL_PRICE FLOAT;
 
+DECLARE VAR_IS_MARKET_ORDER_HIT BOOLEAN;
+
+DECLARE VAR_IS_FAVOURABLE_TREND BOOLEAN;
+
+
 
 
 
@@ -5896,15 +5909,46 @@ END IF;
 set MODIFIED_PRICE = round_price_value(MODIFIED_PRICE);
 
 
-SELECT order_id,sell_price FROM option_sell_order
+SELECT order_id,sell_price, is_market_order_hit FROM option_sell_order
 where symbol = SYMBOL_IN
 and option_type = OPTION_TYPE_IN
 and option_strike_price = OPTION_STRIKE_PRICE_IN
-INTO VAR_ORDER_ID, VAR_INITIAL_ORDER_PRICE ;
+INTO VAR_ORDER_ID, VAR_INITIAL_ORDER_PRICE,VAR_IS_MARKET_ORDER_HIT ;
+
+
+-- IF A MARKET ORDER WAS HIT  THEN ONLY 2 CONDITIONS ALLOW UPDATE OF THE ORDER
+
+
+IF  (VAR_IS_MARKET_ORDER_HIT) THEN
+
+SET VAR_IS_FAVOURABLE_TREND  = (VAR_PRICE_CHANGE_FACTOR IS NOT NULL AND VAR_PRICE_CHANGE_FACTOR > 0);
+
+IF(VAR_IS_FAVOURABLE_TREND IS NULL ) THEN
+
+SET VAR_IS_FAVOURABLE_TREND = FALSE;
+
+END IF;
+
+-- IF THIS CALL IS NOT BECAUSE OF A FAVOURABLE TREND, THEN IGNORE PRICE UPDATE
+
+-- IF THIS CALL IS NOT BECAUSE OF ANOTHER MARKET ORDER, THEN IGNORE PRICE UPDATE
+
+
+IF NOT ((VAR_IS_FAVOURABLE_TREND) OR (MODIFIED_PRICE <= 0.05)) THEN
+
+LEAVE proc_pmosoe;
+
+END IF;
+
+
+END IF;
+
+
+-- THIS CALL IS  BECAUSE OF A FAVOURABLE TREND -- START
 
 IF(IS_SL_ORDER_TRIGGER = 0) THEN
 
-  IF(VAR_PRICE_CHANGE_FACTOR IS NOT NULL OR VAR_PRICE_CHANGE_FACTOR > 0) THEN
+  IF(VAR_PRICE_CHANGE_FACTOR IS NOT NULL AND VAR_PRICE_CHANGE_FACTOR > 0) THEN
 
     update option_stop_loss_order_price set sl_price = round_price_value(sl_price * VAR_PRICE_CHANGE_FACTOR)
     where symbol = SYMBOL_IN
@@ -5914,6 +5958,9 @@ IF(IS_SL_ORDER_TRIGGER = 0) THEN
   END IF;
 
 END IF;
+
+-- THIS CALL IS  BECAUSE OF A FAVOURABLE TREND -- END
+
 
 -- For Logging Partial Order Fulfilment
 
@@ -5962,6 +6009,7 @@ SET VAR_EFFICIENT_ORDER_PRICE = round_price_value(VAR_EFFICIENT_ORDER_PRICE);
 
 
 -- UPDATE SL PRICE TO AN EFFICIEMT CALCULATED VALUE AS BELOW -- START
+
 IF(IS_SL_ORDER_TRIGGER = 1) THEN
 
 
@@ -6229,7 +6277,7 @@ END IF;
 INSERT INTO option_sell_order
 VALUES
 (NULL,SYMBOL_IN,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,CALCULATED_SELL_PRICE,NO_OF_LOTS_IN,QUANTITY_IN,0,
-0,0,QUANTITY_IN);
+0,0,QUANTITY_IN,0);
 
 
 SET GENERATED_ORDER_ID =  LAST_INSERT_ID();
@@ -7423,4 +7471,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-21 16:44:34
+-- Dump completed on 2018-02-21 18:19:37
