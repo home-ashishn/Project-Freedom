@@ -4641,9 +4641,10 @@ END IF;
 
 SELECT MAX(order_id) from option_buy_order into MAX_ID;
 
-delete from option_buy_order;
 
 IF(MAX_ID > 9999999999) THEN
+
+delete from option_buy_order;
 
 ALTER TABLE option_buy_order AUTO_INCREMENT =1;
 
@@ -4652,9 +4653,10 @@ END IF;
 
 SELECT MAX(order_id) from option_sell_order into MAX_ID;
 
-delete from option_sell_order;
 
 IF(MAX_ID > 9999999999) THEN
+
+delete from option_sell_order;
 
 ALTER TABLE option_sell_order AUTO_INCREMENT =1;
 
@@ -7471,4 +7473,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-21 18:27:01
+-- Dump completed on 2018-02-21 18:46:36
