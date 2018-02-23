@@ -29,6 +29,7 @@ CREATE TABLE `basis_for_calls` (
   `curr_signal` tinyint(4) NOT NULL,
   `url` varchar(200) DEFAULT NULL,
   `confidence_level` float DEFAULT NULL,
+  `is_being_used` tinyint(4) NOT NULL DEFAULT '1',
   PRIMARY KEY (`symbol`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -48,6 +49,7 @@ CREATE TABLE `basis_for_calls_archive` (
   `curr_signal` tinyint(4) NOT NULL,
   `url` varchar(200) DEFAULT NULL,
   `confidence_level` float DEFAULT NULL,
+  `is_being_used` tinyint(4) NOT NULL DEFAULT '1',
   PRIMARY KEY (`symbol`,`curr_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -66,7 +68,7 @@ CREATE TABLE `live_data` (
   `volume` int(11) DEFAULT NULL,
   `price` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=60797 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -110,7 +112,7 @@ CREATE TABLE `live_option_price_data` (
   `bid_quantity_2` int(11) DEFAULT NULL,
   `offer_quantity_2` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12232 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=41985 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -183,7 +185,7 @@ CREATE TABLE `log_messages` (
   `source` varchar(100) DEFAULT NULL,
   `message` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=143 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=163 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -198,6 +200,8 @@ CREATE TABLE `market_day_events_status` (
   `is_day_init_done` tinyint(4) DEFAULT NULL,
   `is_market_opening_done` tinyint(4) DEFAULT NULL,
   `is_new_orders_done` tinyint(4) DEFAULT NULL,
+  `is_first_optimization_done` tinyint(4) DEFAULT NULL,
+  `is_second_optimization_done` tinyint(4) DEFAULT NULL,
   PRIMARY KEY (`curr_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -224,7 +228,7 @@ CREATE TABLE `negative_price_trend_data` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=244 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=338 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -249,7 +253,7 @@ CREATE TABLE `negative_price_trend_data_for_sell_order` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=332 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -295,7 +299,7 @@ CREATE TABLE `option_buy_order` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -318,7 +322,7 @@ CREATE TABLE `option_buy_order_cancelled` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -427,7 +431,7 @@ CREATE TABLE `option_sell_order` (
   `remaining_quantity` int(11) DEFAULT NULL,
   `is_market_order_hit` tinyint(4) DEFAULT '0',
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6564565 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6564569 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -505,7 +509,7 @@ CREATE TABLE `option_stop_loss_order_price` (
   `buy_price` float DEFAULT NULL,
   `sl_price` float NOT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1122 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1126 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -530,7 +534,7 @@ CREATE TABLE `positive_price_trend_data` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3044 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3157 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -555,7 +559,7 @@ CREATE TABLE `positive_price_trend_data_for_sell_order` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3040 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3154 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -598,8 +602,8 @@ CREATE TABLE `selected_instrument` (
   `last_implied_volatility` float DEFAULT NULL,
   `expiry_factor_quotient` float NOT NULL DEFAULT '1',
   `url` varchar(500) NOT NULL,
-  `expiry_date_full` varchar(45) DEFAULT '2018-02-22',
-  `expiry_date_prefix` varchar(45) DEFAULT '18FEB',
+  `expiry_date_full` varchar(45) DEFAULT '2018-03-28',
+  `expiry_date_prefix` varchar(45) DEFAULT '18MAR',
   PRIMARY KEY (`symbol`,`option_type`,`option_strike_price`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1432,6 +1436,7 @@ IF( (LATEST_OPTION_BID2_PRICE_QUANTITY <  QUANTITY_IN) AND
 
 SET EFFICIENT_ORDER_PRICE_OUT =  LATEST_OPTION_BID2_PRICE;
 
+
 LEAVE  proc_cebop;
 
 
@@ -1466,6 +1471,14 @@ SET EFFICIENT_ORDER_PRICE_OUT = LATEST_OPTION_PRICE;
 
 END IF;
 
+
+-- IF BID - OFFER SPREAD IS MORE THEN OPTMIZE TOWARDS LOWER PRICE
+
+IF(LATEST_OPTION_BID1_PRICE < (EFFICIENT_ORDER_PRICE_OUT * 1.01)) THEN
+
+SET EFFICIENT_ORDER_PRICE_OUT =  LATEST_OPTION_BID1_PRICE;
+
+END IF;
 
 
 
@@ -1507,16 +1520,6 @@ DECLARE LATEST_OPTION_OFFER1_PRICE_QUANTITY INT(11);
 DECLARE LATEST_OPTION_OFFER2_PRICE_QUANTITY INT(11);
 
 DECLARE LATEST_OPTION_BID1_PRICE FLOAT(6,2);
-
-DECLARE ORIGINAL_BUY_PRICE FLOAT(6,2);
-
-
-
-select buy_price from option_position
-where symbol = SYMBOL_IN
-and option_type = OPTION_TYPE_IN
-and option_strike_price = OPTION_STRIKE_PRICE_IN
-into ORIGINAL_BUY_PRICE;
 
 
 
@@ -1560,11 +1563,6 @@ SET EFFICIENT_ORDER_PRICE_OUT =  LATEST_OPTION_OFFER1_PRICE;
 END IF;
 
 
-IF(EFFICIENT_ORDER_PRICE_OUT < (ORIGINAL_BUY_PRICE * 0.8)) THEN
-
-SET EFFICIENT_ORDER_PRICE_OUT =  ORIGINAL_BUY_PRICE * 0.9;
-
-END IF;
 
 
 LEAVE  proc_ceSop;
@@ -1603,7 +1601,7 @@ END IF;
 IF( EFFICIENT_ORDER_PRICE_OUT <  LATEST_OPTION_OFFER2_PRICE) THEN
 
 /*
-IF OFFER QUANTITY IS LESS THEN MOVE PRICE UP TO BID PRICE AS THE
+IF OFFER QUANTITY IS LESS THEN MOVE PRICE UP TO OFFER PRICE AS THE
 RESISTANCE IS WEAK AT OFFER PRICE.
 
 */
@@ -1613,11 +1611,6 @@ AND (LATEST_OPTION_OFFER1_PRICE_QUANTITY <  QUANTITY_IN) ) THEN
 
 SET EFFICIENT_ORDER_PRICE_OUT =  LATEST_OPTION_OFFER2_PRICE;
 
-IF(EFFICIENT_ORDER_PRICE_OUT < (ORIGINAL_BUY_PRICE * 0.8)) THEN
-
-SET EFFICIENT_ORDER_PRICE_OUT =  ORIGINAL_BUY_PRICE * 0.9;
-
-END IF;
 
 LEAVE  proc_ceSop;
 
@@ -1630,7 +1623,7 @@ END IF;
 IF( EFFICIENT_ORDER_PRICE_OUT <   LATEST_OPTION_OFFER1_PRICE) THEN
 
 /*
-IF OFFER QUANTITY IS LESS THEN MOVE PRICE UP TO BID PRICE AS THE
+IF OFFER QUANTITY IS LESS THEN MOVE PRICE DOWN TO OFFER PRICE AS THE
 RESISTANCE IS WEAK AT OFFER PRICE.
 
 ALSO BOTH OFFER QUANTITIES SHOULD BE LESS FOR THE PRICE TO HIT THE ORDER
@@ -1642,11 +1635,6 @@ IF( LATEST_OPTION_OFFER1_PRICE_QUANTITY <  QUANTITY_IN) THEN
 
 SET EFFICIENT_ORDER_PRICE_OUT =  LATEST_OPTION_OFFER1_PRICE;
 
-IF(EFFICIENT_ORDER_PRICE_OUT < (ORIGINAL_BUY_PRICE * 0.8)) THEN
-
-SET EFFICIENT_ORDER_PRICE_OUT =  ORIGINAL_BUY_PRICE * 0.9;
-
-END IF;
 
 LEAVE  proc_ceSop;
 
@@ -1662,11 +1650,6 @@ SET EFFICIENT_ORDER_PRICE_OUT = LATEST_OPTION_PRICE;
 
 END IF;
 
-IF(EFFICIENT_ORDER_PRICE_OUT < (ORIGINAL_BUY_PRICE * 0.8)) THEN
-
-SET EFFICIENT_ORDER_PRICE_OUT =  ORIGINAL_BUY_PRICE * 0.9;
-
-END IF;
 
 
 END ;;
@@ -2547,7 +2530,7 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `CHECK_PRICE_TREND_CYCLE`(
 test_time_in datetime)
 BEGIN
 DECLARE symbol_CN CURSOR FOR
-select symbol from basis_for_calls;
+select symbol from basis_for_calls where is_being_used = 1;
 
   OPEN symbol_CN;
   BEGIN
@@ -2871,7 +2854,15 @@ SET FINAL_MIN_LAST_PRICE = round_price_value(FINAL_MIN_LAST_PRICE);
 
 IF(FINAL_MIN_LAST_PRICE < VAR_SL_PRICE) THEN
 
-IF (FINAL_MIN_LAST_PRICE <=  VAR_BUY_PRICE * 0.85) THEN
+IF(FINAL_MIN_LAST_PRICE > (VAR_BUY_PRICE * 1.3)) THEN
+
+SET TARGET_SELL_PRICE = 0.05;
+
+ELSE IF(FINAL_MIN_LAST_PRICE >= VAR_BUY_PRICE) THEN
+
+SET TARGET_SELL_PRICE = FINAL_MIN_LAST_PRICE;
+
+ELSE IF (FINAL_MIN_LAST_PRICE <=  VAR_BUY_PRICE * 0.85) THEN
 
 SET TARGET_SELL_PRICE = VAR_BUY_PRICE * 0.9;
 
@@ -2884,6 +2875,11 @@ END IF;
 END IF;
 
 END IF;
+
+END IF;
+
+END IF;
+
 
 IF(TARGET_SELL_PRICE > 0) THEN
 
@@ -3039,7 +3035,7 @@ DELIMITER ;
 /*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `COMPLETE_ORDER_CYCLE`(
-DUMMY_CURRENT_TIME datetime,
+CURRENT_TIME_IN datetime,
 INTERVAL_SECONDS_IN INT,
 IS_DUMMY_CYCLE BOOLEAN)
 BEGIN
@@ -3048,30 +3044,79 @@ DECLARE TEXT_NEW_BUY_ORDER_TIME VARCHAR(100) DEFAULT '2018-01-21 09:30:00';
 
 DECLARE VAR_IS_NEW_ORDERS_DONE BOOLEAN DEFAULT FALSE;
 
+/*
+
+DECLARE TEXT_FIRST_MARGIN_OPTIMIZATION_TIME VARCHAR(100) DEFAULT '2018-01-21 12:30:00';
+
+DECLARE VAR_IS_FIRST_MARGIN_OPTIMIZATION_DONE BOOLEAN DEFAULT FALSE;
+
+DECLARE TEXT_SECOND_MARGIN_OPTIMIZATION_TIME VARCHAR(100) DEFAULT '2018-01-21 13:30:00';
+
+DECLARE VAR_IS_SECOND_MARGIN_OPTIMIZATION_DONE BOOLEAN DEFAULT FALSE;
+
+*/
 
 SELECT  text_param_value FROM trading_parameters WHERE param_id = 'NEW_BUY_ORDER_TIME'
 INTO TEXT_NEW_BUY_ORDER_TIME;
 
 select is_new_orders_done from market_day_events_status where
-curr_date = date(DUMMY_CURRENT_TIME) into VAR_IS_NEW_ORDERS_DONE;
+curr_date = date(CURRENT_TIME_IN) into VAR_IS_NEW_ORDERS_DONE;
+
+/*
+
+SELECT  text_param_value FROM trading_parameters WHERE param_id = 'FIRST_MARGIN_OPTIMIZATION_TIME'
+INTO TEXT_FIRST_MARGIN_OPTIMIZATION_TIME;
+
+SELECT  text_param_value FROM trading_parameters WHERE param_id = 'SECOND_MARGIN_OPTIMIZATION_TIME'
+INTO TEXT_SECOND_MARGIN_OPTIMIZATION_TIME;
+
+
+select is_first_optimization_done from market_day_events_status where
+curr_date = date(CURRENT_TIME_IN) into VAR_IS_FIRST_MARGIN_OPTIMIZATION_DONE;
+
+select is_second_optimization_done from market_day_events_status where
+curr_date = date(CURRENT_TIME_IN) into VAR_IS_SECOND_MARGIN_OPTIMIZATION_DONE;
+
+
+        IF(time(CURRENT_TIME_IN) >= time(TEXT_FIRST_MARGIN_OPTIMIZATION_TIME)
+        AND (!VAR_IS_FIRST_MARGIN_OPTIMIZATION_DONE)) THEN
+
+           CALL  MARGIN_OPTIMIZATION_CYCLE(1);
+
+          update market_day_events_status set is_first_optimization_done = 1
+          where curr_date =  date(CURRENT_TIME_IN);
+
+       END IF;
 
 
 
-       CALL CHECK_PRICE_TREND_CYCLE(DUMMY_CURRENT_TIME);
+        IF(time(CURRENT_TIME_IN) >= time(TEXT_SECOND_MARGIN_OPTIMIZATION_TIME)
+        AND (!VAR_IS_SECOND_MARGIN_OPTIMIZATION_DONE)) THEN
 
-       CALL SLOW_STOP_LOSS_TRIGGER_CYCLE(DUMMY_CURRENT_TIME,INTERVAL_SECONDS_IN,IS_DUMMY_CYCLE);
+           CALL  MARGIN_OPTIMIZATION_CYCLE(2);
 
-       CALL CHECK_ORDER_CYCLE(DUMMY_CURRENT_TIME);
+          update market_day_events_status set is_second_optimization_done = 1
+          where curr_date =  date(CURRENT_TIME_IN);
 
-       CALL FAST_STOP_LOSS_TRIGGER_CYCLE(DUMMY_CURRENT_TIME,INTERVAL_SECONDS_IN);
+       END IF;
+
+*/
+
+       CALL CHECK_PRICE_TREND_CYCLE(CURRENT_TIME_IN);
+
+       CALL SLOW_STOP_LOSS_TRIGGER_CYCLE(CURRENT_TIME_IN,INTERVAL_SECONDS_IN,IS_DUMMY_CYCLE);
+
+       CALL CHECK_ORDER_CYCLE(CURRENT_TIME_IN);
+
+       CALL FAST_STOP_LOSS_TRIGGER_CYCLE(CURRENT_TIME_IN,INTERVAL_SECONDS_IN);
 
 
-       IF(time(DUMMY_CURRENT_TIME) >= time(TEXT_NEW_BUY_ORDER_TIME) AND (!VAR_IS_NEW_ORDERS_DONE)) THEN
+       IF(time(CURRENT_TIME_IN) >= time(TEXT_NEW_BUY_ORDER_TIME) AND (!VAR_IS_NEW_ORDERS_DONE)) THEN
 
-       CALL  MARKET_NEW_ORDER_MASTER(DUMMY_CURRENT_TIME);
+       CALL  MARKET_NEW_ORDER_MASTER(CURRENT_TIME_IN);
 
           update market_day_events_status set is_new_orders_done = 1
-          where curr_date =  date(DUMMY_CURRENT_TIME);
+          where curr_date =  date(CURRENT_TIME_IN);
 
        END IF;
 
@@ -4411,11 +4456,13 @@ DECLARE VAR_LAST_ORDER_PRICE FLOAT;
 
 DECLARE TARGET_STRENGTH FLOAT DEFAULT 0;
 
-
-
 DECLARE TARGET_SELL_PRICE FLOAT DEFAULT NULL;
 
+DECLARE VAR_FAST_SL_TRIGGER_THRESHOLD FLOAT DEFAULT 0;
 
+
+SELECT  param_value FROM trading_parameters WHERE param_id = 'FAST_SL_TRIGGER_THRESHOLD'
+INTO VAR_FAST_SL_TRIGGER_THRESHOLD;
 
 IF(OPTION_TYPE_IN = 'CE') THEN
 
@@ -4465,18 +4512,11 @@ limit 1
 INTO VAR_LAST_PRICE;
 
 
-IF(TARGET_STRENGTH > 2.5) THEN
+IF(TARGET_STRENGTH > VAR_FAST_SL_TRIGGER_THRESHOLD) THEN
 
 SET  TARGET_SELL_PRICE = 0;
 
-update option_sell_order
-set is_market_order_hit = 1
-where symbol = SYMBOL_IN
-and option_type = OPTION_TYPE_IN
-and option_strike_price = OPTION_STRIKE_PRICE_IN;
-
-
-ELSE  IF(TARGET_STRENGTH > 1.25) THEN
+ELSE  IF(TARGET_STRENGTH > (VAR_FAST_SL_TRIGGER_THRESHOLD / 2)) THEN
 
   IF(VAR_LAST_PRICE >= BUY_PRICE_IN) THEN
 
@@ -4489,7 +4529,7 @@ ELSE  IF(TARGET_STRENGTH > 1.25) THEN
   END IF;
 
 
-ELSE  IF(TARGET_STRENGTH <= 1.25 AND TARGET_STRENGTH > 0) THEN
+ELSE  IF(TARGET_STRENGTH <= (VAR_FAST_SL_TRIGGER_THRESHOLD / 2) AND TARGET_STRENGTH > 0) THEN
 
   IF(VAR_LAST_PRICE >= BUY_PRICE_IN) THEN
 
@@ -4536,9 +4576,19 @@ time_in,
 1
 );
 
+
+
+IF(TARGET_STRENGTH > VAR_FAST_SL_TRIGGER_THRESHOLD) THEN
+
+update option_sell_order
+set is_market_order_hit = 1
+where symbol = SYMBOL_IN
+and option_type = OPTION_TYPE_IN
+and option_strike_price = OPTION_STRIKE_PRICE_IN;
+
 END IF;
 
--- END IF;
+END IF;
 
 
 
@@ -4935,6 +4985,26 @@ AND   max_strength < VAR_MAX_STRENGTH_IN;
 
     END LOOP;
   END;
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `GET_MARGIN_FOR_OPTIMIZATION` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GET_MARGIN_FOR_OPTIMIZATION`(
+OUT MARGIN_FOR_OPTIMIZATION FLOAT)
+BEGIN
 
 END ;;
 DELIMITER ;
@@ -5365,7 +5435,7 @@ IF(VAR_IS_DAY_INIT_DONE IS NULL OR !VAR_IS_DAY_INIT_DONE) THEN
 
   SET VAR_IS_DAY_INIT_DONE = 1;
 
-  REPLACE INTO market_day_events_status VALUES(DATE_REFERENCE,1,0,0);
+  REPLACE INTO market_day_events_status VALUES(DATE_REFERENCE,1,0,0,0,0);
 
 END IF;
 
@@ -5511,6 +5581,47 @@ WHERE curr_date = date(VAR_NOW_TIME);
 REPLACE INTO log_messages VALUES(null,NOW(),
                           concat('LIVE_DATA_EXECUTION_MASTER - ENDING - ', now())
                           , 'END');
+
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `MARGIN_OPTIMIZATION_CYCLE` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8 */ ;
+/*!50003 SET character_set_results = utf8 */ ;
+/*!50003 SET collation_connection  = utf8_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `MARGIN_OPTIMIZATION_CYCLE`(
+CYCLE_NO INT)
+BEGIN
+
+
+DECLARE MARGIN_FOR_OPTIMIZATION FLOAT DEFAULT 0;
+
+/*
+SELECT  a.symbol,a.option_type,a.option_strike_price,
+ a.buy_price,b.last_price,bid_price_1,b.curr_time from option_buy_order a, live_option_price_data b
+where 
+b.curr_time > date_sub(now(),interval 5 minute)
+and a.isExecuted = 0
+and a.symbol = b.symbol
+and a.option_type = b.option_type
+and a.option_strike_price = b.option_strike_price
+and a.buy_price > (b.bid_price_1 * 0.8)
+order by curr_time desc;
+
+
+CALL GET_MARGIN_FOR_OPTIMIZATION(MARGIN_FOR_OPTIMIZATION);
+
+*/
 
 
 END ;;
@@ -5757,6 +5868,12 @@ FROM option_buy_order WHERE isExecuted = 0
 DELETE FROM option_buy_order
 WHERE isExecuted = 0;
 
+update basis_for_calls a
+set is_being_used = 0
+where not exists
+(select * from option_buy_order b
+where a.symbol = b.symbol);
+
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -5941,7 +6058,15 @@ DECLARE VAR_IS_MARKET_ORDER_HIT BOOLEAN;
 
 DECLARE VAR_IS_FAVOURABLE_TREND BOOLEAN;
 
+DECLARE ORIGINAL_BUY_PRICE FLOAT(6,2);
 
+
+
+select buy_price from option_position
+where symbol = SYMBOL_IN
+and option_type = OPTION_TYPE_IN
+and option_strike_price = OPTION_STRIKE_PRICE_IN
+into ORIGINAL_BUY_PRICE;
 
 
 
@@ -5995,10 +6120,29 @@ IF(IS_SL_ORDER_TRIGGER = 0) THEN
 
   IF(VAR_PRICE_CHANGE_FACTOR IS NOT NULL AND VAR_PRICE_CHANGE_FACTOR > 0) THEN
 
-    update option_stop_loss_order_price set sl_price = round_price_value(sl_price * VAR_PRICE_CHANGE_FACTOR)
+    select sl_price from option_stop_loss_order_price
+    where symbol = SYMBOL_IN
+    and option_type = OPTION_TYPE_IN
+    and option_strike_price = OPTION_STRIKE_PRICE_IN
+    INTO VAR_FINAL_SL_PRICE;
+
+    SET VAR_FINAL_SL_PRICE = VAR_FINAL_SL_PRICE * VAR_PRICE_CHANGE_FACTOR;
+
+-- BELOW CODE TO KEEP SL PRICE TO RESEMBLE EFFICIENT BUY ORDER BECAUSE LOT OF EVENTS GET TRIGGERED WHEN SL IS BREACHED - START
+
+    CALL CALCULATE_EFFICIENT_BUY_ORDER_PRICE(SYMBOL_IN,OPTION_TYPE_IN,OPTION_STRIKE_PRICE_IN,
+    VAR_FINAL_SL_PRICE,QUANTITY_IN,time_in,VAR_EFFICIENT_ORDER_PRICE);
+
+-- BELOW CODE TO KEEP SL PRICE TO RESEMBLE EFFICIENT BUY ORDER BECAUSE LOT OF EVENTS GET TRIGGERED WHEN SL IS BREACHED - END
+
+
+
+
+    update option_stop_loss_order_price set sl_price = round_price_value(VAR_EFFICIENT_ORDER_PRICE)
     where symbol = SYMBOL_IN
     and option_type = OPTION_TYPE_IN
     and option_strike_price = OPTION_STRIKE_PRICE_IN;
+
 
   END IF;
 
@@ -6006,6 +6150,7 @@ END IF;
 
 -- THIS CALL IS  BECAUSE OF A FAVOURABLE TREND -- END
 
+SET VAR_EFFICIENT_ORDER_PRICE = NULL; -- RESET VAR_EFFICIENT_ORDER_PRICE VARIABLE FOR FUTURE USE
 
 -- For Logging Partial Order Fulfilment
 
@@ -6045,6 +6190,16 @@ SET  VAR_EFFICIENT_ORDER_PRICE =  MODIFIED_PRICE;
 
 END IF;
 
+
+END IF;
+
+
+
+-- IF SELL PRICE GOES BELOW 85 % TAKE IT BACK TO 90% -- NOT ACCEPTING MORE THAN 15% LOSS
+
+IF(VAR_EFFICIENT_ORDER_PRICE < (ORIGINAL_BUY_PRICE * 0.85)) THEN
+
+SET VAR_EFFICIENT_ORDER_PRICE =  (ORIGINAL_BUY_PRICE * 0.9);
 
 END IF;
 
@@ -7336,7 +7491,16 @@ and b.isExecuted = 0;
     END LOOP;
   END;
 
+ update basis_for_calls a
+set is_being_used = 0
+where not exists
+(select * from option_buy_order b
+where a.symbol = b.symbol);
 
+update basis_for_calls a,option_sell_order b
+set a.is_being_used = 0
+where a.symbol = b.symbol
+and b.isExecuted = 1;
 
 END ;;
 DELIMITER ;
@@ -7516,4 +7680,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-02-21 23:31:10
+-- Dump completed on 2018-02-23 17:33:34

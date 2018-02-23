@@ -65,7 +65,7 @@ public class LiveExecutionManager {
 
 	private String requestToken = "v0c8x9mckmvkn1bt7jzz8wt1zbu5cfgo";
 	
-	private boolean askForUserToken = true;
+	private boolean askForUserToken = false;
 
 	private KiteConnect kiteConnect;
 

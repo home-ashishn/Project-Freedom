@@ -114,7 +114,8 @@ public class LiveOptionPriceExtractor {
 		tickerProvider.setOnTickerArrivalListener(new OnTick() {
 			@Override
 			public void onTick(ArrayList<Tick> ticks) {
-				sop("ticks size = " + ticks.size() + " at current time = " + new DateTime());
+				sop("%%^^%% For Option Data, ticks size = " + ticks.size() + 
+						" at current time = " + new DateTime());
 
 				if (ticks.size() > 0) 
 				{
