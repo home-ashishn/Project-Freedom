@@ -43,8 +43,8 @@ volume_prev_day,
 prev_close,
 curr_signal,
 url,
-confidence_level FROM basis_for_calls_archive
-where curr_date = '2018-02-02' );
+confidence_level,is_being_used FROM basis_for_calls_archive
+where curr_date = '2018-02-23' );
 
 
 delete from selected_instrument;
@@ -59,7 +59,7 @@ margin_allowance,
 last_implied_volatility,
 expiry_factor_quotient,
 url,expiry_date_full,expiry_date_prefix FROM selected_instrument_archive 
-where curr_date = '2018-02-02');
+where curr_date = '2018-02-23');
 
 
 delete from basis_for_calls where symbol not in 
