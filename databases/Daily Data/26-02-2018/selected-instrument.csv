@@ -1,0 +1,9 @@
+symbol,option_type,option_strike_price,option_close_price,lot_size,margin_allowance,last_implied_volatility,expiry_factor_quotient,url,expiry_date_full,expiry_date_prefix
+INFY,CE,1180,18.1,600,12500,0,0,a,28-03-18,18-Mar
+RELIANCE,CE,980,8,1000,12500,0,0,a,28-03-18,18-Mar
+JINDALSTEL,CE,290,5.75,4500,12500,0,0,a,28-03-18,18-Mar
+LT,CE,1360,13.6,750,12500,0,0,a,28-03-18,18-Mar
+MARUTI,CE,9000,101.85,75,12500,0,0,a,28-03-18,18-Mar
+SUNPHARMA,CE,600,18.95,1100,12500,0,0,a,28-03-18,18-Mar
+TATASTEEL,CE,720,7.2,1061,12500,0,0,a,28-03-18,18-Mar
+TCS,CE,3300,19.25,250,12500,0,0,a,28-03-18,18-Mar

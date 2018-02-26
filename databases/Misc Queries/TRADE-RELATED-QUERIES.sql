@@ -1,5 +1,7 @@
 SELECT  a.symbol,a.option_type,a.option_strike_price,
- a.buy_price,b.last_price,bid_price_1,b.curr_time from option_buy_order a, live_option_price_data b
+ a.buy_price,b.last_price,bid_price_1,b.curr_time, 
+ (100 * (a.buy_price/bid_price_1)) 
+ from option_buy_order a, live_option_price_data b
 where 
 b.curr_time > date_sub((select max(curr_time) from live_process_status_record),interval 5 minute)
 and b.curr_time < date_sub((select max(curr_time) from live_process_status_record),interval 0 minute)
@@ -7,7 +9,7 @@ and a.isExecuted = 0
 and a.symbol = b.symbol
 and a.option_type = b.option_type
 and a.option_strike_price = b.option_strike_price
-and a.buy_price > (b.bid_price_1 * 0.8)
+and a.buy_price > (b.bid_price_1 * 0.75)
 order by curr_time desc;
 
 
@@ -30,8 +32,21 @@ from option_position a,selected_instrument b
 where a.symbol = b.symbol
 and a.option_type = b.option_type
 and a.option_strike_price = b.option_strike_price
-and a.buy_price > b.option_close_price;
+-- and a.buy_price > b.option_close_price
+;
 
+
+
+select a.symbol, a.option_type,a.option_strike_price,
+b.last_price, a.option_close_price 
+from selected_instrument a,live_option_price_data b
+where a.symbol = b.symbol
+and a.option_type = b.option_type
+and a.option_strike_price = b.option_strike_price
+and b.curr_time > date_sub((select max(curr_time) from live_process_status_record),interval 5 minute)
+and b.curr_time < date_sub((select max(curr_time) from live_process_status_record),interval 0 minute)
+-- and a.buy_price > b.option_close_price
+;
 
 
 

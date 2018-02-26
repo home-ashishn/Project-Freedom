@@ -40,6 +40,8 @@ public class LivePositionSyncService {
 			}	
 			catch(Exception e){
 				
+				e.printStackTrace();
+				
 			}
 
 		}
