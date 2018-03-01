@@ -21,7 +21,7 @@ IGNORE 1 LINES;
 
 delete from basis_for_calls;
 
-LOAD DATA LOCAL INFILE 'D:\\Project-Freedom\\databases\\Daily Data\\26-02-2018\\basis-for-calls.csv' 
+LOAD DATA LOCAL INFILE 'D:\\Project-Freedom\\databases\\Daily Data\\27-02-2018\\basis-for-calls.csv' 
 INTO TABLE basis_for_calls
 		FIELDS TERMINATED BY ','
         OPTIONALLY ENCLOSED BY '"'
@@ -31,11 +31,17 @@ IGNORE 1 LINES;
 
 delete from selected_instrument;
 
-LOAD DATA LOCAL INFILE 'D:\\Project-Freedom\\databases\\Daily Data\\26-02-2018\\selected-instrument.csv' 
+LOAD DATA LOCAL INFILE 'D:\\Project-Freedom\\databases\\Daily Data\\27-02-2018\\selected-instrument.csv' 
 INTO TABLE selected_instrument
 		FIELDS TERMINATED BY ','
         OPTIONALLY ENCLOSED BY '"'
 IGNORE 1 LINES;
+
+
+update selected_instrument set expiry_date_prefix = default,
+expiry_date_full = default;
+
+
 
 -- END
 
