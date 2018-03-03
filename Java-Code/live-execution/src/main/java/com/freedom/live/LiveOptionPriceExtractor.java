@@ -107,7 +107,22 @@ public class LiveOptionPriceExtractor {
 		tickerProvider.setOnDisconnectedListener(new OnDisconnect() {
 			@Override
 			public void onDisconnected() {
-				// your code goes here
+				
+				try {
+					tickerProvider.connect();
+					boolean isConnected = tickerProvider.isConnectionOpen();
+					System.out.println(isConnected);
+					tickerProvider.subscribe(tokens);
+					tickerProvider.setMode(tokens, KiteTicker.modeQuote);
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (WebSocketException e) {
+					e.printStackTrace();
+				} catch (KiteException e) {
+					e.printStackTrace();
+				}
+				
+				
 			}
 		});
 
