@@ -1,23 +1,7 @@
- -- declare date_ref varchar(20);
- -- BEGIN
-
--- declare date_ref varchar(20);
-
--- set @date_ref = '09-02-2018';
-
-LOAD DATA LOCAL INFILE 'D:\\Project-Freedom\\databases\\Daily Data\\20-02-2018\\live-stock-data.csv' 
-INTO TABLE live_data
-		FIELDS TERMINATED BY ','
-        OPTIONALLY ENCLOSED BY '"'
-IGNORE 1 LINES;
 
 
+set @date_ref = '05-03-2018';
 
-LOAD DATA LOCAL INFILE 'D:\\Project-Freedom\\databases\\Daily Data\\02-02-2018\\live-option-data.csv' 
-INTO TABLE live_option_price_data
-		FIELDS TERMINATED BY ','
-        OPTIONALLY ENCLOSED BY '"'
-IGNORE 1 LINES;
 
 delete from basis_for_calls;
 
@@ -48,3 +32,24 @@ expiry_date_full = default;
 
 
 
+
+
+
+
+
+
+/*
+LOAD DATA LOCAL INFILE 'D:\\Project-Freedom\\databases\\Daily Data\\20-02-2018\\live-stock-data.csv' 
+INTO TABLE live_data
+		FIELDS TERMINATED BY ','
+        OPTIONALLY ENCLOSED BY '"'
+IGNORE 1 LINES;
+
+
+
+LOAD DATA LOCAL INFILE 'D:\\Project-Freedom\\databases\\Daily Data\\02-02-2018\\live-option-data.csv' 
+INTO TABLE live_option_price_data
+		FIELDS TERMINATED BY ','
+        OPTIONALLY ENCLOSED BY '"'
+IGNORE 1 LINES;
+*/

@@ -1,13 +1,13 @@
 DELIMITER ;
 
 
-SET @symbol_txt = 'BPCL'; -- MARUTI RELCAPITAL RELIANCE VEDL SUNPHARMA
+SET @symbol_txt = 'LT'; -- MARUTI RELCAPITAL RELIANCE VEDL SUNPHARMA
 
-SET @option_type_txt = 'CE'; -- RELCAPITAL RELIANCE VEDL
+SET @option_type_txt = 'PE'; -- RELCAPITAL RELIANCE VEDL
 
 SET @target_date = '2018-03-01';
 
-SET @confidence_level_in = 90;
+SET @confidence_level_in = 80;
 
 
 
@@ -62,7 +62,7 @@ expiry_date_full = default;
 
 update selected_instrument set margin_allowance = 15000;
 
-/*
+
 delete from basis_for_calls 
 where symbol != @symbol_txt;
 
@@ -70,7 +70,7 @@ delete from selected_instrument
 where symbol != @symbol_txt
 or option_type != @option_type_txt;
 
-*/
+
 
 /*
 
