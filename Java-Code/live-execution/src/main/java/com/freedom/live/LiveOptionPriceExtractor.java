@@ -111,7 +111,9 @@ public class LiveOptionPriceExtractor {
 				try {
 					tickerProvider.connect();
 					boolean isConnected = tickerProvider.isConnectionOpen();
-					System.out.println(isConnected);
+					System.out
+							.println("+++++++ ----------- from LiveOptionPriceExtractor.onDisconnected, isConnected = "
+									+ isConnected);
 					tickerProvider.subscribe(tokens);
 					tickerProvider.setMode(tokens, KiteTicker.modeQuote);
 				} catch (IOException e) {
@@ -135,6 +137,10 @@ public class LiveOptionPriceExtractor {
 				if (ticks.size() > 0) 
 				{
 					extractTicksData(ticks);
+				}
+				else
+				{
+					tickerProvider.disconnect();
 				}
 			}
 
@@ -227,6 +233,8 @@ public class LiveOptionPriceExtractor {
 				liveOptionPriceData.setOption_strike_price(selectedInstrument.getOption_strike_price());
 				liveOptionPriceData.setVolume(currentVolume);
 				liveOptionPriceData.setLast_price((float) tick.getLastTradedPrice());
+				
+				liveOptionPriceData.setHigh_price((float) tick.getHighPrice());
 
 				Map<String, ArrayList<Depth>> tickDepthMap = tick.getMarketDepth();
 
@@ -318,7 +326,7 @@ public class LiveOptionPriceExtractor {
 	
 	private void sop(String text) {
 
-		// System.out.println(text);
+		System.out.println(text);
 	}
 
 

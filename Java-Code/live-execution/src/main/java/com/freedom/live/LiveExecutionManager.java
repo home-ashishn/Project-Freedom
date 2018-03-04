@@ -193,7 +193,7 @@ public class LiveExecutionManager {
 		
 		Callable<?> callableROS = new Callable<Object>() {
 			public String call() throws Exception {
-				liveOrderExecutionService.runOrderService();
+				// liveOrderExecutionService.runOrderService();
 				return "";
 			}
 
@@ -203,7 +203,7 @@ public class LiveExecutionManager {
 
 		Callable<?> callableRSS = new Callable<Object>() {
 			public String call() throws Exception {
-				livePositionSyncService.runSyncService();
+				// livePositionSyncService.runSyncService();
 				return "";
 			}
 

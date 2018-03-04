@@ -35,7 +35,7 @@ public class LivePositionSyncService {
 
 			syncPositions();
 
-			Thread.sleep(60000);
+			Thread.sleep(30000);
 			
 			}	
 			catch(Exception e){

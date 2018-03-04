@@ -85,21 +85,23 @@ public class LiveStockPriceExtractor {
 		KiteTicker tickerProvider = new KiteTicker(kiteConnect);
 		tickerProvider.setOnConnectedListener(new OnConnect() {
 			@Override
-			public void onConnected() {/*
-										 * try {
-										 */
-				/**
-				 * Subscribe ticks for token. By default, all tokens are
-				 * subscribed for modeQuote.
-				 */
-				/*
-				 * tickerProvider.subscribe(tokens);
-				 * tickerProvider.setMode(tokens, KiteTicker.modeLTP);
-				 * 
-				 * } catch (IOException e) { e.printStackTrace(); } catch
-				 * (WebSocketException e) { e.printStackTrace(); }catch
-				 * (KiteException ke){ ke.printStackTrace(); }
-				 */}
+			public void onConnected() {
+
+				try {
+					boolean isConnected = tickerProvider.isConnectionOpen();
+					System.out.println(
+							"--------- +++++++ from LiveStockPriceExtractor.onConnected, isConnected = " + isConnected);
+					tickerProvider.subscribe(tokens);
+					tickerProvider.setMode(tokens, KiteTicker.modeQuote);
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (WebSocketException e) {
+					e.printStackTrace();
+				} catch (KiteException e) {
+					e.printStackTrace();
+				}
+
+			}
 		});
 
 		tickerProvider.setOnDisconnectedListener(new OnDisconnect() {
@@ -109,7 +111,9 @@ public class LiveStockPriceExtractor {
 				try {
 					tickerProvider.connect();
 					boolean isConnected = tickerProvider.isConnectionOpen();
-					System.out.println(isConnected);
+					System.out
+					.println("--------- +++++++ from LiveStockPriceExtractor.onDisconnected, isConnected = "
+							+ isConnected);
 					tickerProvider.subscribe(tokens);
 					tickerProvider.setMode(tokens, KiteTicker.modeQuote);
 				} catch (IOException e) {
@@ -133,6 +137,10 @@ public class LiveStockPriceExtractor {
 				if (ticks.size() > 0) 
 				{
 					extractTicksData(ticks);
+				}
+				else
+				{
+					tickerProvider.disconnect();
 				}
 			}
 
@@ -281,7 +289,7 @@ public class LiveStockPriceExtractor {
 
 	private void sop(String text) {
 
-		// System.out.println(text);
+		System.out.println(text);
 	}
 
 
