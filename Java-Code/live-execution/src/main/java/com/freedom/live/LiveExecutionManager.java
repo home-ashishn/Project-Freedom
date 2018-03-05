@@ -167,8 +167,8 @@ public class LiveExecutionManager {
 		else
 		{
 
-		kiteConnect.setAccessToken("0c5tq2ycykd0vs0n8qaukt8xwatb1coh");
-		kiteConnect.setPublicToken("54439b716eb08e74c353ce1c6c3f39ca");
+		kiteConnect.setAccessToken("oserc0u808vx68otxc23l75egfhb4phj");
+		kiteConnect.setPublicToken("bc7a3f28805f8c14ebf8bad3b5b340d4");
 		
 		}
 
@@ -193,7 +193,7 @@ public class LiveExecutionManager {
 		
 		Callable<?> callableROS = new Callable<Object>() {
 			public String call() throws Exception {
-				// liveOrderExecutionService.runOrderService();
+				liveOrderExecutionService.runOrderService();
 				return "";
 			}
 
@@ -203,7 +203,7 @@ public class LiveExecutionManager {
 
 		Callable<?> callableRSS = new Callable<Object>() {
 			public String call() throws Exception {
-				// livePositionSyncService.runSyncService();
+				livePositionSyncService.runSyncService();
 				return "";
 			}
 

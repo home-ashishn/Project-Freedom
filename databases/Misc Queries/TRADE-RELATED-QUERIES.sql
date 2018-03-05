@@ -13,14 +13,30 @@ and a.buy_price > (b.bid_price_1 * 0.8)
 -- group by a.symbol
 order by curr_time desc;
 
+update option_buy_order 
+set buy_price = buy_price * 1.15
+where symbol = 'RELIANCE';
+
+select distinct a.symbol, a.option_type,a.option_strike_price,a.option_close_price, b.last_price from selected_instrument a,live_option_price_data b
+where a.symbol = b.symbol and a.option_type = b.option_type and a.option_strike_price = b.option_strike_price and b.curr_time > date_sub((select max(curr_time) from live_process_status_record),interval 5 minute)
+and b.curr_time < date_sub((select max(curr_time) from live_process_status_record),interval 0 minute) group by a.symbol order by curr_time desc;
+
+
 SELECT * FROM engine_live.live_data 
-where symbol = 'MARUTI'
+-- where symbol = 'MARUTI'
 order by curr_time desc;
 
-SELECT * FROM engine_live.live_option_price_data_archive
-where symbol = 'MARUTI'
-and date(curr_time) = curdate()
-order by curr_time asc;
+SELECT * FROM engine_live.live_option_price_data
+-- where symbol = 'MARUTI'
+-- and date(curr_time) = curdate()
+order by curr_time desc;
+
+
+
+
+
+
+
 
 
 SELECT  a.symbol,a.option_type,a.option_strike_price,
@@ -36,32 +52,6 @@ and a.option_type = b.option_type
 and a.option_strike_price = b.option_strike_price
 and a.buy_price > (b.bid_price_1 * 0.8)
 order by a.curr_time desc;
-
-
-select a.symbol, a.option_type,a.option_strike_price,
-a.buy_price, b.option_close_price 
-from option_position a,selected_instrument b
-where a.symbol = b.symbol
-and a.option_type = b.option_type
-and a.option_strike_price = b.option_strike_price
--- and a.buy_price > b.option_close_price
-;
-
-
-
-select distinct a.symbol, a.option_type,a.option_strike_price,
-a.option_close_price, b.last_price 
-from selected_instrument a,live_option_price_data b
-where a.symbol = b.symbol
-and a.option_type = b.option_type
-and a.option_strike_price = b.option_strike_price
-and b.curr_time > date_sub((select max(curr_time) from live_process_status_record),interval 5 minute)
-and b.curr_time < date_sub((select max(curr_time) from live_process_status_record),interval 0 minute)
--- and a.buy_price > b.option_close_price
-group by a.symbol
-order by curr_time desc;
-
-
 
 
 

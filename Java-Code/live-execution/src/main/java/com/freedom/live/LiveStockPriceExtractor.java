@@ -87,6 +87,7 @@ public class LiveStockPriceExtractor {
 			@Override
 			public void onConnected() {
 
+				/*
 				try {
 					boolean isConnected = tickerProvider.isConnectionOpen();
 					System.out.println(
@@ -100,7 +101,8 @@ public class LiveStockPriceExtractor {
 				} catch (KiteException e) {
 					e.printStackTrace();
 				}
-
+*/
+				
 			}
 		});
 
@@ -138,10 +140,12 @@ public class LiveStockPriceExtractor {
 				{
 					extractTicksData(ticks);
 				}
+				/*
 				else
 				{
 					tickerProvider.disconnect();
 				}
+				*/
 			}
 
 		});
@@ -289,7 +293,7 @@ public class LiveStockPriceExtractor {
 
 	private void sop(String text) {
 
-		System.out.println(text);
+		// System.out.println(text);
 	}
 
 
