@@ -1,0 +1,13 @@
+symbol,option_type,option_strike_price,option_close_price,lot_size,margin_allowance,last_implied_volatility,expiry_factor_quotient,url,expiry_date_full,expiry_date_prefix
+BHARTIARTL,PE,400,3.65,1700,12000,0,0,a,28-03-18,18-Mar
+BIOCON,CE,660,9.6,1800,12000,0,0,a,28-03-18,18-Mar
+HDFC,CE,1840,13.35,500,12000,0,0,a,28-03-18,18-Mar
+INFY,PE,1100,8,600,12000,0,0,a,28-03-18,18-Mar
+LT,PE,1240,9.05,750,12000,0,0,a,28-03-18,18-Mar
+MARUTI,PE,8600,85.7,75,12000,0,0,a,28-03-18,18-Mar
+MINDTREE,CE,910,11.8,1200,12000,0,0,a,28-03-18,18-Mar
+RELIANCE,CE,960,9.4,1000,12000,0,0,a,28-03-18,18-Mar
+SUNPHARMA,CE,570,12.4,1100,12000,0,0,a,28-03-18,18-Mar
+TATASTEEL,PE,620,10.1,1061,12000,0,0,a,28-03-18,18-Mar
+TCS,CE,3200,36.05,250,12000,0,0,a,28-03-18,18-Mar
+VEDL,PE,300,8.15,1750,12000,0,0,a,28-03-18,18-Mar
