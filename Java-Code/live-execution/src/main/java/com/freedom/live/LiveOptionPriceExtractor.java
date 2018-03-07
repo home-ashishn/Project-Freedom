@@ -150,7 +150,7 @@ public class LiveOptionPriceExtractor {
 				{
 					DateTime currTime = new DateTime();
 					
-					if(currTime.isAfter(latestTickTime.plusSeconds(30))){
+					if(currTime.isAfter(latestTickTime.plusSeconds(15))){
 						tickerProvider.disconnect();
 					}
 				}
