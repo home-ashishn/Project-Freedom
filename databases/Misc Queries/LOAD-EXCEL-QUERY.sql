@@ -1,8 +1,6 @@
 
 
-set @date_ref = '05-03-2018';
-
-
+-- set @date_ref_txt = '05-03-2018';
 delete from basis_for_calls;
 
 LOAD DATA LOCAL INFILE 'D:\\Project-Freedom\\databases\\Daily Data\\27-02-2018\\basis-for-calls.csv' 
@@ -11,7 +9,7 @@ INTO TABLE basis_for_calls
         OPTIONALLY ENCLOSED BY '"'
 IGNORE 1 LINES;
 
-
+update basis_for_calls set confidence_level = confidence_level + 7.5;
 
 delete from selected_instrument;
 

@@ -54,6 +54,7 @@ public class LiveStockPriceExtractor {
 
 	private Map<Long, BasisForCalls> mapTokensToStocks = new HashMap<Long, BasisForCalls>();
 
+	DateTime latestTickTime = new DateTime();
 
 	public LiveStockPriceExtractor() {
 
@@ -140,12 +141,14 @@ public class LiveStockPriceExtractor {
 				{
 					extractTicksData(ticks);
 				}
-				/*
 				else
 				{
-					tickerProvider.disconnect();
+					DateTime currTime = new DateTime();
+					
+					if(currTime.isAfter(latestTickTime.plusSeconds(30))){
+						tickerProvider.disconnect();
+					}
 				}
-				*/
 			}
 
 		});

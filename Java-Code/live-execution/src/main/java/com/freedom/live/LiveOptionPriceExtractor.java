@@ -55,6 +55,8 @@ public class LiveOptionPriceExtractor {
 	private Map<Long, SelectedInstrument> mapTokensToInstrument = new HashMap<Long, SelectedInstrument>();
 
 	Map<Long, DateTime> mapGlobalTimeStamps;
+	
+	DateTime latestTickTime = new DateTime();
 
 	public LiveOptionPriceExtractor() {
 
@@ -141,13 +143,18 @@ public class LiveOptionPriceExtractor {
 				if (ticks.size() > 0) 
 				{
 					extractTicksData(ticks);
+					latestTickTime = new DateTime();
 				}
-				/*
+				
 				else
 				{
-					tickerProvider.disconnect();
+					DateTime currTime = new DateTime();
+					
+					if(currTime.isAfter(latestTickTime.plusSeconds(30))){
+						tickerProvider.disconnect();
+					}
 				}
-				*/
+				
 			}
 
 		});
