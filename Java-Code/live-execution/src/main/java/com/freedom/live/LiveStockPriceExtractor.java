@@ -119,6 +119,7 @@ public class LiveStockPriceExtractor {
 							+ isConnected);
 					tickerProvider.subscribe(tokens);
 					tickerProvider.setMode(tokens, KiteTicker.modeQuote);
+					latestTickTime = new DateTime();
 				} catch (IOException e) {
 					e.printStackTrace();
 				} catch (WebSocketException e) {
@@ -140,6 +141,7 @@ public class LiveStockPriceExtractor {
 				if (ticks.size() > 0) 
 				{
 					extractTicksData(ticks);
+					latestTickTime = new DateTime();
 				}
 				else
 				{
@@ -185,6 +187,9 @@ public class LiveStockPriceExtractor {
 		 * change, use modeQuote For getting all data with depth, use modeFull
 		 */
 		tickerProvider.setMode(tokens, KiteTicker.modeQuote);
+		
+		latestTickTime = new DateTime();
+
 
 		// Unsubscribe for a token.
 

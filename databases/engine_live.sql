@@ -68,7 +68,7 @@ CREATE TABLE `live_data` (
   `volume` int(11) DEFAULT NULL,
   `price` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=198551 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=38526 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -113,7 +113,7 @@ CREATE TABLE `live_option_price_data` (
   `bid_quantity_2` int(11) DEFAULT NULL,
   `offer_quantity_2` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=120992 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20952 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -169,7 +169,7 @@ CREATE TABLE `live_option_price_data_copy` (
   `bid_quantity_2` int(11) DEFAULT NULL,
   `offer_quantity_2` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=100922 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=100901 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -215,7 +215,7 @@ CREATE TABLE `log_messages` (
   `source` varchar(100) DEFAULT NULL,
   `message` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=391 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=403 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -258,7 +258,7 @@ CREATE TABLE `negative_price_trend_data` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1221 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1356 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -283,7 +283,7 @@ CREATE TABLE `negative_price_trend_data_for_sell_order` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1217 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1356 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -329,7 +329,7 @@ CREATE TABLE `option_buy_order` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=204 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -352,7 +352,7 @@ CREATE TABLE `option_buy_order_cancelled` (
   `filled_quantity` int(11) DEFAULT NULL,
   `remaining_quantity` int(11) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=188 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -461,7 +461,7 @@ CREATE TABLE `option_sell_order` (
   `remaining_quantity` int(11) DEFAULT NULL,
   `is_market_order_hit` tinyint(4) DEFAULT '0',
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6564622 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -537,9 +537,9 @@ CREATE TABLE `option_stop_loss_order_price` (
   `option_type` varchar(2) NOT NULL,
   `option_strike_price` float NOT NULL,
   `buy_price` float DEFAULT NULL,
-  `sl_price` float NOT NULL,
+  `sl_price` float DEFAULT '0',
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1178 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -564,7 +564,7 @@ CREATE TABLE `positive_price_trend_data` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4087 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4232 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -589,7 +589,7 @@ CREATE TABLE `positive_price_trend_data_for_sell_order` (
   `id_enclosed_strength` int(11) DEFAULT NULL,
   `original_max_strength` float DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4085 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4187 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1971,7 +1971,7 @@ DECLARE  SMALLER_CALCULATED_EXHAUSTION_FACTOR FLOAT;
 
 declare l_loop int default 0;
 
-SET NO_OF_LOTS_OUT = 40;
+SET NO_OF_LOTS_OUT = 10;
 
 
 loop1: loop
@@ -2077,15 +2077,15 @@ DECLARE TEXT_NEW_BUY_ORDER_TIME VARCHAR(100) DEFAULT '2018-01-21 09:30:00';
 SELECT  text_param_value FROM trading_parameters WHERE param_id = 'NEW_BUY_ORDER_TIME'
 INTO TEXT_NEW_BUY_ORDER_TIME;
 
-if(time(CURRENT_TIME_IN) > time(TEXT_NEW_BUY_ORDER_TIME)) then
 
 
 CALL SYNC_NEW_BUY_ORDER_POSITIONS(CURRENT_TIME_IN);
 
+if(time(CURRENT_TIME_IN) > time(TEXT_NEW_BUY_ORDER_TIME)) then
+
 CALL SYNC_OLD_BUY_ORDER_POSITIONS(CURRENT_TIME_IN);
 
 CALL SYNC_SELL_ORDER_POSITIONS(CURRENT_TIME_IN);
-
 
 END IF;
 
@@ -4991,10 +4991,10 @@ replace into live_option_price_data_archive( SELECT * FROM live_option_price_dat
 
 
 delete from  live_data_archive
-where date(curr_time) < date_sub(DATE_REFERENCE_IN,interval 8 day);
+where date(curr_time) < date_sub(DATE_REFERENCE_IN,interval 2 day);
 
 delete from  live_option_price_data_archive
-where date(curr_time) < date_sub(DATE_REFERENCE_IN,interval 8 day);
+where date(curr_time) < date_sub(DATE_REFERENCE_IN,interval 2 day);
 
 
 DELETE FROM  option_buy_order_log
@@ -7580,6 +7580,11 @@ DECLARE VAR_OPTION_STRIKE_PRICE FLOAT;
 DECLARE VAR_NO_OF_LOTS INT;
 DECLARE VAR_QUANTITY INT;
 
+DECLARE VAR_BUY_QUANTITY INT;
+
+DECLARE VAR_SELL_QUANTITY INT;
+
+
 DECLARE VAR_BUY_PRICE FLOAT;
 
 DECLARE VAR_ORIGINAL_QUANTITY INT;
@@ -7588,7 +7593,7 @@ DECLARE VAR_ORIGINAL_QUANTITY INT;
 
 DECLARE cursor_OPTION_POSITIONS_TO_SYNC CURSOR FOR
 SELECT a.symbol,a.option_type,a.option_strike_price,a.no_of_lots,
-a.buy_quantity,a.buy_price FROM option_position a
+a.buy_quantity,a.buy_price,a.sell_quantity FROM option_position a
 where not exists
 (select * from option_sell_order b
 where a.symbol = b.symbol
@@ -7603,7 +7608,7 @@ and a.option_strike_price = b.option_strike_price);
     DECLARE EXIT HANDLER FOR SQLEXCEPTION BEGIN CLOSE cursor_OPTION_POSITIONS_TO_SYNC; RESIGNAL; END;
     LOOP
       FETCH cursor_OPTION_POSITIONS_TO_SYNC INTO VAR_SYMBOL,VAR_OPTION_TYPE,VAR_OPTION_STRIKE_PRICE,
-                      VAR_NO_OF_LOTS,VAR_QUANTITY,VAR_BUY_PRICE;
+                      VAR_NO_OF_LOTS,VAR_BUY_QUANTITY,VAR_BUY_PRICE,VAR_SELL_QUANTITY;
 
 
     IF(VAR_NO_OF_LOTS = NULL) THEN
@@ -7611,6 +7616,8 @@ and a.option_strike_price = b.option_strike_price);
            SET VAR_NO_OF_LOTS = 0;
 
     END IF;
+
+    SET VAR_QUANTITY =  VAR_BUY_QUANTITY -  VAR_SELL_QUANTITY;
 
     select quantity from option_buy_order
     where  symbol = VAR_SYMBOL
@@ -7922,6 +7929,12 @@ set a.is_being_used = 0
 where a.symbol = b.symbol
 and b.isExecuted = 1;
 
+
+update basis_for_calls a,option_sell_order b
+set a.is_being_used = 1
+where a.symbol = b.symbol
+and b.isExecuted = 0;
+
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -8100,4 +8113,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-03-06  9:46:24
+-- Dump completed on 2018-03-08 22:55:08

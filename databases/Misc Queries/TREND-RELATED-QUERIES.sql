@@ -1,7 +1,7 @@
 DELIMITER ;
 
 
-SET @symbol_txt = 'SUNPHARMA'; -- MARUTI RELCAPITAL RELIANCE VEDL SUNPHARMA
+SET @symbol_txt = 'SUNPHARMA'; -- MARUTI RELCAPITAL RELIANCE VEDL SUNPHARMA TATAMOTORS BHARTIARTL
 
 SET @plus_data = 0;
 
@@ -26,7 +26,7 @@ group by symbol
 into @symbol_txt,@minus_data;
 
 
-select @symbol_txt, @plus_data, @minus_data, (@plus_data - @minus_data + 2.5);
+select @symbol_txt, @plus_data, @minus_data, (@plus_data - @minus_data);
 
 
 /*

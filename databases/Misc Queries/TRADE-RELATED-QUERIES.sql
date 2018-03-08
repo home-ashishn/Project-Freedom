@@ -9,16 +9,17 @@ and a.isExecuted = 0
 and a.symbol = b.symbol
 and a.option_type = b.option_type
 and a.option_strike_price = b.option_strike_price
-and a.buy_price > (b.bid_price_1 * 0.8)
+and a.buy_price > (b.bid_price_1 * 0.6)
 -- group by a.symbol
 order by curr_time desc;
 
 update option_buy_order 
-set buy_price = buy_price * 1.05
-where symbol = 'LT';
+set buy_price = buy_price * (1/ 1.1)
+where symbol = 'TCS';
 
 select distinct a.symbol, a.option_type,a.option_strike_price,a.option_close_price, b.last_price from selected_instrument a,live_option_price_data b
-where a.symbol = b.symbol and a.option_type = b.option_type and a.option_strike_price = b.option_strike_price and b.curr_time > date_sub((select max(curr_time) from live_process_status_record),interval 5 minute)
+where a.symbol = b.symbol and a.option_type = b.option_type and a.option_strike_price = b.option_strike_price 
+and b.curr_time > date_sub((select max(curr_time) from live_process_status_record),interval 1 minute)
 and b.curr_time < date_sub((select max(curr_time) from live_process_status_record),interval 0 minute) 
 group by a.symbol order by curr_time desc;
 
