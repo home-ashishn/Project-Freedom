@@ -254,11 +254,10 @@ public class LiveExecutionManager {
 			ResultSet<Instrument> results = null;
 			try {
 				results = parser.retrieve(instruments,
-						"SELECT * FROM instruments WHERE (" + "tradingsymbol like '%" + symbol + expiry_date_prefix
+						"SELECT * FROM instruments WHERE (" + "tradingsymbol like '%" + symbol 
+								+ expiry_date_prefix
 								+ "%' " + "AND instrument_type = '" + optionType + "' " + "AND strike = '"
 								+ optionStrikePrice + "' "
-								// + "AND '"+optionStrikePrice+"' like
-								// concat(strike,'%') "
 								+ "AND expiry = '" + expiry_date_full + "' )");
 
 				if (results.isNotEmpty()) {

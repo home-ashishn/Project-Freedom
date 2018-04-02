@@ -14,8 +14,8 @@ and a.buy_price > (b.bid_price_1 * 0.6)
 order by curr_time desc;
 
 update option_buy_order 
-set buy_price = buy_price * (1/ 1.1)
-where symbol = 'TCS';
+set buy_price = buy_price * 1.05
+where symbol = '';
 
 select distinct a.symbol, a.option_type,a.option_strike_price,a.option_close_price, b.last_price from selected_instrument a,live_option_price_data b
 where a.symbol = b.symbol and a.option_type = b.option_type and a.option_strike_price = b.option_strike_price 
