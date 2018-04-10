@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -220,14 +218,16 @@ public class MultithreadingExtractor {
 	private void updateDB() {
 
 		try {
-			synchronized (liveDataObjs) {
-				liveStockDataRepository.save(liveDataObjs);
-				liveDataObjs = new ArrayList<LiveStockData>();
-			}
-		} catch (Exception e) {
+			liveStockDataRepository.save(liveDataObjs);
 			
-			e.printStackTrace();
+			sop("^^^^^^^ &&&&&&& SUCCESSFULY SAVED");
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			sop("^^^^^^^ &&&&&&& ERROR WHILE SAVING ^^^^^^^ &&&&&&&"+e.getMessage());
 		}
+		liveDataObjs = new ArrayList<LiveStockData>();
+
 
 	}
 

@@ -45,7 +45,7 @@ public class MultithreadingExtractor {
 	 */
 
 	@Autowired
-	private LiveOptionPriceDataRepository LiveOptionPriceDataRepository;
+	private LiveOptionPriceDataRepository liveOptionPriceDataRepository;
 
 	List<SelectedInstrument> instrumentList = new ArrayList<>();
 
@@ -530,7 +530,7 @@ public class MultithreadingExtractor {
 			synchronized (liveDataObjs) {
 				
 				try {
-					LiveOptionPriceDataRepository.save(liveDataObjs);
+					liveOptionPriceDataRepository.save(liveDataObjs);
 					
 					sop("^^^^^^^ &&&&&&& SUCCESSFULY SAVED");
 

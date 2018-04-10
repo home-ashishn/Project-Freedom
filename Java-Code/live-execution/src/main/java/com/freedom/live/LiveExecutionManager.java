@@ -256,7 +256,8 @@ public class LiveExecutionManager {
 				results = parser.retrieve(instruments,
 						"SELECT * FROM instruments WHERE (" + "tradingsymbol like '%" + symbol 
 								+ expiry_date_prefix
-								+ "%' " + "AND instrument_type = '" + optionType + "' " + "AND strike = '"
+								+ "%' " + "AND instrument_type = '" + optionType + "' " 
+								+ "AND strike = '"
 								+ optionStrikePrice + "' "
 								+ "AND expiry = '" + expiry_date_full + "' )");
 

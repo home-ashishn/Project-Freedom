@@ -84,7 +84,7 @@ public class MultithreadingManager {
 
 		init();
 
-		boolean isValidRange = checkTimeRange(); // true;
+		boolean isValidRange = true; // checkTimeRange(); // true;
 
 		if (isValidRange) {
 
