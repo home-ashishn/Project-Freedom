@@ -1,0 +1,6 @@
+symbol,option_type,option_strike_price,option_close_price,lot_size,margin_allowance,last_implied_volatility,expiry_factor_quotient,url,expiry_date_full,expiry_date_prefix
+HDFC,PE,1800,35.35,500,15000,0,0,"https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=AXISBANK&instrument=OPTSTK&strike=650.00&type=CE&expiry=22FEB2018",2018-03-28,18MAR
+INFY,CE,1160,20.5,600,15000,0,0,"https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=AXISBANK&instrument=OPTSTK&strike=650.00&type=CE&expiry=22FEB2018",2018-03-28,18MAR
+MARUTI,PE,8700,202,75,15000,0,0,"https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=AXISBANK&instrument=OPTSTK&strike=650.00&type=CE&expiry=22FEB2018",2018-03-28,18MAR
+TATAMOTORS,PE,350,7.15,1500,15000,0,0,"https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=AXISBANK&instrument=OPTSTK&strike=650.00&type=CE&expiry=22FEB2018",2018-03-28,18MAR
+TCS,PE,2900,65.25,250,15000,0,0,"https://www.nseindia.com/live_market/dynaContent/live_watch/get_quote/GetQuoteFO.jsp?underlying=AXISBANK&instrument=OPTSTK&strike=650.00&type=CE&expiry=22FEB2018",2018-03-28,18MAR

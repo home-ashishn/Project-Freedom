@@ -1,0 +1,8 @@
+symbol,volume_prev_day,prev_close,curr_signal,url,confidence_level
+AXISBANK,6199860,540.55,0,NULL,70
+HDFC,2894873,1814.05,-1,http://www.moneycontrol.com/india/stockpricequote/finance-housing/housingdevelopmentfinancecorporation/HDF,70
+INFY,3897548,1131.75,1,http://www.moneycontrol.com/india/stockpricequote/finance-housing/housingdevelopmentfinancecorporation/HDF,70
+LT,2283167,1295.5,0,http://www.moneycontrol.com/india/stockpricequote/finance-housing/housingdevelopmentfinancecorporation/HDF,70
+MARUTI,417167,8724.85,-1,http://www.moneycontrol.com/india/stockpricequote/finance-housing/housingdevelopmentfinancecorporation/HDF,70
+TATAMOTORS,8011146,368.75,-1,http://www.moneycontrol.com/india/stockpricequote/finance-housing/housingdevelopmentfinancecorporation/HDF,70
+TCS,1137131,2923.6,-1,http://www.moneycontrol.com/india/stockpricequote/finance-housing/housingdevelopmentfinancecorporation/HDF,70
