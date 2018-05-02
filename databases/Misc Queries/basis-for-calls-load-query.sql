@@ -29,10 +29,12 @@ SELECT '2018-02-02',a.* FROM basis_for_calls a);
 
 
 replace into selected_instrument_archive(
-SELECT '2018-01-30',a.* FROM selected_instrument a);
+SELECT '2018-03-01',a.* FROM selected_instrument a);
+
 
 replace into live_data_archive( SELECT * FROM live_data);
 replace into live_option_price_data_archive( SELECT * FROM live_option_price_data);
+
 
 
 delete from basis_for_calls;

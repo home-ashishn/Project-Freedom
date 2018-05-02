@@ -35,6 +35,7 @@ expiry_date_full = default;
 
 
 
+
 delete from live_data;
 
 LOAD DATA LOCAL INFILE 'C:\\Users\\capiot\\Documents\\GitHub\\Project-Freedom\\databases\\Daily Data\\06-03-2018\\live-stock-data.csv' 
@@ -52,3 +53,12 @@ INTO TABLE live_option_price_data
         OPTIONALLY ENCLOSED BY '"'
 IGNORE 1 LINES;
 
+delete a.* from selected_instrument a
+where a.option_type != 
+(select if(b.curr_signal = 1,'CE','PE') from basis_for_calls b
+where a.symbol = b.symbol);
+
+delete a.* from live_option_price_data a
+where a.option_type != 
+(select if(b.curr_signal = 1,'CE','PE') from basis_for_calls b
+where a.symbol = b.symbol);
