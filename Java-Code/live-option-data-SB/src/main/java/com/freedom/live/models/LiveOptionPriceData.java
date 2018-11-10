@@ -45,6 +45,8 @@ public class LiveOptionPriceData {
 	
 	private int offer_quantity_2;
 	
+	private float high_price;
+
 /*	private float open_price;
 
 	private float high_price;
@@ -169,6 +171,14 @@ public class LiveOptionPriceData {
 
 	public void setOffer_quantity_2(int offer_quantity_2) {
 		this.offer_quantity_2 = offer_quantity_2;
+	}
+
+	public float getHigh_price() {
+		return high_price;
+	}
+
+	public void setHigh_price(float high_price) {
+		this.high_price = high_price;
 	}
 
 

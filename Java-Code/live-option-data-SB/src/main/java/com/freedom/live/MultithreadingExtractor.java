@@ -22,7 +22,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.json.BasicJsonParser;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.stereotype.Component;
@@ -63,6 +66,11 @@ public class MultithreadingExtractor {
 	List<LiveOptionPriceData> liveDataObjs = new ArrayList<>();
 	
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
+    
+	@Value("${scrapping.debug}")
+	private boolean scrappingDebug;
+	
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	public MultithreadingExtractor() {
 
@@ -152,6 +160,8 @@ public class MultithreadingExtractor {
 	
 	public LiveOptionPriceData scrapeIndividualURls(SelectedInstrument instrument, String urlstr) throws IOException {
 
+		LOGGER.info ("entered method - scrapeIndividualURls");
+
 		if (startTime == null) {
 			startTime = new Date();
 		}
@@ -187,7 +197,7 @@ public class MultithreadingExtractor {
 		
 		String volume = "0";
 		
-		volume = getValueFromNode(instrument,first, "numberOfContractsTraded", "underlyingValue",2);
+		volume = getValueFromNode(instrument,first, "numberOfContractsTraded", "instrumentType",2);
 
 /*
 		String openPrice = "0";
@@ -233,9 +243,9 @@ public class MultithreadingExtractor {
 		}
 		
 		
-		if ((new Long(volume).compareTo(mapGlobalVolumes.get(instrument)) > 0) || isNewTimeStampReading) {
+		if (scrappingDebug || (new Long(volume).compareTo(mapGlobalVolumes.get(instrument)) > 0) || isNewTimeStampReading) {
 
-			// sop("update for symbol = " + symbol + ", optionType = " + optionType + ", strikePrice = " + strikePrice);
+			LOGGER.debug("update for url = " + urlstr);
 
 			long globalVolume = new Long(volume);
 
@@ -244,41 +254,44 @@ public class MultithreadingExtractor {
 
 			String lastPrice = "0";
 
-			lastPrice = getValueFromNode(instrument,first, "lastPrice", "lowPrice",2);
+			lastPrice = getValueFromNode(instrument,first, "lastPrice", "companyName",4);
 
 			
 			String bidPrice1 = "0";
 
-			bidPrice1 = getValueFromNode(instrument,first, "buyPrice1", "sellQuantity4",2);
+			bidPrice1 = getValueFromNode(instrument,first, "buyPrice1", "openPrice",2);
 			
 			String bidQuantity1 = "0";
 
-			bidQuantity1 = getValueFromNode(instrument,first, "buyQuantity1", "ltp",2);
+			bidQuantity1 = getValueFromNode(instrument,first, "buyQuantity1", "buyQuantity5",2);
 			
 			String bidPrice2 = "0";
 
-			bidPrice2 = getValueFromNode(instrument,first, "buyPrice2", "sellQuantity3",2);
+			bidPrice2 = getValueFromNode(instrument,first, "buyPrice2", "buyPrice1",2);
 			
 			String bidQuantity2 = "0";
 
-			bidQuantity2 = getValueFromNode(instrument,first, "buyQuantity2", "sellPrice5",2);
+			bidQuantity2 = getValueFromNode(instrument,first, "buyQuantity2", "buyQuantity1",2);
 			
 			String offerPrice1 = "0";
 
-			offerPrice1 = getValueFromNode(instrument,first, "sellPrice1", "buyQuantity3",2);
+			offerPrice1 = getValueFromNode(instrument,first, "sellPrice1", "sellPrice2",2);
 			
 			String offerQuantity1 = "0";
 
-			offerQuantity1 = getValueFromNode(instrument,first, "sellQuantity1", "buyPrice1",2);
+			offerQuantity1 = getValueFromNode(instrument,first, "sellQuantity1", "pChange",2);
 			
 			String offerPrice2 = "0";
 
-			offerPrice2 = getValueFromNode(instrument,first, "sellPrice2", "buyQuantity4",2);
+			offerPrice2 = getValueFromNode(instrument,first, "sellPrice2", "sellPrice3",2);
 			
 			String offerQuantity2 = "0";
 
-			offerQuantity2 = getValueFromNode(instrument,first, "sellQuantity2", "sellQuantity1",2);
-			
+			offerQuantity2 = getValueFromNode(instrument,first, "sellQuantity2", "underlying\"",2);
+
+			String highPrice = "0";
+
+			highPrice = getValueFromNode(instrument,first, "highPrice", "dailyVolatility",2);
 			
 
 			LiveOptionPriceData liveOptionPriceData = new LiveOptionPriceData();
@@ -301,7 +314,7 @@ public class MultithreadingExtractor {
 			liveOptionPriceData.setOffer_quantity_1(new Integer(offerQuantity1));
 			liveOptionPriceData.setOffer_price_2(new Float(offerPrice2));
 			liveOptionPriceData.setOffer_quantity_2(new Integer(offerQuantity2));
-
+			liveOptionPriceData.setHigh_price(new Float(highPrice));
 			return liveOptionPriceData;
 
 		}
@@ -532,11 +545,11 @@ public class MultithreadingExtractor {
 				try {
 					liveOptionPriceDataRepository.save(liveDataObjs);
 					
-					sop("^^^^^^^ &&&&&&& SUCCESSFULY SAVED");
+					LOGGER.debug("^^^^^^^ &&&&&&& SUCCESSFULY SAVED");
 
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
-					sop("^^^^^^^ &&&&&&& ERROR WHILE SAVING ^^^^^^^ &&&&&&&"+e.getMessage());
+					LOGGER.error("^^^^^^^ &&&&&&& ERROR WHILE SAVING ^^^^^^^ &&&&&&&"+e.getMessage());
 				}
 				
 				liveDataObjs = new ArrayList<LiveOptionPriceData>();
