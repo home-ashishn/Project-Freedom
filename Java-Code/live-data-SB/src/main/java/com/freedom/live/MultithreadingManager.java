@@ -8,6 +8,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,9 @@ public class MultithreadingManager {
 	
 	@Autowired
 	private BasisForCallsRepository basisForCallsRepository;
+	
+	@Value("${scrapping.debug}")
+	private boolean scrappingDebug;
 	
 	private String startExtraction() throws Exception {
 		
@@ -82,7 +86,8 @@ public class MultithreadingManager {
 		init();
 
 
-		boolean isValidRange = checkTimeRange(); // true; 
+		
+		/*boolean isValidRange = scrappingDebug || checkTimeRange(); // true; 
 		
 		if(isValidRange) {
 			
@@ -93,9 +98,11 @@ public class MultithreadingManager {
 			
 			
 
-		}
+		}*/
 		
 		// else ()
+		
+		startExtraction();
 
 	}
 	
@@ -120,7 +127,9 @@ public class MultithreadingManager {
 
 		};
 
-		 executorService.submit(callableValidityCheck);
+		if(!scrappingDebug) {
+		executorService.submit(callableValidityCheck);
+		}
 		
 		executorService.submit(callableMain);
 
@@ -139,9 +148,9 @@ public class MultithreadingManager {
 
 		Calendar calBegin = Calendar.getInstance();
 		
-		calEnd.set(Calendar.HOUR_OF_DAY, 9);
+		calBegin.set(Calendar.HOUR_OF_DAY, 9);
 		
-		calEnd.set(Calendar.MINUTE, 14);
+		calBegin.set(Calendar.MINUTE, 14);
 
 		Calendar cal1 = Calendar.getInstance();
 		

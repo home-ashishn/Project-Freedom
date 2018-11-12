@@ -17,7 +17,10 @@ import java.util.concurrent.TimeoutException;
 import org.joda.time.DateTime;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.freedom.live.models.LiveStockData;
@@ -52,6 +55,11 @@ public class MultithreadingExtractor {
 	Map<String, Long> mapGlobalVolumes;
 
 	List<LiveStockData> liveDataObjs = new ArrayList<>();
+	
+	@Value("${scrapping.debug}")
+	private boolean scrappingDebug;
+	
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	public MultithreadingExtractor() {
 
@@ -138,6 +146,8 @@ public class MultithreadingExtractor {
 	// @Transactional
 	public LiveStockData scrapeIndividualURls(String symbol, String urlstr) throws IOException {
 
+		LOGGER.debug("entered method - scrapeIndividualURls");
+		
 		if (startTime == null) {
 			startTime = new Date();
 		}
@@ -180,7 +190,7 @@ public class MultithreadingExtractor {
 		
 		DateTime quoteCurrentTime = new DateTime(cal.getTime());
 
-		if (new Long(volume).compareTo(mapGlobalVolumes.get(symbol)) != 0) {
+		if (scrappingDebug || (new Long(volume).compareTo(mapGlobalVolumes.get(symbol)) != 0)) {
 
 			sop("update for symbol = " + symbol);
 

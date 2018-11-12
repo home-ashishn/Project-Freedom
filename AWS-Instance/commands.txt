@@ -1,0 +1,24 @@
+cd jdk1.8.0_191/
+sudo update-alternatives --install /usr/bin/java java /opt/java/jdk1.8.0_191/bin/java 100  
+sudo update-alternatives --config java
+
+sudo  update-alternatives --install /usr/bin/javac javac /opt/java/jdk1.8.0_191/bin/javac 100
+sudo  update-alternatives --config javac
+
+sudo  update-alternatives --install /usr/bin/jar jar /opt/java/jdk1.8.0_191/bin/jar 100
+sudo  update-alternatives --config jar
+
+
+export JAVA_HOME=/opt/java/jdk1.8.0_191/    
+export JRE_HOME=/opt/java/jdk1.8.0._45/jre     
+export PATH=$PATH:/opt/java/jdk1.8.0_191/bin:/opt/java/jdk1.8.0_191/jre/bin
+export PATH=$PATH:/opt/maven/bin
+
+
+
+sudo  update-alternatives --install /usr/bin/mvn mvn /opt/maven/mvn 100
+sudo  update-alternatives --config mvn
+
+
+
+
