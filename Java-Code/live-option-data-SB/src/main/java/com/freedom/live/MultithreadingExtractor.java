@@ -217,7 +217,7 @@ public class MultithreadingExtractor {
 */
 		String currTime = "0";
 		
-		currTime = getValueFromNode(instrument,first, "lastUpdateTime", "ocLink",2);
+		currTime = getValueFromNode(instrument,first, "lastUpdateTime", "isinCode",2);
 		
 		DateTime newTimeStamp = null;
 		
