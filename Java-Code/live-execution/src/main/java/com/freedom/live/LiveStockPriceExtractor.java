@@ -164,7 +164,7 @@ public class LiveStockPriceExtractor {
 		 */
 		boolean isConnected = tickerProvider.isConnectionOpen();
 
-		System.out.println(isConnected);
+		System.out.println("isConnected = " +isConnected);
 
 		tickerProvider.subscribe(tokens);
 
@@ -179,6 +179,9 @@ public class LiveStockPriceExtractor {
 		tickerProvider.setMode(tokens, KiteTicker.modeQuote);
 		
 		latestTickTime = new DateTime();
+		
+		System.out.println("latestTickTime = " +latestTickTime);
+
 
 
 		// Unsubscribe for a token.
@@ -291,7 +294,7 @@ public class LiveStockPriceExtractor {
 
 	private void sop(String text) {
 
-		// System.out.println(text);
+		//System.out.println(text);
 	}
 
 

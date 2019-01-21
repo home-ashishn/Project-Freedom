@@ -64,7 +64,7 @@ public class LiveExecutionManager {
 	 @Autowired
 	 private LivePositionSyncService livePositionSyncService;
 
-	private String requestToken = "zI6ecxGjykHe43H4t2tMBvYTR0ivR1yT";
+	private String requestToken = "OC9BtglAUrBFfo2aExLZdRMAAoc4Q30S";
 	
 	private boolean askForUserToken = false;
 
@@ -142,7 +142,7 @@ public class LiveExecutionManager {
 		kiteConnect.setSessionExpiryHook(new SessionExpiryHook() {
 			@Override
 			public void sessionExpired() {
-				System.out.println("session expired");
+				System.out.println("@@@@@@@@***********session expired");
 			}
 		});
 
@@ -150,19 +150,19 @@ public class LiveExecutionManager {
 		// process.
 
 
-		if(askForUserToken)
-		{
-		  TokenSet user = kiteConnect.renewAccessToken(requestToken,
+/*		if(askForUserToken)
+		{*/
+		  User user = kiteConnect.generateSession(requestToken,
 		  "al1ft8iftn7cw7v9ipfplgrxaxps9n6e");
 		  
 		 kiteConnect.setAccessToken(user.accessToken);
-		 kiteConnect.setPublicToken(user.refreshToken);
+		 kiteConnect.setPublicToken(user.publicToken);
 		 
 		 sop(" userModel.accessToken = "+user.accessToken);
 		 
-		 sop(" userModel.publicToken = "+user.refreshToken);
+		 sop(" userModel.publicToken = "+user.publicToken);
 
-		 return;
+		 /*return;
 		}
 		  
 		else
@@ -171,7 +171,7 @@ public class LiveExecutionManager {
 		kiteConnect.setAccessToken("oserc0u808vx68otxc23l75egfhb4phj");
 		kiteConnect.setPublicToken("bc7a3f28805f8c14ebf8bad3b5b340d4");
 		
-		}
+		}*/
 
 		
 		  
@@ -260,7 +260,8 @@ public class LiveExecutionManager {
 								+ "%' " + "AND instrument_type = '" + optionType + "' " 
 								+ "AND strike = '"
 								+ optionStrikePrice + "' "
-								+ "AND expiry = '" + expiry_date_full + "' )");
+								// + "AND expiry = '" + expiry_date_full + "' "
+										+ ")");
 
 				if (results.isNotEmpty()) {
 
