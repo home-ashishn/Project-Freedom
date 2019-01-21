@@ -1,5 +1,6 @@
 package com.freedom.live;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -24,9 +25,11 @@ import com.freedom.live.repos.OptionBuyOrderEventRepository;
 import com.freedom.live.repos.OptionBuyOrderInformationRepository;
 import com.freedom.live.repos.OptionSellOrderEventRepository;
 import com.freedom.live.repos.OptionSellOrderInformationRepository;
-import com.rainmatter.kiteconnect.KiteConnect;
-import com.rainmatter.kitehttp.exceptions.KiteException;
-import com.rainmatter.models.Order;
+import com.zerodhatech.kiteconnect.KiteConnect;
+import com.zerodhatech.kiteconnect.kitehttp.exceptions.KiteException;
+import com.zerodhatech.kiteconnect.utils.Constants;
+import com.zerodhatech.models.Order;
+import com.zerodhatech.models.OrderParams;
 
 @Component
 public class LiveOrderExecutionService {
@@ -185,7 +188,7 @@ public class LiveOrderExecutionService {
 
 	}
 
-	private void placeBuyOrders() {
+	private void placeBuyOrders() throws IOException {
 
 		isBuyOrdersHandledProperly = true;
 
@@ -197,7 +200,7 @@ public class LiveOrderExecutionService {
 
 	}
 
-	private void placeNewBuyOrders() {
+	private void placeNewBuyOrders() throws IOException {
 
 		List<OptionBuyOrderEvent> listNew = optionBuyOrderEventRepository.findNewOrderEvents();
 
@@ -218,7 +221,7 @@ public class LiveOrderExecutionService {
 
 	}
 
-	private void placeNewBuyOrder(OptionBuyOrderEvent optionBuyOrderEvent) {
+	private void placeNewBuyOrder(OptionBuyOrderEvent optionBuyOrderEvent) throws IOException {
 
 		String symbol = optionBuyOrderEvent.getSymbol();
 		String optionType = optionBuyOrderEvent.getOption_type();
@@ -235,22 +238,21 @@ public class LiveOrderExecutionService {
 
 		String tradingSymbol = mapInstrumentToTradingSymbol.get(tradingSymbolKey);
 
-		Map<String, Object> param11 = new HashMap<String, Object>() {
-			{
-				put("price", "" + optionBuyOrderEvent.getBuy_price());
-				put("transaction_type", "BUY");
-				put("quantity", "" + optionBuyOrderEvent.getQuantity());
-				put("tradingsymbol", tradingSymbol);
-				put("exchange", "NFO");
-				put("validity", "DAY");
-				put("order_type", "LIMIT");
-				put("product", "NRML");
-			}
-		};
+
+		
+		   OrderParams orderParams = new OrderParams();
+		   orderParams.quantity = optionBuyOrderEvent.getQuantity();
+		   orderParams.orderType = Constants.ORDER_TYPE_LIMIT;
+		   orderParams.tradingsymbol = tradingSymbol;
+		   orderParams.product = Constants.PRODUCT_NRML;
+		   orderParams.exchange = Constants.EXCHANGE_NFO;
+		   orderParams.transactionType = Constants.TRANSACTION_TYPE_BUY;
+		   orderParams.validity = Constants.VALIDITY_DAY;
+		   orderParams.price = (double) optionBuyOrderEvent.getBuy_price();
 
 		Order order11 = null;
 		try {
-			order11 = kiteConnect.placeOrder(param11, "regular");
+			order11 = kiteConnect.placeOrder(orderParams, "regular");
 		} catch (JSONException | KiteException e) {
 
 			isBuyOrdersHandledProperly = false;
@@ -299,7 +301,7 @@ public class LiveOrderExecutionService {
 
 	}
 
-	private void placeBuyOrdersCancellation() {
+	private void placeBuyOrdersCancellation() throws IOException {
 
 		List<OptionBuyOrderEvent> listNew = optionBuyOrderEventRepository.findCancelOrderEvents();
 
@@ -329,18 +331,17 @@ public class LiveOrderExecutionService {
 
 		String tradingSymbol = mapInstrumentToTradingSymbol.get(tradingSymbolKey);
 
-		Map<String, Object> param11 = new HashMap<String, Object>() {
-			{
-				put("price", "" + optionBuyOrderEvent.getBuy_price());
-				put("transaction_type", "BUY");
-				put("quantity", "" + optionBuyOrderEvent.getQuantity());
-				put("tradingsymbol", tradingSymbol);
-				put("exchange", "NFO");
-				put("validity", "DAY");
-				put("order_type", "LIMIT");
-				put("product", "NRML");
-			}
-		};
+
+		
+		   OrderParams orderParams = new OrderParams();
+		   orderParams.quantity = optionBuyOrderEvent.getQuantity();
+		   orderParams.orderType = Constants.ORDER_TYPE_LIMIT;
+		   orderParams.tradingsymbol = tradingSymbol;
+		   orderParams.product = Constants.PRODUCT_NRML;
+		   orderParams.exchange = Constants.EXCHANGE_NFO;
+		   orderParams.transactionType = Constants.TRANSACTION_TYPE_BUY;
+		   orderParams.validity = Constants.VALIDITY_DAY;
+		   orderParams.price = (double) optionBuyOrderEvent.getBuy_price();
 
 		String orderId = "";
 
@@ -349,7 +350,7 @@ public class LiveOrderExecutionService {
 		Order order11 = null;
 		try {
 			if (orderId != null) {
-				order11 = kiteConnect.modifyOrder(orderId, param11, "regular");
+				order11 = kiteConnect.modifyOrder(orderId, orderParams, "regular");
 			}
 		} catch (Exception e) {
 
@@ -367,7 +368,7 @@ public class LiveOrderExecutionService {
 
 	}
 
-	private void placeCancelBuyOrder(OptionBuyOrderEvent optionBuyOrderEvent) {
+	private void placeCancelBuyOrder(OptionBuyOrderEvent optionBuyOrderEvent) throws IOException {
 
 		String symbol = optionBuyOrderEvent.getSymbol();
 		String optionType = optionBuyOrderEvent.getOption_type();
@@ -393,7 +394,7 @@ public class LiveOrderExecutionService {
 
 	}
 
-	private void placeSellOrders() {
+	private void placeSellOrders() throws IOException {
 
 		isSellOrdersHandledProperly = true;
 
@@ -405,7 +406,7 @@ public class LiveOrderExecutionService {
 
 	}
 
-	private void placeNewSellOrders() {
+	private void placeNewSellOrders() throws IOException {
 
 		List<OptionSellOrderEvent> listNew = optionSellOrderEventRepository.findNewOrderEvents();
 
@@ -425,7 +426,7 @@ public class LiveOrderExecutionService {
 
 	}
 
-	private void placeNewSellOrder(OptionSellOrderEvent optionSellOrderEvent) {
+	private void placeNewSellOrder(OptionSellOrderEvent optionSellOrderEvent) throws IOException {
 
 		String symbol = optionSellOrderEvent.getSymbol();
 		String optionType = optionSellOrderEvent.getOption_type();
@@ -442,22 +443,22 @@ public class LiveOrderExecutionService {
 
 		String tradingSymbol = mapInstrumentToTradingSymbol.get(tradingSymbolKey);
 
-		Map<String, Object> param11 = new HashMap<String, Object>() {
-			{
-				put("price", "" + optionSellOrderEvent.getSell_price());
-				put("transaction_type", "SELL");
-				put("quantity", "" + optionSellOrderEvent.getQuantity());
-				put("tradingsymbol", tradingSymbol);
-				put("exchange", "NFO");
-				put("validity", "DAY");
-				put("order_type", "LIMIT");
-				put("product", "NRML");
-			}
-		};
+
+		
+		   OrderParams orderParams = new OrderParams();
+		   orderParams.quantity = optionSellOrderEvent.getQuantity();
+		   orderParams.orderType = Constants.ORDER_TYPE_LIMIT;
+		   orderParams.tradingsymbol = tradingSymbol;
+		   orderParams.product = Constants.PRODUCT_NRML;
+		   orderParams.exchange = Constants.EXCHANGE_NFO;
+		   orderParams.transactionType = Constants.TRANSACTION_TYPE_SELL;
+		   orderParams.validity = Constants.VALIDITY_DAY;
+		   orderParams.price = (double) optionSellOrderEvent.getSell_price();
+		
 
 		Order order11 = null;
 		try {
-			order11 = kiteConnect.placeOrder(param11, "regular");
+			order11 = kiteConnect.placeOrder(orderParams, "regular");
 		} catch (JSONException | KiteException e) {
 
 			isSellOrdersHandledProperly = false;
@@ -481,7 +482,7 @@ public class LiveOrderExecutionService {
 
 	}
 
-	private void placeSellOrdersModification() {
+	private void placeSellOrdersModification() throws IOException {
 
 		List<OptionSellOrderEvent> listNew = optionSellOrderEventRepository.findModifyOrderEvents();
 
@@ -501,7 +502,7 @@ public class LiveOrderExecutionService {
 
 	}
 
-	private void placeSellOrdersCancellation() {
+	private void placeSellOrdersCancellation() throws IOException {
 
 		List<OptionSellOrderEvent> listNew = optionSellOrderEventRepository.findCancelOrderEvents();
 
@@ -521,7 +522,7 @@ public class LiveOrderExecutionService {
 
 	}
 
-	private void placeModifySellOrder(OptionSellOrderEvent optionSellOrderEvent) {
+	private void placeModifySellOrder(OptionSellOrderEvent optionSellOrderEvent) throws IOException {
 
 		String symbol = optionSellOrderEvent.getSymbol();
 		String optionType = optionSellOrderEvent.getOption_type();
@@ -531,18 +532,17 @@ public class LiveOrderExecutionService {
 
 		String tradingSymbol = mapInstrumentToTradingSymbol.get(tradingSymbolKey);
 
-		Map<String, Object> param11 = new HashMap<String, Object>() {
-			{
-				put("price", "" + optionSellOrderEvent.getSell_price());
-				put("transaction_type", "BUY");
-				put("quantity", "" + optionSellOrderEvent.getQuantity());
-				put("tradingsymbol", tradingSymbol);
-				put("exchange", "NFO");
-				put("validity", "DAY");
-				put("order_type", "LIMIT");
-				put("product", "NRML");
-			}
-		};
+
+		
+		   OrderParams orderParams = new OrderParams();
+		   orderParams.quantity = optionSellOrderEvent.getQuantity();
+		   orderParams.orderType = Constants.ORDER_TYPE_LIMIT;
+		   orderParams.tradingsymbol = tradingSymbol;
+		   orderParams.product = Constants.PRODUCT_NRML;
+		   orderParams.exchange = Constants.EXCHANGE_NFO;
+		   orderParams.transactionType = Constants.TRANSACTION_TYPE_SELL;
+		   orderParams.validity = Constants.VALIDITY_DAY;
+		   orderParams.price = (double) optionSellOrderEvent.getSell_price();		
 
 		String orderId = "";
 
@@ -551,7 +551,7 @@ public class LiveOrderExecutionService {
 		Order order11 = null;
 		try {
 			if (orderId != null) {
-				order11 = kiteConnect.modifyOrder(orderId, param11, "regular");
+				order11 = kiteConnect.modifyOrder(orderId, orderParams, "regular");
 			}
 		} catch (JSONException | KiteException e) {
 
@@ -567,7 +567,7 @@ public class LiveOrderExecutionService {
 
 	}
 
-	private void placeCancelSellOrder(OptionSellOrderEvent optionSellOrderEvent) {
+	private void placeCancelSellOrder(OptionSellOrderEvent optionSellOrderEvent) throws IOException {
 
 		String symbol = optionSellOrderEvent.getSymbol();
 		String optionType = optionSellOrderEvent.getOption_type();

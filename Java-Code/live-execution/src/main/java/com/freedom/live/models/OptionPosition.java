@@ -1,7 +1,5 @@
 package com.freedom.live.models;
 
-import java.io.Serializable;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;

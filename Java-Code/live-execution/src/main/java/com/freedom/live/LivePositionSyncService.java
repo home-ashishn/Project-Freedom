@@ -1,10 +1,10 @@
 package com.freedom.live;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.DateTime;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,9 +12,9 @@ import org.springframework.stereotype.Component;
 import com.freedom.live.models.OptionPosition;
 import com.freedom.live.models.SelectedInstrument;
 import com.freedom.live.repos.OptionPositionRepository;
-import com.rainmatter.kiteconnect.KiteConnect;
-import com.rainmatter.kitehttp.exceptions.KiteException;
-import com.rainmatter.models.Position;
+import com.zerodhatech.kiteconnect.KiteConnect;
+import com.zerodhatech.kiteconnect.kitehttp.exceptions.KiteException;
+import com.zerodhatech.models.Position;
 
 @Component
 public class LivePositionSyncService {
@@ -48,7 +48,7 @@ public class LivePositionSyncService {
 
 	}
 
-	private void syncPositions() {
+	private void syncPositions() throws IOException {
 
 		Map<String, List<Position>> positions;
 		try {

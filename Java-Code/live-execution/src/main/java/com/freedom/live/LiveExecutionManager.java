@@ -27,11 +27,12 @@ import com.googlecode.cqengine.IndexedCollection;
 import com.googlecode.cqengine.query.parser.sql.SQLParser;
 import com.googlecode.cqengine.resultset.ResultSet;
 import com.neovisionaries.ws.client.WebSocketException;
-import com.rainmatter.kiteconnect.KiteConnect;
-import com.rainmatter.kitehttp.SessionExpiryHook;
-import com.rainmatter.kitehttp.exceptions.KiteException;
-import com.rainmatter.models.Instrument;
-import com.rainmatter.models.UserModel;
+import com.zerodhatech.kiteconnect.KiteConnect;
+import com.zerodhatech.kiteconnect.kitehttp.SessionExpiryHook;
+import com.zerodhatech.kiteconnect.kitehttp.exceptions.KiteException;
+import com.zerodhatech.models.Instrument;
+import com.zerodhatech.models.TokenSet;
+import com.zerodhatech.models.User;
 
 @Component
 @Service
@@ -63,7 +64,7 @@ public class LiveExecutionManager {
 	 @Autowired
 	 private LivePositionSyncService livePositionSyncService;
 
-	private String requestToken = "nsmsbsb5woxuvpnjdo83t0lo0gr2l0th";
+	private String requestToken = "zI6ecxGjykHe43H4t2tMBvYTR0ivR1yT";
 	
 	private boolean askForUserToken = false;
 
@@ -124,21 +125,21 @@ public class LiveExecutionManager {
 		
 	}
 
-	private void initLogin() throws JSONException, KiteException {
+	private void initLogin() throws JSONException, KiteException, IOException {
 		// First you should get request_token, public_token using kitconnect
 		// login and then use request_token, public_token, api_secret to make
 		// any kiteConnect api call.
 		// Initialize KiteSdk with your apiKey.
-		kiteConnect = new KiteConnect("pdzapzoa8txw983g");
+		kiteConnect = new KiteConnect("9pubiq7nm4pkmmt3");
 
 		// set userId
-		kiteConnect.setUserId("DA0646");
+		kiteConnect.setUserId("UI1890");
 
 		// Get login url
 		// String url = kiteConnect.getLoginUrl();
 
 		// Set session expiry callback.
-		kiteConnect.registerHook(new SessionExpiryHook() {
+		kiteConnect.setSessionExpiryHook(new SessionExpiryHook() {
 			@Override
 			public void sessionExpired() {
 				System.out.println("session expired");
@@ -151,15 +152,15 @@ public class LiveExecutionManager {
 
 		if(askForUserToken)
 		{
-		  UserModel userModel = kiteConnect.requestAccessToken(requestToken,
-		  "zyj7ezutg4dl5rm3m7wj86gfmylye9w9");
+		  TokenSet user = kiteConnect.renewAccessToken(requestToken,
+		  "al1ft8iftn7cw7v9ipfplgrxaxps9n6e");
 		  
-		 kiteConnect.setAccessToken(userModel.accessToken);
-		 kiteConnect.setPublicToken(userModel.publicToken);
+		 kiteConnect.setAccessToken(user.accessToken);
+		 kiteConnect.setPublicToken(user.refreshToken);
 		 
-		 sop(" userModel.accessToken = "+userModel.accessToken);
+		 sop(" userModel.accessToken = "+user.accessToken);
 		 
-		 sop(" userModel.publicToken = "+userModel.publicToken);
+		 sop(" userModel.publicToken = "+user.refreshToken);
 
 		 return;
 		}

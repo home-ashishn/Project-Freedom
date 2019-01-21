@@ -1,9 +1,7 @@
 package com.freedom.live;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,13 +16,13 @@ import com.freedom.live.models.BasisForCalls;
 import com.freedom.live.models.LiveStockData;
 import com.freedom.live.repos.LiveStockDataRepository;
 import com.neovisionaries.ws.client.WebSocketException;
-import com.rainmatter.kiteconnect.KiteConnect;
-import com.rainmatter.kitehttp.exceptions.KiteException;
-import com.rainmatter.models.Tick;
-import com.rainmatter.ticker.KiteTicker;
-import com.rainmatter.ticker.OnConnect;
-import com.rainmatter.ticker.OnDisconnect;
-import com.rainmatter.ticker.OnTick;
+import com.zerodhatech.kiteconnect.KiteConnect;
+import com.zerodhatech.kiteconnect.kitehttp.exceptions.KiteException;
+import com.zerodhatech.models.Tick;
+import com.zerodhatech.ticker.KiteTicker;
+import com.zerodhatech.ticker.OnConnect;
+import com.zerodhatech.ticker.OnDisconnect;
+import com.zerodhatech.ticker.OnTicks;
 
 @Component
 public class LiveStockPriceExtractor {
@@ -83,7 +81,7 @@ public class LiveStockPriceExtractor {
 		 * any point of time and make sure you stop connection, once user goes
 		 * out of app.
 		 */
-		KiteTicker tickerProvider = new KiteTicker(kiteConnect);
+		KiteTicker tickerProvider = new KiteTicker(kiteConnect.getAccessToken(), kiteConnect.getApiKey());
 		tickerProvider.setOnConnectedListener(new OnConnect() {
 			@Override
 			public void onConnected() {
@@ -111,30 +109,22 @@ public class LiveStockPriceExtractor {
 			@Override
 			public void onDisconnected() {
 				
-				try {
-					tickerProvider.connect();
-					boolean isConnected = tickerProvider.isConnectionOpen();
-					System.out
-					.println("--------- +++++++ from LiveStockPriceExtractor.onDisconnected, isConnected = "
-							+ isConnected);
-					tickerProvider.subscribe(tokens);
-					tickerProvider.setMode(tokens, KiteTicker.modeQuote);
-					latestTickTime = new DateTime();
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (WebSocketException e) {
-					e.printStackTrace();
-				} catch (KiteException e) {
-					e.printStackTrace();
-				}
+				tickerProvider.connect();
+				boolean isConnected = tickerProvider.isConnectionOpen();
+				System.out
+				.println("--------- +++++++ from LiveStockPriceExtractor.onDisconnected, isConnected = "
+						+ isConnected);
+				tickerProvider.subscribe(tokens);
+				tickerProvider.setMode(tokens, KiteTicker.modeQuote);
+				latestTickTime = new DateTime();
 				
 				
 			}
 		});
 
-		tickerProvider.setOnTickerArrivalListener(new OnTick() {
+		tickerProvider.setOnTickerArrivalListener(new OnTicks() {
 			@Override
-			public void onTick(ArrayList<Tick> ticks) {
+			public void onTicks(ArrayList<Tick> ticks) {
 				sop("$$$$ For Stock Data, ticks size = " + ticks.size() + 
 						" at current time = " + new DateTime());
 
@@ -157,10 +147,10 @@ public class LiveStockPriceExtractor {
 
 		tickerProvider.setTryReconnection(true);
 		// minimum value must be 5 for time interval for reconnection
-		tickerProvider.setTimeIntervalForReconnection(5);
+		tickerProvider.setMaximumRetryInterval(5);
 		// set number to times com.rainmatter.ticker can try reconnection, for
 		// infinite retries use -1
-		tickerProvider.setMaxRetries(10);
+		tickerProvider.setMaximumRetries(10);
 
 		/**
 		 * connects to com.rainmatter.com.rainmatter.ticker server for getting
@@ -205,7 +195,7 @@ public class LiveStockPriceExtractor {
 
 		for (Tick tick : ticks) {
 
-			Long tokenValue = tick.getToken();
+			Long tokenValue = tick.getInstrumentToken();
 
 			Long currentVolume = (long) tick.getVolumeTradedToday();
 

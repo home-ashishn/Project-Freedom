@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import com.rainmatter.kitehttp.exceptions.KiteException;
+import com.zerodhatech.kiteconnect.kitehttp.exceptions.KiteException;
 
 @SpringBootApplication
 @Configuration

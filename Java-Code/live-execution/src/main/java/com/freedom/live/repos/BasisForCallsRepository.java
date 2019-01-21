@@ -2,10 +2,7 @@ package com.freedom.live.repos;
 
 import javax.transaction.Transactional;
 
-import org.joda.time.DateTime;
-import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 
 import com.freedom.live.models.BasisForCalls;
 

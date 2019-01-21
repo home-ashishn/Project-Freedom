@@ -2,8 +2,6 @@ package com.freedom.live.models;
 
 import java.io.Serializable;
 
-import javax.persistence.Id;
-
 import org.joda.time.DateTime;
 
 public class OptionSellOrderEventId implements Serializable{

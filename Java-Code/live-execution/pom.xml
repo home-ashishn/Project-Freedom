@@ -45,12 +45,18 @@
 			<version>4.0.0.GA</version>
 		</dependency>
 
-		<dependency>
+<!-- 		<dependency>
 			<groupId>com.rainmatter.kiteconnect</groupId>
 			<artifactId>kiteconnect</artifactId>
 			<version>1.4.5</version>
 		</dependency>
-
+ -->
+ 		<dependency>
+			<groupId>com.zerodhatech.kiteconnect</groupId>
+			<artifactId>kiteconnect</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+ 
 		<!-- https://mvnrepository.com/artifact/com.googlecode.cqengine/cqengine -->
 		<dependency>
 			<groupId>com.googlecode.cqengine</groupId>
