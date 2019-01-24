@@ -9,6 +9,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeField;
+import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -201,6 +203,8 @@ public class LiveOptionPriceExtractor {
 
 	private void extractTicksData(ArrayList<Tick> ticks) {
 
+		// DateTimeZone.setDefault(DateTimeZone.forID("Asia/Kolkata"));		
+
 		for (Tick tick : ticks) {
 
 			Long tokenValue = tick.getInstrumentToken();
@@ -236,8 +240,30 @@ public class LiveOptionPriceExtractor {
 
 
 				LiveOptionPriceData liveOptionPriceData = new LiveOptionPriceData();
+				
+/*				DateTimeZone zoneIndia = DateTimeZone.forID( "Asia/Kolkata" );
+				DateTime currentTime = DateTime.now(zoneIndia);*/
+				// DateTime currentTime = DateTime.now(DateTimeZone.UTC);
+				
+				DateTime currentTime = DateTime.now();
+				
+				System.out.println("444444 555555555 , currentTime zone = "
+				+currentTime.getZone());
 
-				liveOptionPriceData.setCurr_time(new DateTime());
+				System.out.println("444444 555555555 for "+currentTime.getZone()
+				+", currentTime = "+currentTime);
+
+				if(!(currentTime.getZone().equals(DateTimeZone.forID( "Asia/Kolkata"))))
+				{
+					currentTime = currentTime.plusHours(5);
+					
+					currentTime = currentTime.plusMinutes(30);
+				}
+				
+
+				System.out.println("77777 88888888 for IST, currentTime = "+currentTime);
+				
+				liveOptionPriceData.setCurr_time(currentTime);
 				liveOptionPriceData.setSymbol(selectedInstrument.getSymbol());
 				liveOptionPriceData.setOption_type(selectedInstrument.getOption_type());
 				liveOptionPriceData.setOption_strike_price(selectedInstrument.getOption_strike_price());
@@ -336,7 +362,7 @@ public class LiveOptionPriceExtractor {
 	
 	private void sop(String text) {
 
-		//System.out.println(text);
+		System.out.println(text);
 	}
 
 

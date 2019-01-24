@@ -13,6 +13,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -31,7 +32,6 @@ import com.zerodhatech.kiteconnect.KiteConnect;
 import com.zerodhatech.kiteconnect.kitehttp.SessionExpiryHook;
 import com.zerodhatech.kiteconnect.kitehttp.exceptions.KiteException;
 import com.zerodhatech.models.Instrument;
-import com.zerodhatech.models.TokenSet;
 import com.zerodhatech.models.User;
 
 @Component
@@ -64,7 +64,7 @@ public class LiveExecutionManager {
 	 @Autowired
 	 private LivePositionSyncService livePositionSyncService;
 
-	private String requestToken = "OC9BtglAUrBFfo2aExLZdRMAAoc4Q30S";
+	private String requestToken = "rpcq6dJgj84OVa8V5HPzBxS2p4hb6990";
 	
 	private boolean askForUserToken = false;
 
@@ -150,8 +150,8 @@ public class LiveExecutionManager {
 		// process.
 
 
-/*		if(askForUserToken)
-		{*/
+	if(askForUserToken)
+		{
 		  User user = kiteConnect.generateSession(requestToken,
 		  "al1ft8iftn7cw7v9ipfplgrxaxps9n6e");
 		  
@@ -162,16 +162,16 @@ public class LiveExecutionManager {
 		 
 		 sop(" userModel.publicToken = "+user.publicToken);
 
-		 /*return;
+		 //return;
 		}
 		  
 		else
 		{
 
-		kiteConnect.setAccessToken("oserc0u808vx68otxc23l75egfhb4phj");
-		kiteConnect.setPublicToken("bc7a3f28805f8c14ebf8bad3b5b340d4");
+		kiteConnect.setAccessToken("dD5LMwGmbqLFL8IfXZNj0Mfr2a987eHd");
+		kiteConnect.setPublicToken("CrRRu61r3IDXntB48Vy6QwlYT4mAGxKQ");
 		
-		}*/
+		}
 
 		
 		  
@@ -187,6 +187,8 @@ public class LiveExecutionManager {
 
 	public void manageExecution() throws Exception, KiteException {
 
+		// DateTimeZone.setDefault(DateTimeZone.forID("Asia/Kolkata"));		
+		
 		init();
 		
 		ThreadPoolExecutor executor = new ThreadPoolExecutor(3, 5, 0L, TimeUnit.MILLISECONDS,
