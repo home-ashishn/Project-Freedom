@@ -64,7 +64,7 @@ public class LiveExecutionManager {
 	 @Autowired
 	 private LivePositionSyncService livePositionSyncService;
 
-	private String requestToken = "rpcq6dJgj84OVa8V5HPzBxS2p4hb6990";
+	private String requestToken = "H4ghqJlsmzJdd6mdFSWBNI9IVtvXGI2A";
 	
 	private boolean askForUserToken = false;
 
@@ -168,8 +168,8 @@ public class LiveExecutionManager {
 		else
 		{
 
-		kiteConnect.setAccessToken("dD5LMwGmbqLFL8IfXZNj0Mfr2a987eHd");
-		kiteConnect.setPublicToken("CrRRu61r3IDXntB48Vy6QwlYT4mAGxKQ");
+			kiteConnect.setAccessToken("Wm2mcuj21yyk7QE1qTHSSQyo34PNnWCM");
+			kiteConnect.setPublicToken("jVrhwl9MVf9ahPagrixfpgO6aE6nI8uI");
 		
 		}
 
