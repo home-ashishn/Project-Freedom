@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,10 +29,8 @@ import com.zerodhatech.ticker.OnTicks;
 public class LiveStockPriceExtractor {
 
 	/**
-	 * @param urlFile
-	 *            Path for file which consists of URLs to be scraped
-	 * @param outputFile
-	 *            File where scrape results will be written
+	 * @param urlFile    Path for file which consists of URLs to be scraped
+	 * @param outputFile File where scrape results will be written
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 * @throws TimeoutException
@@ -69,17 +68,16 @@ public class LiveStockPriceExtractor {
 	}
 
 	/**
-	 * Demonstrates com.rainmatter.ticker connection, subcribing for
-	 * instruments, unsubscribing for instruments, set mode of tick data,
-	 * com.rainmatter.ticker disconnection
+	 * Demonstrates com.rainmatter.ticker connection, subcribing for instruments,
+	 * unsubscribing for instruments, set mode of tick data, com.rainmatter.ticker
+	 * disconnection
 	 */
 	public void tickerUsage(KiteConnect kiteConnect, ArrayList<Long> tokens)
 			throws IOException, WebSocketException, KiteException {
 		/**
 		 * To get live price use com.rainmatter.com.rainmatter.ticker websocket
-		 * connection. It is recommended to use only one websocket connection at
-		 * any point of time and make sure you stop connection, once user goes
-		 * out of app.
+		 * connection. It is recommended to use only one websocket connection at any
+		 * point of time and make sure you stop connection, once user goes out of app.
 		 */
 		KiteTicker tickerProvider = new KiteTicker(kiteConnect.getAccessToken(), kiteConnect.getApiKey());
 		tickerProvider.setOnConnectedListener(new OnConnect() {
@@ -87,57 +85,45 @@ public class LiveStockPriceExtractor {
 			public void onConnected() {
 
 				/*
-				try {
-					boolean isConnected = tickerProvider.isConnectionOpen();
-					System.out.println(
-							"--------- +++++++ from LiveStockPriceExtractor.onConnected, isConnected = " + isConnected);
-					tickerProvider.subscribe(tokens);
-					tickerProvider.setMode(tokens, KiteTicker.modeQuote);
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (WebSocketException e) {
-					e.printStackTrace();
-				} catch (KiteException e) {
-					e.printStackTrace();
-				}
-*/
-				
+				 * try { boolean isConnected = tickerProvider.isConnectionOpen();
+				 * System.out.println(
+				 * "--------- +++++++ from LiveStockPriceExtractor.onConnected, isConnected = "
+				 * + isConnected); tickerProvider.subscribe(tokens);
+				 * tickerProvider.setMode(tokens, KiteTicker.modeQuote); } catch (IOException e)
+				 * { e.printStackTrace(); } catch (WebSocketException e) { e.printStackTrace();
+				 * } catch (KiteException e) { e.printStackTrace(); }
+				 */
+
 			}
 		});
 
 		tickerProvider.setOnDisconnectedListener(new OnDisconnect() {
 			@Override
 			public void onDisconnected() {
-				
+
 				tickerProvider.connect();
 				boolean isConnected = tickerProvider.isConnectionOpen();
-				System.out
-				.println("--------- +++++++ from LiveStockPriceExtractor.onDisconnected, isConnected = "
-						+ isConnected);
+				System.out.println(
+						"--------- +++++++ from LiveStockPriceExtractor.onDisconnected, isConnected = " + isConnected);
 				tickerProvider.subscribe(tokens);
 				tickerProvider.setMode(tokens, KiteTicker.modeQuote);
 				latestTickTime = new DateTime();
-				
-				
+
 			}
 		});
 
 		tickerProvider.setOnTickerArrivalListener(new OnTicks() {
 			@Override
 			public void onTicks(ArrayList<Tick> ticks) {
-				sop("$$$$ For Stock Data, ticks size = " + ticks.size() + 
-						" at current time = " + new DateTime());
+				sop("$$$$ For Stock Data, ticks size = " + ticks.size() + " at current time = " + new DateTime());
 
-				if (ticks.size() > 0) 
-				{
+				if (ticks.size() > 0) {
 					extractTicksData(ticks);
 					latestTickTime = new DateTime();
-				}
-				else
-				{
+				} else {
 					DateTime currTime = new DateTime();
-					
-					if(currTime.isAfter(latestTickTime.plusSeconds(15))){
+
+					if (currTime.isAfter(latestTickTime.plusSeconds(15))) {
 						tickerProvider.disconnect();
 					}
 				}
@@ -153,36 +139,34 @@ public class LiveStockPriceExtractor {
 		tickerProvider.setMaximumRetries(10);
 
 		/**
-		 * connects to com.rainmatter.com.rainmatter.ticker server for getting
-		 * live quotes
+		 * connects to com.rainmatter.com.rainmatter.ticker server for getting live
+		 * quotes
 		 */
 		tickerProvider.connect();
 
 		/**
-		 * You can check, if websocket connection is open or not using the
-		 * following method.
+		 * You can check, if websocket connection is open or not using the following
+		 * method.
 		 */
 		boolean isConnected = tickerProvider.isConnectionOpen();
 
-		System.out.println("isConnected = " +isConnected);
+		System.out.println("isConnected = " + isConnected);
 
 		tickerProvider.subscribe(tokens);
 
 		/**
-		 * set mode is used to set mode in which you need tick for list of
-		 * tokens. Ticker allows three modes, modeFull, modeQuote, modeLTP. For
-		 * getting only last traded price, use modeLTP For getting last traded
-		 * price, last traded quantity, average price, volume traded today,
-		 * total sell quantity and total buy quantity, open, high, low, close,
-		 * change, use modeQuote For getting all data with depth, use modeFull
+		 * set mode is used to set mode in which you need tick for list of tokens.
+		 * Ticker allows three modes, modeFull, modeQuote, modeLTP. For getting only
+		 * last traded price, use modeLTP For getting last traded price, last traded
+		 * quantity, average price, volume traded today, total sell quantity and total
+		 * buy quantity, open, high, low, close, change, use modeQuote For getting all
+		 * data with depth, use modeFull
 		 */
 		tickerProvider.setMode(tokens, KiteTicker.modeQuote);
-		
+
 		latestTickTime = new DateTime();
-		
-		System.out.println("latestTickTime = " +latestTickTime);
 
-
+		System.out.println("latestTickTime = " + latestTickTime);
 
 		// Unsubscribe for a token.
 
@@ -209,12 +193,33 @@ public class LiveStockPriceExtractor {
 			if (currentVolume > (lastVolume * 1.0002)) {
 
 				mapGlobalVolumes.put(tokenValue, currentVolume);
-				
 
+				DateTime currentTime = DateTime.now();
+
+				/*
+				 * System.out.
+				 * println(" LiveStockPriceExtractor - 444444 555555555 , currentTime zone = "
+				 * +currentTime.getZone());
+				 * 
+				 * System.out.println("LiveStockPriceExtractor - 444444 555555555 for "
+				 * +currentTime.getZone() +", currentTime = "+currentTime);
+				 */
+
+				if (!((currentTime.getZone().equals(DateTimeZone.forID("Asia/Kolkata")))
+
+						|| (currentTime.getZone().equals(DateTimeZone.forID("Asia/Colombo")))
+
+				)) {
+					currentTime = currentTime.plusHours(5);
+
+					currentTime = currentTime.plusMinutes(30);
+				}
+
+				System.out.println("LiveStockPriceExtractor - 77777 88888888 for IST, currentTime = " + currentTime);
 
 				LiveStockData liveStockData = new LiveStockData();
 
-				liveStockData.setCurr_time(new DateTime());
+				liveStockData.setCurr_time(currentTime);
 				liveStockData.setSymbol(selectedStock.getSymbol());
 				liveStockData.setVolume(currentVolume);
 				liveStockData.setPrice((float) tick.getLastTradedPrice());
@@ -248,7 +253,8 @@ public class LiveStockPriceExtractor {
 
 				} catch (Exception e) {
 
-					System.out.println("^^^^^^^ &&&&&&& ERROR WHILE SAVING ************* STOCK DATA ^^^^^^^ &&&&&&&" + e.getMessage());
+					System.out.println("^^^^^^^ &&&&&&& ERROR WHILE SAVING ************* STOCK DATA ^^^^^^^ &&&&&&&"
+							+ e.getMessage());
 				}
 
 				liveDataObjs = new ArrayList<LiveStockData>();
@@ -294,8 +300,7 @@ public class LiveStockPriceExtractor {
 
 	private void sop(String text) {
 
-		//System.out.println(text);
+		// System.out.println(text);
 	}
-
 
 }
