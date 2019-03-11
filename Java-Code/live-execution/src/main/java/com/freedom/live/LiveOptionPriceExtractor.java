@@ -249,7 +249,7 @@ public class LiveOptionPriceExtractor {
 					currentTime = currentTime.plusMinutes(30);
 				}
 
-				System.out.println("77777 88888888 for IST, currentTime = " + currentTime);
+				//System.out.println("77777 88888888 for IST, currentTime = " + currentTime);
 
 				liveOptionPriceData.setCurr_time(currentTime);
 				liveOptionPriceData.setSymbol(selectedInstrument.getSymbol());
@@ -350,7 +350,7 @@ public class LiveOptionPriceExtractor {
 
 	private void sop(String text) {
 
-		System.out.println(text);
+		//System.out.println(text);
 	}
 
 }

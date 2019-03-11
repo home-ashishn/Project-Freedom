@@ -215,7 +215,7 @@ public class LiveStockPriceExtractor {
 					currentTime = currentTime.plusMinutes(30);
 				}
 
-				System.out.println("LiveStockPriceExtractor - 77777 88888888 for IST, currentTime = " + currentTime);
+				// System.out.println("LiveStockPriceExtractor - 77777 88888888 for IST, currentTime = " + currentTime);
 
 				LiveStockData liveStockData = new LiveStockData();
 

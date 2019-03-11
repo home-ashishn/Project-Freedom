@@ -11,6 +11,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -49,7 +50,7 @@ public class LiveOrderExecutionService {
 	@Autowired
 	OptionSellOrderInformationRepository optionSellOrderInformationRepository;
 
-	DateTime targetCycleTime = new DateTime();
+	DateTime targetCycleTime = getCurrenTime();
 
 	boolean isTargetCycleTimeDone = false;
 
@@ -101,7 +102,7 @@ public class LiveOrderExecutionService {
 
 			}
 
-			DateTime currentTime = new DateTime();
+			DateTime currentTime = getCurrenTime();
 
 			long difference = currentTime.getMillis() - targetCycleTime.getMillis();
 
@@ -122,19 +123,19 @@ public class LiveOrderExecutionService {
 
 				isSellOrdersHandledProperly = false;
 
-				sop(" 1st call to makeOrderCallables at " + new DateTime());
+				sop(" 1st call to makeOrderCallables at " + getCurrenTime());
 
 				makeOrderCallables(executor);
 
 				Thread.sleep(8000);
 
-				sop(" 2nd call to makeOrderCallables at " + new DateTime());
+				sop(" 2nd call to makeOrderCallables at " + getCurrenTime());
 
 				makeOrderCallables(executor);
 
 				Thread.sleep(8000);
 
-				sop(" 3rd call to makeOrderCallables at " + new DateTime());
+				sop(" 3rd call to makeOrderCallables at " + getCurrenTime());
 
 				makeOrderCallables(executor);
 
@@ -594,6 +595,34 @@ public class LiveOrderExecutionService {
 
 	}
 
+	
+private DateTime getCurrenTime() {
+	
+	DateTime currentTime = DateTime.now();
+
+	/*
+	 * System.out.
+	 * println(" LiveStockPriceExtractor - 444444 555555555 , currentTime zone = "
+	 * +currentTime.getZone());
+	 * 
+	 * System.out.println("LiveStockPriceExtractor - 444444 555555555 for "
+	 * +currentTime.getZone() +", currentTime = "+currentTime);
+	 */
+
+	if (!((currentTime.getZone().equals(DateTimeZone.forID("Asia/Kolkata")))
+
+			|| (currentTime.getZone().equals(DateTimeZone.forID("Asia/Colombo")))
+
+	)) {
+		currentTime = currentTime.plusHours(5);
+
+		currentTime = currentTime.plusMinutes(30);
+	}
+
+	System.out.println("LiveOrderExecutionService - 77777 88888888 for IST, currentTime = " + currentTime);
+	
+	return currentTime;
+}
 	private void sop(String text) {
 
 		System.out.println(text);
